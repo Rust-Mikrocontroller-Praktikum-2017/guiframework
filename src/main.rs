@@ -9,6 +9,7 @@ use embedded::interfaces::gpio::{self, Gpio};
 
 mod forms;
 mod draw;
+mod util;
 
 fn main(hw: board::Hardware) -> ! {
     let board::Hardware {
@@ -76,7 +77,7 @@ fn main(hw: board::Hardware) -> ! {
     let mut lcd = lcd::init(ltdc, rcc, &mut gpio);
     lcd.clear_screen();
 
-    let button = forms::button::Button::new(forms::form::BoundingBox {
+    let button = forms::button::Button::new(util::sizes::BoundingBox {
                                                 x: 2,
                                                 y: 2,
                                                 width: 10,

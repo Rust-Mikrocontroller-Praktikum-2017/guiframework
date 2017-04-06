@@ -1,4 +1,4 @@
-use forms::form::BoundingBox;
+use util::sizes::BoundingBox;
 use forms::form::Form;
 
 pub struct Button {

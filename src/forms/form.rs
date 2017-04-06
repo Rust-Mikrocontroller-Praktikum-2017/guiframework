@@ -1,9 +1,4 @@
-pub struct BoundingBox {
-    pub x: u32,
-    pub y: u32,
-    pub width: u32,
-    pub height: u32,
-}
+use util::sizes::BoundingBox;
 
 pub trait Form {
     fn get_bounding_box(&self) -> &BoundingBox;
