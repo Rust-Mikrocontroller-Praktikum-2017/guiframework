@@ -95,7 +95,6 @@ fn swap(a: &mut i32, b: &mut i32) {
 //         draw_pixel(x_small, i, color);
 //         draw_pixel(x_big, i, color);
 //     }
-
 // }
 
 pub fn draw_rectangle(x: u32, y: u32, width: u32, height: u32, color: u16) -> bool {

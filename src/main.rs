@@ -9,6 +9,8 @@ use embedded::interfaces::gpio::{self, Gpio};
 
 mod forms;
 mod draw;
+mod shape;
+mod area_container;
 mod util;
 
 fn main(hw: board::Hardware) -> ! {
@@ -89,8 +91,16 @@ fn main(hw: board::Hardware) -> ! {
     let mut i2c_3 = i2c::init(i2c_3);
     touch::check_family_id(&mut i2c_3).unwrap();
 
-    let color: lcd::Color = lcd::Color::from_hex(0xFFFFFF);
-    draw::fill_rectangle(30, 30, 200, 200, draw::convert_color_to_u16(color));
+    //let color: lcd::Color = lcd::Color::from_hex(0xFF0000);
+    //draw::draw_rectangle(30, 30, 100, 100, draw::convert_color_to_u16(color));
+
+    let mut flowContainer = FlowLayout {x_min: 10, y_min: 10, width: 100, height: 100};
+    let rect = Rectangular::new((15, 15), (20, 15), 0x00FFFF);
+    flowContainer.addForm(rect);
+    flowContainer.draw();
+
+    //let color: lcd::Color = lcd::Color::from_hex(0xFFFFFF);
+    //draw::fill_rectangle(30, 30, 200, 200, draw::convert_color_to_u16(color));
 
     let mut last_led_toggle = system_clock::ticks();
     loop {
