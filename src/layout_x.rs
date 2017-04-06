@@ -9,7 +9,7 @@ static max_y:u32 = 272;
 use board::ltdc::Ltdc;
 use embedded::interfaces::gpio::OutputPin;
 use core::ptr;
- 
+
 //mod init;
 //mod color;
 
@@ -23,14 +23,14 @@ fn draw_pixel(x:u32, y:u32, color:u16) {
         let pixel_color = (addr + pixel * 2) as *mut u16;
 
         unsafe { ptr::write_volatile(pixel_color, color) };
-}       
+}
 
 fn draw_line(x1:u32, y1:u32, x2:u32, y2:u32, color:u16) {
-    
+
 }
 
 // fn draw_rectangle_not_so_pretty(x1:u32, y1:u32, x2:u32, y2:u32, color:u16) {
-    
+
 //     if x1 < x2 {
 //         let x_small = x1;
 //         let x_big = x2;
@@ -54,7 +54,7 @@ fn draw_line(x1:u32, y1:u32, x2:u32, y2:u32, color:u16) {
 //         draw_pixel(x_small, i, color);
 //         draw_pixel(x_big, i, color);
 //     }
-    
+
 // }
 
 pub fn draw_rectangle(x:u32, y:u32, width:u32, height:u32, color:u16) -> bool {
@@ -74,3 +74,11 @@ pub fn draw_rectangle(x:u32, y:u32, width:u32, height:u32, color:u16) -> bool {
     true
 }
 
+pub fn convert_color_to_u16(color: lcd::Color): u16 {
+    let alpha = (color.alpha / 255) << 15;
+    let red = (color.red / 8) << 10;
+    let green = (color.green / 8) << 5;
+    let blue = color.blue / 8;
+
+    alpha | red | green | blue
+}
