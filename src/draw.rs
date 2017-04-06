@@ -5,9 +5,6 @@ use lcd;
 static max_x: u32 = 480;
 static max_y: u32 = 272;
 
-//pub use self::color::Color;
-//pub use self::init::init;
-
 use board::ltdc::Ltdc;
 use embedded::interfaces::gpio::OutputPin;
 use core::ptr;
@@ -59,7 +56,7 @@ fn draw_line(x1: u32, y1: u32, x2: u32, y2: u32, color: u16) {}
 
 pub fn draw_rectangle(x: u32, y: u32, width: u32, height: u32, color: u16) -> bool {
     //(x, y is upper left, according to coordinate system)
-    if x + width > max_x || x > max_x || y + height > max_y || y > max_y {
+    if x + width >= max_x || x >= max_x || y + height >= max_y || y >= max_y {
         return false;
     }
 
@@ -71,6 +68,22 @@ pub fn draw_rectangle(x: u32, y: u32, width: u32, height: u32, color: u16) -> bo
         draw_pixel(x, i, color);
         draw_pixel(x + width, i, color);
     }
+
+    true
+}
+
+pub fn fill_rectangle(x: u32, y: u32, width: u32, height: u32, color: u16) -> bool {
+    //(x, y is upper left, according to coordinate system)
+    if x + width >= max_x || x >= max_x || y + height >= max_y || y >= max_y {
+        return false;
+    }
+
+    for x in x..x + width + 1 {
+        for y in y..y + width + 1 {
+            draw_pixel(x, y, color);
+        }
+    }
+
     true
 }
 

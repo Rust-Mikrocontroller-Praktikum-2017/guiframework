@@ -80,8 +80,8 @@ fn main(hw: board::Hardware) -> ! {
     let mut i2c_3 = i2c::init(i2c_3);
     touch::check_family_id(&mut i2c_3).unwrap();
 
-    let color: lcd::Color = lcd::Color::from_hex(0xFF0000);
-    draw::draw_rectangle(30, 30, 100, 100, draw::convert_color_to_u16(color));
+    let color: lcd::Color = lcd::Color::from_hex(0xFFFFFF);
+    draw::fill_rectangle(30, 30, 200, 200, draw::convert_color_to_u16(color));
 
     let mut last_led_toggle = system_clock::ticks();
     loop {
