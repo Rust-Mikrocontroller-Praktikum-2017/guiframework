@@ -7,9 +7,11 @@ extern crate r0;
 use stm32f7::{system_clock, board, embedded, sdram, lcd, i2c, touch};
 use embedded::interfaces::gpio::{self, Gpio};
 
+mod forms;
 mod draw;
 mod shape;
 mod area_container;
+mod util;
 
 fn main(hw: board::Hardware) -> ! {
     let board::Hardware {
@@ -77,6 +79,13 @@ fn main(hw: board::Hardware) -> ! {
     let mut lcd = lcd::init(ltdc, rcc, &mut gpio);
     lcd.clear_screen();
 
+    let button = forms::button::Button::new(util::sizes::BoundingBox {
+                                                x: 2,
+                                                y: 2,
+                                                width: 10,
+                                                height: 10,
+                                            });
+
     // Initialize touch on display.
     i2c::init_pins_and_clocks(rcc, &mut gpio);
     let mut i2c_3 = i2c::init(i2c_3);
@@ -89,6 +98,9 @@ fn main(hw: board::Hardware) -> ! {
     let rect = Rectangular::new((15, 15), (20, 15), 0x00FFFF);
     flowContainer.addForm(rect);
     flowContainer.draw();
+
+    //let color: lcd::Color = lcd::Color::from_hex(0xFFFFFF);
+    //draw::fill_rectangle(30, 30, 200, 200, draw::convert_color_to_u16(color));
 
     let mut last_led_toggle = system_clock::ticks();
     loop {
