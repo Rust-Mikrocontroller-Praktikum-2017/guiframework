@@ -15,6 +15,7 @@ use collections::Vec;
 
 struct FlowLayout {
     bounding_box: sizes::BoundingBox,
+    // Boxen direkt annehmen, also Nutzer allokiert ne Box und den Zeiger darauf füge ich hinzu
     elements: Vec<Box<Form>>,
 }
 

@@ -1,6 +1,6 @@
 use draw;
 
-use forms::form;
+use forms::form::Form;
 use util::sizes::BoundingBox;
 
 /*trait Shape {
@@ -39,26 +39,22 @@ impl Rectangular {
     }
 }
 
-/*impl Shape for Rectangular {
-    fn position(&self) -> (u32, u32) {
-        (self.position.x, self.position.y)
+impl Form for Rectangular {
+    fn get_bounding_box(&self) -> &BoundingBox {
     }
-    fn set_position(&self, x:u32, y:u32) {
-        // is this possible, or let (x, y) = position ...
-        self.position.x = x;
-        self.position.y = y;
+    fn set_bounding_box(&mut self, bounding_box: BoundingBox) -> () {
 
-        // bounding box position changes accordingly
-        self.bounding_box.1 = x;
-        self.bounding_box.2 = y;
     }
-    fn color(&self) -> u16 {
-        self.color
+    fn get_clickable(&self) -> bool {
+
     }
-    fn bounding_box(&self) -> (u32, u32, u32, u32) {
-        self.bounding_box
+    fn set_clickable(&mut self, value: bool) -> () {
+
+    }
+    fn get_child(&self) -> Option<&Form> {
+        
     }
     fn draw(&self) -> bool {
         draw_rectangle(self.position.x, self.position.y, self.size.width, self.size.height, self.color);
     }
-}*/
+}
