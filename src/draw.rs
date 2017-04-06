@@ -24,7 +24,51 @@ fn draw_pixel(x: u32, y: u32, color: u16) {
     unsafe { ptr::write_volatile(pixel_color, color) };
 }
 
-fn draw_line(x1: u32, y1: u32, x2: u32, y2: u32, color: u16) {}
+pub fn draw_line(x1:u32, y1:u32, x2:u32, y2:u32, color:u16) {
+    let mut x1 = x1 as i32;
+    let mut x2 = x2 as i32;
+    let mut y1 = y1 as i32;
+    let mut y2 = y2 as i32;
+    
+    let draw_p = |x: i32, y: i32| {
+        draw_pixel(x as u32, y as u32, color);
+    };
+    
+    const ACURR: i32 = 100000;
+    let width = x2 - x1;
+    let height = y2 - y1;
+    let ratio = ACURR*width/height;
+    
+    if ratio.abs() > ACURR {
+        // one point per x step
+        if x2 < x1 { 
+            swap(&mut x1, &mut x2);
+            swap(&mut y1, &mut y2);
+        }
+        for x in x1..x2+1 {
+            let off_x = x - x1;
+            let off_y = ACURR*off_x/ratio;
+            draw_p(x1 + off_x, y1 + off_y);
+        }
+    } else {
+        // one point per y step
+        if y2 < y1 {
+            swap(&mut x1, &mut x2);
+            swap(&mut y1, &mut y2);
+        }
+        for y in y1..y2+1 {
+            let off_y = y - y1;
+            let off_x = off_y*ratio/ACURR;
+            draw_p(x1 + off_x, y1 + off_y);
+        }
+    }
+}
+
+fn swap(a: &mut i32, b: &mut i32) {
+    let c = *a;
+    *a = *b;
+    *b = c;
+}
 
 // fn draw_rectangle_not_so_pretty(x1:u32, y1:u32, x2:u32, y2:u32, color:u16) {
 
