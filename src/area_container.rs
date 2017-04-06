@@ -1,34 +1,43 @@
-#[macro_use]
-extern crate collections;
+//#[macro_use]
+//extern crate collections;
 
-
+//#![feature(collections)]
+//use collections;
 
 //#[derive(Debug)]
-use shape
+//use shape;
+
+use forms::form::*;
+use util::*;
+use collections::boxed::Box;
+use collections::Vec;
+ 
 
 struct FlowLayout {
-    bounding_box: (x_min: u32, y_min: u32, width: u32, height: u32);
-    elements: Vec<Box<Shape>>;
+    bounding_box: sizes::BoundingBox,
+    elements: Vec<Box<Form>>,
 }
 
 trait AddForm {
-    fn add_form() -> bool;
+    fn add_form<T:Form + 'static>(&mut self, f: T) -> bool;
 }
 
 trait DrawArea {
-    fn draw_area() -> bool;
+    fn draw_area(&self) -> bool;
 }
-
+  
 impl DrawArea for FlowLayout {
-    fn draw_area() -> bool {
-        for i in elements {
-            elements.draw();
+    fn draw_area(&self) -> bool {
+        for i in &self.elements {
+            i.draw();
         }
+        true
     }
 }
 
 impl AddForm for FlowLayout {
-    fn add_form(Shape f) -> bool {
-        elements.push(f);
+    fn add_form<T:Form + 'static>(&mut self, f:T) -> bool {
+        self.elements.push(Box::new(f));
+        true
     }
 }
