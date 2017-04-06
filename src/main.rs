@@ -11,10 +11,10 @@ extern crate r0;
 use stm32f7::{system_clock, board, embedded, sdram, lcd, i2c, touch};
 use embedded::interfaces::gpio::{self, Gpio};
 
+extern crate collections;
+
 mod forms;
 mod draw;
-mod shape;
-mod area_container;
 mod util;
 
 

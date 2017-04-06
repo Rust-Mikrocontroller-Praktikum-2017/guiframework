@@ -1,14 +1,15 @@
 use util::sizes::BoundingBox;
 use forms::form::Form;
+use collections::boxed::Box;
 
-pub struct Button<'form> {
+pub struct Button {
     bounding_box: BoundingBox,
     clickable: bool,
-    child: Option<&'form Form>,
+    child: Option<Box<Form>>,
 }
 
-impl<'form> Button<'form> {
-    pub fn new(bounding_box: BoundingBox) -> Button<'form> {
+impl Button {
+    pub fn new(bounding_box: BoundingBox) -> Button {
         Button {
             bounding_box: bounding_box,
             clickable: true,
@@ -17,7 +18,7 @@ impl<'form> Button<'form> {
     }
 }
 
-impl<'form> Form for Button<'form> {
+impl Form for Button {
     fn get_bounding_box(&self) -> &BoundingBox {
         &self.bounding_box
     }
@@ -34,8 +35,12 @@ impl<'form> Form for Button<'form> {
         self.clickable = value;
     }
 
-    fn get_child(&self) -> Option<&Form> {
-        self.child
+    fn get_child(&self) -> &Option<Box<Form>> {
+        &self.child
+    }
+
+    fn set_child(&mut self, child: Box<Form>) -> () {
+        self.child = Some(child);
     }
 
     fn draw(&self) -> bool {
