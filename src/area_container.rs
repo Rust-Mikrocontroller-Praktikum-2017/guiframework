@@ -20,7 +20,7 @@ struct FlowLayout {
 }
 
 trait AddForm {
-    fn add_form<T:Form + 'static>(&mut self, f: T) -> bool;
+    fn add_form(&mut self, f: Box<Form>) -> bool;
 }
 
 trait DrawArea {
@@ -35,10 +35,17 @@ impl DrawArea for FlowLayout {
         true
     }
 }
-
+/*
 impl AddForm for FlowLayout {
     fn add_form<T:Form + 'static>(&mut self, f:T) -> bool {
         self.elements.push(Box::new(f));
+        true
+    }
+}*/
+
+impl AddForm for FlowLayout {
+    fn add_form(&mut self, f:Box<Form>) -> bool {
+        self.elements.push(f);
         true
     }
 }
