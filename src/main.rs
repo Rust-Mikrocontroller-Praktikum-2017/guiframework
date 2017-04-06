@@ -2,6 +2,9 @@
 #![no_main]
 #![feature(collections)]
 
+#[macro_use]
+extern crate collections;
+
 extern crate stm32f7_discovery as stm32f7;
 // Initialization routines for .data and .bss.
 extern crate r0;
@@ -13,6 +16,8 @@ extern crate collections;
 mod forms;
 mod draw;
 mod util;
+
+
 
 fn main(hw: board::Hardware) -> ! {
     let board::Hardware {
@@ -95,20 +100,11 @@ fn main(hw: board::Hardware) -> ! {
     //let color: lcd::Color = lcd::Color::from_hex(0xFF0000);
     //draw::draw_rectangle(30, 30, 100, 100, draw::convert_color_to_u16(color));
 
-    let b = forms::button::Button::new(util::sizes::BoundingBox {
-                                           x: 30,
-                                           y: 30,
-                                           width: 30,
-                                           height: 30,
-                                       });
-    let bsub = forms::button::Button::new(util::sizes::BoundingBox {
-                                              x: 30,
-                                              y: 30,
-                                              width: 30,
-                                              height: 30,
-                                          });
-    //b.set_child();
-
+    /*
+    let mut flowContainer = FlowLayout {x_min: 10, y_min: 10, width: 100, height: 100};
+    let rect = Rectangular::new((15, 15), (20, 15), 0x00FFFF);
+    flowContainer.addForm(rect);
+    flowContainer.draw();*/
 
     //let color: lcd::Color = lcd::Color::from_hex(0xFFFFFF);
     //draw::fill_rectangle(30, 30, 200, 200, draw::convert_color_to_u16(color));
