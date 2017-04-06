@@ -1,19 +1,21 @@
-use util::sizes::BoundingBox;
-use forms::form::Form;
 use collections::boxed::Box;
+use collections::Vec;
+use forms::form::Form;
+use util::sizes::BoundingBox;
+use draw::draw_rectangle;
 
 pub struct Button {
     bounding_box: BoundingBox,
-    clickable: bool,
-    child: Option<Box<Form>>,
+    interactive: bool,
+    children: Vec<Box<Form>>,
 }
 
 impl Button {
     pub fn new(bounding_box: BoundingBox) -> Button {
         Button {
             bounding_box: bounding_box,
-            clickable: true,
-            child: None,
+            interactive: true,
+            children: Vec::new(),
         }
     }
 }
@@ -27,23 +29,19 @@ impl Form for Button {
         self.bounding_box = bounding_box;
     }
 
-    fn get_clickable(&self) -> bool {
-        self.clickable
-    }
-
-    fn set_clickable(&mut self, value: bool) -> () {
-        self.clickable = value;
-    }
-
-    fn get_child(&self) -> &Option<Box<Form>> {
-        &self.child
+    fn get_children(&self) -> &Vec<Box<Form>> {
+        &self.children
     }
 
     fn set_child(&mut self, child: Box<Form>) -> () {
-        self.child = Some(child);
+        self.children.push(child);
     }
 
-    fn draw(&self) -> bool {
-        true
+    fn is_interactive(&mut self) -> bool {
+        self.interactive
+    }
+
+    fn draw(&self) -> () {
+        draw_rectangle(self.bounding_box.x, self.bounding_box.y, self.bounding_box.width, self.bounding_box.height, 0b1_11111_00000_00000);
     }
 }
