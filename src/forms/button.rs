@@ -1,21 +1,23 @@
 use util::sizes::BoundingBox;
 use forms::form::Form;
 
-pub struct Button {
+pub struct Button<'form> {
     bounding_box: BoundingBox,
     clickable: bool,
+    child: Option<&'form Form>,
 }
 
-impl Button {
-    pub fn new(bounding_box: BoundingBox) -> Button {
+impl<'form> Button<'form> {
+    pub fn new(bounding_box: BoundingBox) -> Button<'form> {
         Button {
             bounding_box: bounding_box,
             clickable: true,
+            child: None,
         }
     }
 }
 
-impl Form for Button {
+impl<'form> Form for Button<'form> {
     fn get_bounding_box(&self) -> &BoundingBox {
         &self.bounding_box
     }
@@ -30,6 +32,10 @@ impl Form for Button {
 
     fn set_clickable(&mut self, value: bool) -> () {
         self.clickable = value;
+    }
+
+    fn get_child(&self) -> Option<&Form> {
+        self.child
     }
 
     fn draw(&self) -> bool {
