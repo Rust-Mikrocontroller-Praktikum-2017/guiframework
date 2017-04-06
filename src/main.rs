@@ -7,6 +7,7 @@ extern crate r0;
 use stm32f7::{system_clock, board, embedded, sdram, lcd, i2c, touch};
 use embedded::interfaces::gpio::{self, Gpio};
 
+mod forms;
 mod draw;
 
 fn main(hw: board::Hardware) -> ! {
@@ -74,6 +75,13 @@ fn main(hw: board::Hardware) -> ! {
     sdram::init(rcc, fmc, &mut gpio);
     let mut lcd = lcd::init(ltdc, rcc, &mut gpio);
     lcd.clear_screen();
+
+    let button = forms::button::Button::new(forms::form::BoundingBox {
+                                                x: 2,
+                                                y: 2,
+                                                width: 10,
+                                                height: 10,
+                                            });
 
     // Initialize touch on display.
     i2c::init_pins_and_clocks(rcc, &mut gpio);
