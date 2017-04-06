@@ -2,8 +2,8 @@
 
 use lcd;
 
-static max_x: u32 = 480;
-static max_y: u32 = 272;
+static MAX_X: u32 = 480;
+static MAX_Y: u32 = 272;
 
 use board::ltdc::Ltdc;
 use embedded::interfaces::gpio::OutputPin;
@@ -100,7 +100,7 @@ fn swap(a: &mut i32, b: &mut i32) {
 
 pub fn draw_rectangle(x: u32, y: u32, width: u32, height: u32, color: u16) -> bool {
     //(x, y is upper left, according to coordinate system)
-    if x + width >= max_x || x >= max_x || y + height >= max_y || y >= max_y {
+    if x + width >= MAX_X || x >= MAX_X || y + height >= MAX_Y || y >= MAX_Y {
         return false;
     }
 
@@ -118,7 +118,7 @@ pub fn draw_rectangle(x: u32, y: u32, width: u32, height: u32, color: u16) -> bo
 
 pub fn fill_rectangle(x: u32, y: u32, width: u32, height: u32, color: u16) -> bool {
     //(x, y is upper left, according to coordinate system)
-    if x + width >= max_x || x >= max_x || y + height >= max_y || y >= max_y {
+    if x + width >= MAX_X || x >= MAX_X || y + height >= MAX_Y || y >= MAX_Y {
         return false;
     }
 
