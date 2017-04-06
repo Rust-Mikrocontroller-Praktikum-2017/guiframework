@@ -1,7 +1,9 @@
 #![allow(dead_code)]
 
-static max_x:u32 = 480;
-static max_y:u32 = 272;
+use lcd;
+
+static max_x: u32 = 480;
+static max_y: u32 = 272;
 
 //pub use self::color::Color;
 //pub use self::init::init;
@@ -13,21 +15,19 @@ use core::ptr;
 //mod init;
 //mod color;
 
-fn draw_pixel(x:u32, y:u32, color:u16) {
-        assert!(x < 480);
-        assert!(y < 272);
+fn draw_pixel(x: u32, y: u32, color: u16) {
+    assert!(x < 480);
+    assert!(y < 272);
 
-        // layer 2
-        let addr: u32 = 0xC000_0000 + (480 * 272 * 2);
-        let pixel = u32::from(y) * 480 + u32::from(x);
-        let pixel_color = (addr + pixel * 2) as *mut u16;
+    // layer 2
+    let addr: u32 = 0xC000_0000 + (480 * 272 * 2);
+    let pixel = u32::from(y) * 480 + u32::from(x);
+    let pixel_color = (addr + pixel * 2) as *mut u16;
 
-        unsafe { ptr::write_volatile(pixel_color, color) };
+    unsafe { ptr::write_volatile(pixel_color, color) };
 }
 
-fn draw_line(x1:u32, y1:u32, x2:u32, y2:u32, color:u16) {
-
-}
+fn draw_line(x1: u32, y1: u32, x2: u32, y2: u32, color: u16) {}
 
 // fn draw_rectangle_not_so_pretty(x1:u32, y1:u32, x2:u32, y2:u32, color:u16) {
 
@@ -57,28 +57,28 @@ fn draw_line(x1:u32, y1:u32, x2:u32, y2:u32, color:u16) {
 
 // }
 
-pub fn draw_rectangle(x:u32, y:u32, width:u32, height:u32, color:u16) -> bool {
+pub fn draw_rectangle(x: u32, y: u32, width: u32, height: u32, color: u16) -> bool {
     //(x, y is upper left, according to coordinate system)
     if x + width > max_x || x > max_x || y + height > max_y || y > max_y {
         return false;
     }
 
-    for i in x..x+width+1 {
+    for i in x..x + width + 1 {
         draw_pixel(i, y, color);
-        draw_pixel(i, y+height, color);
+        draw_pixel(i, y + height, color);
     }
-    for i in y..y+height+1 {
+    for i in y..y + height + 1 {
         draw_pixel(x, i, color);
-        draw_pixel(x+width, i, color);
+        draw_pixel(x + width, i, color);
     }
     true
 }
 
-pub fn convert_color_to_u16(color: lcd::Color): u16 {
-    let alpha = (color.alpha / 255) << 15;
-    let red = (color.red / 8) << 10;
-    let green = (color.green / 8) << 5;
-    let blue = color.blue / 8;
+pub fn convert_color_to_u16(color: lcd::Color) -> u16 {
+    let alpha: u16 = (color.alpha as u16 / 255) << 15;
+    let red: u16 = (color.red as u16 / 8) << 10;
+    let green: u16 = (color.green as u16 / 8) << 5;
+    let blue: u16 = color.blue as u16 / 8;
 
     alpha | red | green | blue
 }

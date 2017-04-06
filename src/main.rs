@@ -7,6 +7,8 @@ extern crate r0;
 use stm32f7::{system_clock, board, embedded, sdram, lcd, i2c, touch};
 use embedded::interfaces::gpio::{self, Gpio};
 
+mod draw;
+
 fn main(hw: board::Hardware) -> ! {
     let board::Hardware {
         rcc,
@@ -77,6 +79,9 @@ fn main(hw: board::Hardware) -> ! {
     i2c::init_pins_and_clocks(rcc, &mut gpio);
     let mut i2c_3 = i2c::init(i2c_3);
     touch::check_family_id(&mut i2c_3).unwrap();
+
+    let color: lcd::Color = lcd::Color::from_hex(0xFF0000);
+    draw::draw_rectangle(30, 30, 100, 100, draw::convert_color_to_u16(color));
 
     let mut last_led_toggle = system_clock::ticks();
     loop {
