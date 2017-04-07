@@ -8,7 +8,7 @@ use draw::draw_rectangle;
 pub struct Button {
     bounding_box: BoundingBox,
     children: Vec<Box<Form>>,
-    on_click: Option<fn() -> ()>,
+    on_click: Option<fn(form: &mut Form) -> ()>,
     border_width: u32,
 }
 
@@ -30,6 +30,14 @@ impl Form for Button {
 
     fn set_bounding_box(&mut self, bounding_box: BoundingBox) -> () {
         self.bounding_box = bounding_box;
+    }
+
+    fn get_border_width(&self) -> u32 {
+        self.border_width
+    }
+
+    fn set_border_width(&mut self, width: u32) -> () {
+        self.border_width = width;
     }
 
     fn get_children(&mut self) -> &mut Vec<Box<Form>> {
@@ -62,15 +70,17 @@ impl Form for Button {
     }
 }
 
-impl Clickable for Button {
-    fn set_action_on_click(&mut self, callback: fn() -> ()) {
+impl Clickable for Button where {
+    fn set_action_on_click(&mut self, callback: fn(form: &mut Form) -> ()) {
         self.on_click = Some(callback);
     }
 
     fn click(&mut self) {
         match self.on_click {
-            Some(func) => func(),
+            Some(func) => func(self),
             None => (),
         }
+
+        self.draw();
     }
 }

@@ -32,6 +32,7 @@ use collections::boxed::Box;
 use draw::fill_rectangle;
 use core::ops::Deref;
 use forms::form::Form;
+use forms::form::Clickable;
 
 fn main(hw: board::Hardware) -> ! {
     let board::Hardware {
@@ -113,6 +114,9 @@ fn main(hw: board::Hardware) -> ! {
                                                      height: 100,
                                                  },
                                                  3);
+                                                     button.set_action_on_click(clicked);
+                                                     button2.set_action_on_click(clicked);
+
     button.set_child(Box::new(button2));
     button.draw();
 
@@ -124,25 +128,25 @@ fn main(hw: board::Hardware) -> ! {
     //let color: lcd::Color = lcd::Color::from_hex(0xFF0000);
     //draw::draw_rectangle(30, 30, 100, 100, draw::convert_color_to_u16(color));
 
-    let items = Vec::new();
-    let bb = BoundingBox{x:15, y:15, width:10, height:10};
-    println!("{}", bb.x);
-    let button = Button::new(bb);
-    //println!("{}", button.get_clickable());
-    let bb2 = BoundingBox{x:40, y:40, width:15, height:15};
-    let button2 = Button::new(bb2);
-    let b2 = Box::new(button2);
-
-    let bb3 = BoundingBox{x:50, y:50, width:15, height:15};
-    let button3 = Button::new(bb3);
-    let b3 = Box::new(button3);
-
-    let mut flow_container = area_container::HorizontalLayout{bounding_box:BoundingBox{x:10, y:10, width:100, height:100}, elements:items};
-    let b = Box::new(button);
-    flow_container.add_form(b);
-    flow_container.add_form(b2);
-    flow_container.add_form(b3);
-    flow_container.draw_area();
+    // let items = Vec::new();
+    // let bb = BoundingBox{x:15, y:15, width:10, height:10};
+    // println!("{}", bb.x);
+    // let button = Button::new(bb);
+    // //println!("{}", button.get_clickable());
+    // let bb2 = BoundingBox{x:40, y:40, width:15, height:15};
+    // let button2 = Button::new(bb2);
+    // let b2 = Box::new(button2);
+    //
+    // let bb3 = BoundingBox{x:50, y:50, width:15, height:15};
+    // let button3 = Button::new(bb3);
+    // let b3 = Box::new(button3);
+    //
+    // let mut flow_container = area_container::HorizontalLayout{bounding_box:BoundingBox{x:10, y:10, width:100, height:100}, elements:items};
+    // let b = Box::new(button);
+    // flow_container.add_form(b);
+    // flow_container.add_form(b2);
+    // flow_container.add_form(b3);
+    // flow_container.draw_area();
 
     //let color: lcd::Color = lcd::Color::from_hex(0xFFFFFF);
     //draw::fill_rectangle(30, 30, 200, 200, draw::convert_color_to_u16(color));
@@ -161,6 +165,10 @@ fn main(hw: board::Hardware) -> ! {
             action::walker::walk(&mut button, touch.x, touch.y);
         }
     }
+}
+
+fn clicked(form: &mut Form) {
+    form.set_border_width(10);
 }
 
 #[no_mangle]
