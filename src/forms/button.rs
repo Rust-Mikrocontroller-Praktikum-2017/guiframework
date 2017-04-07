@@ -1,7 +1,9 @@
 use collections::boxed::Box;
 use collections::Vec;
+use core::iter;
 
 use draw::draw_rectangle;
+use draw::fill_rectangle;
 use forms::form::Clickable;
 use forms::form::Form;
 use util::sizes::BoundingBox;
@@ -10,7 +12,7 @@ use stm32f7::lcd::Color;
 
 pub struct Button {
     bounding_box: BoundingBox,
-    children: Vec<Box<Form>>,
+    child: Option<Box<Form>>,
     on_click: Option<fn(form: &mut Button) -> ()>,
     border_width: u32,
 }
@@ -19,7 +21,7 @@ impl Button {
     pub fn new(bounding_box: BoundingBox, border_width: u32) -> Button {
         Button {
             bounding_box: bounding_box,
-            children: Vec::new(),
+            child: None,
             on_click: None,
             border_width: border_width,
         }
@@ -27,6 +29,10 @@ impl Button {
 
     pub fn set_action_on_click(&mut self, callback: fn(form: &mut Button) -> ()) -> () {
         self.on_click = Some(callback);
+    }
+
+    pub fn set_child(&mut self, child: Box<Form>) -> () {
+        self.child = Some(child);
     }
 }
 
@@ -47,12 +53,12 @@ impl Form for Button {
         self.border_width = width;
     }
 
-    fn get_children(&mut self) -> Box<Iterator<Item=&mut Form>> {
-        &mut self.children
-    }
 
-    fn set_child(&mut self, child: Box<Form>) -> () {
-        self.children.push(child);
+    fn get_children<'a>(&'a mut self) -> Box<Iterator<Item = &'a mut Form> + 'a> {
+        match self.child {
+            None => Box::new(iter::empty()),
+            Some(ref mut child) => Box::new(iter::once::<&'a mut Form>(&mut **child)),
+        }
     }
 
     fn is_clickable(&mut self) -> Option<&mut Clickable> {
@@ -63,17 +69,20 @@ impl Form for Button {
     }
 
     fn draw(&self) -> () {
-        //draw_rectangle(self.bounding_box.x, self.bounding_box.y, self.bounding_box.width, self.bounding_box.height, Color::from_hex(0xFF0000));
+        fill_rectangle(self.bounding_box.x, self.bounding_box.y, self.bounding_box.width,
+        self.bounding_box.height, 0b0_00000_00000_00000);
+
+        match self.child {
+            None => (),
+            Some(ref child) => child.draw(),
+        }
+
         for i in 0..self.border_width {
             draw_rectangle(self.bounding_box.x + i,
                            self.bounding_box.y + i,
                            self.bounding_box.width - (2 * i),
                            self.bounding_box.height - (2 * i),
                            0b1_00110_00110_11010);
-        }
-
-        for child in &self.children {
-            child.draw();
         }
     }
 }
@@ -84,7 +93,5 @@ impl Clickable for Button where {
             Some(func) => func(self),
             None => (),
         }
-
-        self.draw();
     }
 }

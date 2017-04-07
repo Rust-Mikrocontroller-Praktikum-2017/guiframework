@@ -115,6 +115,28 @@ fn main(hw: board::Hardware) -> ! {
                                                 height: 10,
                                             });*/
 
+    let mut button = forms::button::Button::new(util::sizes::BoundingBox {
+                                                    x: 10,
+                                                    y: 10,
+                                                    width: 100,
+                                                    height: 100,
+                                                },
+                                                3);
+    let mut button2 = forms::button::Button::new(util::sizes::BoundingBox {
+                                                     x: 110,
+                                                     y: 110,
+                                                     width: 100,
+                                                     height: 100,
+                                                 },
+                                                 3);
+
+    button.set_action_on_click(clicked);
+    button2.set_action_on_click(clicked);
+
+    button.set_child(Box::new(button2));
+
+    button.draw();
+
     // Initialize touch on display.
     i2c::init_pins_and_clocks(rcc, &mut gpio);
     let mut i2c_3 = i2c::init(i2c_3);
@@ -156,6 +178,18 @@ fn main(hw: board::Hardware) -> ! {
             last_led_toggle = ticks;
         }
     }
+}
+
+
+fn clicked(form: &mut Button) {
+    let width = form.get_border_width();
+    match width {
+        5 => form.set_border_width(2),
+        2 => form.set_border_width(5),
+        _ => form.set_border_width(2),
+    }
+
+    form.draw();
 }
 
 #[no_mangle]

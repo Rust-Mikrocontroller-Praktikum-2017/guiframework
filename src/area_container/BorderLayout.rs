@@ -106,9 +106,6 @@ impl Form for BorderLayout {
         let mut b = Box::new(res.into_iter());
         b
     }
-    fn set_child(&mut self, child: Box<Form>) -> () {
-        //delete?
-    }
     fn is_clickable(&mut self) -> Option<&mut Clickable> {
         None
     }
