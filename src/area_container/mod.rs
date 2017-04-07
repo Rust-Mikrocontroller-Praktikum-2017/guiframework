@@ -41,6 +41,15 @@ impl DrawArea for HorizontalLayout {
     }
 }
 
+impl DrawArea for VerticalLayout {
+    fn draw_area(&self) -> bool {
+        for i in &self.elements {
+            i.draw();
+        }
+        true
+    }
+}
+
 impl AddForm for HorizontalLayout {
     fn add_form(&mut self, f:Box<Form>) -> bool {
         self.elements.push(f);
