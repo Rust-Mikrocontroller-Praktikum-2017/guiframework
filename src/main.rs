@@ -116,6 +116,7 @@ fn main(hw: board::Hardware) -> ! {
     button2.set_action_on_click(clicked);
 
     button.set_child(Box::new(button2));
+
     button.draw();
 
     // Initialize touch on display.
@@ -166,7 +167,14 @@ fn main(hw: board::Hardware) -> ! {
 }
 
 fn clicked(form: &mut Button) {
-    form.set_border_width(10);
+    let width = form.get_border_width();
+    match width {
+        5 => form.set_border_width(2),
+        2 => form.set_border_width(5),
+        _ => form.set_border_width(2),
+    }
+
+    form.draw();
 }
 
 #[no_mangle]
