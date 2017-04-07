@@ -14,10 +14,12 @@ use embedded::interfaces::gpio::{self, Gpio};
 mod forms;
 mod draw;
 mod util;
+mod action;
 
 use forms::form::Form;
 use collections::boxed::Box;
 use draw::fill_rectangle;
+use core::ops::Deref;
 
 fn main(hw: board::Hardware) -> ! {
     let board::Hardware {
@@ -86,19 +88,21 @@ fn main(hw: board::Hardware) -> ! {
     lcd.clear_screen();
 
     let mut button = forms::button::Button::new(util::sizes::BoundingBox {
-                                                x: 10,
-                                                y: 10,
-                                                width: 100,
-                                                height: 100,
-                                            });
+                                                    x: 10,
+                                                    y: 10,
+                                                    width: 100,
+                                                    height: 100,
+                                                },
+                                                3);
     let mut button2 = forms::button::Button::new(util::sizes::BoundingBox {
-                                                x: 2,
-                                                y: 2,
-                                                width: 20,
-                                                height: 20,
-                                            });
+                                                     x: 110,
+                                                     y: 110,
+                                                     width: 100,
+                                                     height: 100,
+                                                 },
+                                                 3);
+    button.set_child(Box::new(button2));
     button.draw();
-    //button.set_child(Box::new(button2));
 
     // Initialize touch on display.
     i2c::init_pins_and_clocks(rcc, &mut gpio);
@@ -128,19 +132,9 @@ fn main(hw: board::Hardware) -> ! {
         }
 
         for touch in &touch::touches(&mut i2c_3).unwrap() {
-            walk(&button, touch.x, touch.y);
+            action::walker::walk(&mut button, touch.x, touch.y);
         }
     }
-}
-
-fn walk(root: &Form, x: u16, y: u16) {
-    if root.get_bounding_box().is_in_bound(x as u32, y as u32) {
-        fill_rectangle(10,10,100,100,0b1_11111_00000_00000);
-    }
-
-    // for child in root.get_children() {
-    //     walk(*child, x, y);
-    // }
 }
 
 #[no_mangle]
@@ -165,7 +159,7 @@ pub unsafe extern "C" fn reset() -> ! {
     // zeroes the .bss section
     r0::zero_bss(bss_start, bss_end);
 
-    //stm32f7::heap::init();
+    stm32f7::heap::init();
 
     main(board::hw());
 }
