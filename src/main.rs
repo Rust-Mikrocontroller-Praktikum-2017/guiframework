@@ -1,11 +1,16 @@
 #![no_std]
 #![no_main]
 #![feature(collections)]
+#![feature(asm)]
 
 #[macro_use]
 extern crate collections;
 
 extern crate stm32f7_discovery as stm32f7;
+
+#[macro_use]
+mod semi_hosting;
+
 // Initialization routines for .data and .bss.
 extern crate r0;
 use stm32f7::{system_clock, board, embedded, sdram, lcd, i2c, touch};
@@ -14,7 +19,16 @@ use embedded::interfaces::gpio::{self, Gpio};
 mod forms;
 mod draw;
 mod util;
+mod area_container;
 
+use util::sizes::BoundingBox;
+use collections::Vec;
+use forms::button::Button;
+
+use area_container::AddForm;
+use area_container::DrawArea;
+use collections::boxed::Box;
+use forms::form::Form;
 
 
 fn main(hw: board::Hardware) -> ! {
@@ -98,11 +112,16 @@ fn main(hw: board::Hardware) -> ! {
     //let color: lcd::Color = lcd::Color::from_hex(0xFF0000);
     //draw::draw_rectangle(30, 30, 100, 100, draw::convert_color_to_u16(color));
 
-    /*
-    let mut flowContainer = FlowLayout {x_min: 10, y_min: 10, width: 100, height: 100};
-    let rect = Rectangular::new((15, 15), (20, 15), 0x00FFFF);
-    flowContainer.addForm(rect);
-    flowContainer.draw();*/
+    let items = Vec::new();
+    let bb = BoundingBox{x:15, y:15, width:10, height:10};
+    println!("{}", bb.x);
+    let button = Button::new(bb);
+    println!("{}", button.get_clickable());
+
+    let mut flow_container = area_container::FlowLayout{bounding_box:BoundingBox{x:10, y:10, width:30, height:30}, elements:items};
+    let b = Box::new(button);
+    flow_container.add_form(b);
+    flow_container.draw_area();
 
     //let color: lcd::Color = lcd::Color::from_hex(0xFFFFFF);
     //draw::fill_rectangle(30, 30, 200, 200, draw::convert_color_to_u16(color));
@@ -141,7 +160,7 @@ pub unsafe extern "C" fn reset() -> ! {
     // zeroes the .bss section
     r0::zero_bss(bss_start, bss_end);
 
-    //stm32f7::heap::init();
+    stm32f7::heap::init();
 
     main(board::hw());
 }

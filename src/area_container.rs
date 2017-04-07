@@ -13,17 +13,17 @@ use collections::boxed::Box;
 use collections::Vec;
  
 
-struct FlowLayout {
-    bounding_box: sizes::BoundingBox,
+pub struct FlowLayout {
+    pub bounding_box: sizes::BoundingBox,
     // Boxen direkt annehmen, also Nutzer allokiert ne Box und den Zeiger darauf füge ich hinzu
-    elements: Vec<Box<Form>>,
+    pub elements: Vec<Box<Form>>,
 }
 
-trait AddForm {
+pub trait AddForm {
     fn add_form(&mut self, f: Box<Form>) -> bool;
 }
 
-trait DrawArea {
+pub trait DrawArea {
     fn draw_area(&self) -> bool;
 }
   
