@@ -19,6 +19,7 @@ use embedded::interfaces::gpio::{self, Gpio};
 mod forms;
 mod draw;
 mod util;
+mod action;
 mod area_container;
 
 use util::sizes::BoundingBox;
@@ -177,6 +178,10 @@ fn main(hw: board::Hardware) -> ! {
             led.set(!led_current);
             last_led_toggle = ticks;
         }
+
+        for touch in &touch::touches(&mut i2c_3).unwrap() {
+            action::walker::walk(&mut button, touch.x, touch.y);
+        }
     }
 }
 
@@ -189,6 +194,7 @@ fn clicked(form: &mut Button) {
         _ => form.set_border_width(2),
     }
 
+    form.clear();
     form.draw();
 }
 
@@ -219,7 +225,6 @@ pub unsafe extern "C" fn reset() -> ! {
     // enable floating point unit
     let scb = stm32f7::cortex_m::peripheral::scb_mut();
     scb.cpacr.modify(|v| v | 0b1111 << 20);
-    
 
     main(board::hw());
 }
