@@ -10,6 +10,7 @@ pub trait Form {
     fn set_border_width(&mut self, width: u32) -> ();
     fn get_children<'a>(&'a mut self) -> Box<Iterator<Item = &'a mut Form> + 'a>;
     fn is_clickable(&mut self) -> Option<&mut Clickable>;
+    fn clear(&self) -> ();
     fn draw(&self) -> ();
 }
 

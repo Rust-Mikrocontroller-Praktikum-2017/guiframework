@@ -65,21 +65,26 @@ impl Form for Button {
         }
     }
 
+    fn clear(&self) -> () {
+        fill_rectangle(self.bounding_box.x,
+                       self.bounding_box.y,
+                       self.bounding_box.width,
+                       self.bounding_box.height,
+                       0b0_00000_00000_00000);
+    }
+
     fn draw(&self) -> () {
-        fill_rectangle(self.bounding_box.x, self.bounding_box.y, self.bounding_box.width,
-        self.bounding_box.height, 0b0_00000_00000_00000);
-
-        match self.child {
-            None => (),
-            Some(ref child) => child.draw(),
-        }
-
         for i in 0..self.border_width {
             draw_rectangle(self.bounding_box.x + i,
                            self.bounding_box.y + i,
                            self.bounding_box.width - (2 * i),
                            self.bounding_box.height - (2 * i),
                            0b1_00110_00110_11010);
+        }
+
+        match self.child {
+            None => (),
+            Some(ref child) => child.draw(),
         }
     }
 }
