@@ -26,7 +26,7 @@ pub trait AddForm {
 pub trait DrawArea {
     fn draw_area(&self) -> bool;
 }
-  
+
 impl DrawArea for FlowLayout {
     fn draw_area(&self) -> bool {
         for i in &self.elements {
