@@ -1,14 +1,15 @@
 use collections::boxed::Box;
 use collections::Vec;
-use forms::form::Form;
-use forms::form::Clickable;
-use util::sizes::BoundingBox;
+
 use draw::draw_rectangle;
+use forms::form::Clickable;
+use forms::form::Form;
+use util::sizes::BoundingBox;
 
 pub struct Button {
     bounding_box: BoundingBox,
     children: Vec<Box<Form>>,
-    on_click: Option<fn(form: &mut Form) -> ()>,
+    on_click: Option<fn(form: &mut Button) -> ()>,
     border_width: u32,
 }
 
@@ -20,6 +21,10 @@ impl Button {
             on_click: None,
             border_width: border_width,
         }
+    }
+
+    pub fn set_action_on_click(&mut self, callback: fn(form: &mut Button) -> ()) -> () {
+        self.on_click = Some(callback);
     }
 }
 
@@ -71,10 +76,6 @@ impl Form for Button {
 }
 
 impl Clickable for Button where {
-    fn set_action_on_click(&mut self, callback: fn(form: &mut Form) -> ()) {
-        self.on_click = Some(callback);
-    }
-
     fn click(&mut self) {
         match self.on_click {
             Some(func) => func(self),

@@ -29,10 +29,7 @@ use forms::button::Button;
 use area_container::AddForm;
 use area_container::DrawArea;
 use collections::boxed::Box;
-use draw::fill_rectangle;
-use core::ops::Deref;
 use forms::form::Form;
-use forms::form::Clickable;
 
 fn main(hw: board::Hardware) -> ! {
     let board::Hardware {
@@ -114,8 +111,9 @@ fn main(hw: board::Hardware) -> ! {
                                                      height: 100,
                                                  },
                                                  3);
-                                                     button.set_action_on_click(clicked);
-                                                     button2.set_action_on_click(clicked);
+
+    button.set_action_on_click(clicked);
+    button2.set_action_on_click(clicked);
 
     button.set_child(Box::new(button2));
     button.draw();
@@ -167,7 +165,7 @@ fn main(hw: board::Hardware) -> ! {
     }
 }
 
-fn clicked(form: &mut Form) {
+fn clicked(form: &mut Button) {
     form.set_border_width(10);
 }
 
