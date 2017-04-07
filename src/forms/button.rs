@@ -73,7 +73,7 @@ impl Form for Button {
                        self.bounding_box.y,
                        self.bounding_box.width,
                        self.bounding_box.height,
-                       0b0_00000_00000_00000);
+                       Color::rgba(0, 0, 0, 0));
     }
 
     fn draw(&self) -> () {
@@ -82,7 +82,7 @@ impl Form for Button {
                            self.bounding_box.y + i,
                            self.bounding_box.width - (2 * i),
                            self.bounding_box.height - (2 * i),
-                           0b1_00110_00110_11010);
+                           Color::rgb(0b00110, 0b00110, 0b11010));
         }
 
         match self.child {
