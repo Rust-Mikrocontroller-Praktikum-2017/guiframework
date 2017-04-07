@@ -60,7 +60,7 @@ impl AddForm for HorizontalLayout {
     }
 }
 
-impl AddForm for VerticalLayoutLayout {
+impl AddForm for VerticalLayout {
     fn add_form(&mut self, f:Box<Form>) -> bool {
         self.elements.push(f);
         let len = self.elements.len();
@@ -70,7 +70,7 @@ impl AddForm for VerticalLayoutLayout {
             let bb = sizes::BoundingBox
                     { x: self.bounding_box.x
                     , y: self.bounding_box.y + n * el_height
-                    , width: self.bounding_box.weight
+                    , width: self.bounding_box.width
                     , height: el_height };
             i.set_bounding_box(bb);
             n += 1;
