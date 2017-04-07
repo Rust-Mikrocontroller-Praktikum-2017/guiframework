@@ -1,3 +1,4 @@
+pub mod BorderLayout;
 //#[macro_use]
 //extern crate collections;
 
@@ -11,20 +12,15 @@ use forms::form::*;
 use util::*;
 use collections::boxed::Box;
 use collections::Vec;
+
+use util::layout_funcs::DrawArea;
+use util::layout_funcs::AddForm;
  
 
 pub struct FlowLayout {
     pub bounding_box: sizes::BoundingBox,
     // Boxen direkt annehmen, also Nutzer allokiert ne Box und den Zeiger darauf füge ich hinzu
     pub elements: Vec<Box<Form>>,
-}
-
-pub trait AddForm {
-    fn add_form(&mut self, f: Box<Form>) -> bool;
-}
-
-pub trait DrawArea {
-    fn draw_area(&self) -> bool;
 }
 
 impl DrawArea for FlowLayout {

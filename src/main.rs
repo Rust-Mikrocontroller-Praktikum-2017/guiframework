@@ -25,10 +25,13 @@ use util::sizes::BoundingBox;
 use collections::Vec;
 use forms::button::Button;
 
-use area_container::AddForm;
-use area_container::DrawArea;
+use util::layout_funcs::AddForm;
+use util::layout_funcs::AddFormBorder;
+use util::layout_funcs::DrawArea;
 use collections::boxed::Box;
 use forms::form::Form;
+
+use area_container::BorderLayout;
 
 
 fn main(hw: board::Hardware) -> ! {
@@ -96,6 +99,13 @@ fn main(hw: board::Hardware) -> ! {
     sdram::init(rcc, fmc, &mut gpio);
     let mut lcd = lcd::init(ltdc, rcc, &mut gpio);
     lcd.clear_screen();
+    {
+        use core::fmt::Write;
+
+        let mut text_writer = lcd.text_writer().unwrap();
+        text_writer.print_str("Hallo:)");
+        write!(&mut text_writer, "{}", 3.1415);
+    }
 
     let button = forms::button::Button::new(util::sizes::BoundingBox {
                                                 x: 2,
@@ -170,6 +180,11 @@ pub unsafe extern "C" fn reset() -> ! {
     r0::zero_bss(bss_start, bss_end);
 
     stm32f7::heap::init();
+
+    // enable floating point unit
+    let scb = stm32f7::cortex_m::peripheral::scb_mut();
+    scb.cpacr.modify(|v| v | 0b1111 << 20);
+    
 
     main(board::hw());
 }

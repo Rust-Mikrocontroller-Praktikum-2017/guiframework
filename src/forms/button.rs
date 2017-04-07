@@ -3,6 +3,7 @@ use collections::Vec;
 use forms::form::Form;
 use util::sizes::BoundingBox;
 use draw::draw_rectangle;
+use stm32f7::lcd::Color;
 
 pub struct Button {
     bounding_box: BoundingBox,
@@ -42,6 +43,6 @@ impl Form for Button {
     }
 
     fn draw(&self) -> () {
-        draw_rectangle(self.bounding_box.x, self.bounding_box.y, self.bounding_box.width, self.bounding_box.height, 0b1_11111_00000_00000);
+        draw_rectangle(self.bounding_box.x, self.bounding_box.y, self.bounding_box.width, self.bounding_box.height, Color::from_hex(0xFF0000));
     }
 }
