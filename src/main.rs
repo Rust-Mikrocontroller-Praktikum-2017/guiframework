@@ -125,7 +125,7 @@ fn main(hw: board::Hardware) -> ! {
     let button3 = Button::new(bb3);
     let b3 = Box::new(button3);
 
-    let mut flow_container = area_container::FlowLayout{bounding_box:BoundingBox{x:10, y:10, width:100, height:100}, elements:items};
+    let mut flow_container = area_container::HorizontalLayout{bounding_box:BoundingBox{x:10, y:10, width:100, height:100}, elements:items};
     let b = Box::new(button);
     flow_container.add_form(b);
     flow_container.add_form(b2);
