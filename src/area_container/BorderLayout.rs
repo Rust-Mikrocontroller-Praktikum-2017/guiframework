@@ -8,6 +8,9 @@ use util::layout_funcs::DrawArea;
 
 use util::layout_funcs::BorderArea;
 
+use draw;
+use lcd::Color;
+
 
 pub struct BorderLayout {
     pub bounding_box: sizes::BoundingBox,
@@ -111,5 +114,9 @@ impl Form for BorderLayout {
     }
     fn draw(&self) -> () {
         self.draw_area();
+    }
+    fn clear(&self) -> () {
+        let color = Color::rgba(0, 0, 0, 0);
+        draw::fill_rectangle(self.bounding_box.x, self.bounding_box.y, self.bounding_box.width, self.bounding_box.height, color);   
     }
 }
