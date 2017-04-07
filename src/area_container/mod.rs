@@ -29,7 +29,12 @@ pub struct VerticalLayout {
     pub elements: Vec<Box<Form>>,
 }
 
-impl DrawArea for FlowLayout {
+/*
+fn xy() {
+    let b = Box::new(self.elements.iter_mut());
+}*/
+
+impl DrawArea for HorizontalLayout {
     fn draw_area(&self) -> bool {
         for i in &self.elements {
             i.draw();

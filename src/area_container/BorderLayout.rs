@@ -94,16 +94,25 @@ impl Form for BorderLayout {
     fn set_bounding_box(&mut self, bounding_box: sizes::BoundingBox) -> () {
         self.bounding_box = bounding_box;
     }
-    fn get_children(&self) -> &Vec<Box<Form>> {
-        
+    fn get_border_width(&self) -> u32 {
+        self.bounding_box.width
+    }
+    fn set_border_width(&mut self, width: u32) -> () {
+        self.bounding_box.width = width;
+    }
+    // leerer iterator in core::iterator, once
+    fn get_children(&mut self) -> Box<Iterator<Item=&mut Form>> {
+        let mut res = vec![&mut *self.top_element, &mut *self.bottom_element, &mut *self.left_element, &mut *self.right_element, &mut *self.center_element];
+        let mut b = Box::new(res.into_iter());
+        b
     }
     fn set_child(&mut self, child: Box<Form>) -> () {
-        
+        //delete?
     }
-    fn is_interactive(&mut self) -> bool {
-        false
+    fn is_clickable(&mut self) -> Option<&mut Clickable> {
+        None
     }
     fn draw(&self) -> () {
-        // should we draw sth explicitly here?
+        self.draw_area();
     }
 }
