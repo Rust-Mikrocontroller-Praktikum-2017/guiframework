@@ -1,11 +1,16 @@
 #![no_std]
 #![no_main]
 #![feature(collections)]
+#![feature(asm)]
 
 #[macro_use]
 extern crate collections;
 
 extern crate stm32f7_discovery as stm32f7;
+
+#[macro_use]
+mod semi_hosting;
+
 // Initialization routines for .data and .bss.
 extern crate r0;
 use stm32f7::{system_clock, board, embedded, sdram, lcd, i2c, touch};
@@ -15,11 +20,18 @@ mod forms;
 mod draw;
 mod util;
 mod action;
+mod area_container;
 
-use forms::form::Form;
+use util::sizes::BoundingBox;
+use collections::Vec;
+use forms::button::Button;
+
+use area_container::AddForm;
+use area_container::DrawArea;
 use collections::boxed::Box;
 use draw::fill_rectangle;
 use core::ops::Deref;
+use forms::form::Form;
 
 fn main(hw: board::Hardware) -> ! {
     let board::Hardware {
@@ -112,11 +124,25 @@ fn main(hw: board::Hardware) -> ! {
     //let color: lcd::Color = lcd::Color::from_hex(0xFF0000);
     //draw::draw_rectangle(30, 30, 100, 100, draw::convert_color_to_u16(color));
 
-    /*
-    let mut flowContainer = FlowLayout {x_min: 10, y_min: 10, width: 100, height: 100};
-    let rect = Rectangular::new((15, 15), (20, 15), 0x00FFFF);
-    flowContainer.addForm(rect);
-    flowContainer.draw();*/
+    let items = Vec::new();
+    let bb = BoundingBox{x:15, y:15, width:10, height:10};
+    println!("{}", bb.x);
+    let button = Button::new(bb);
+    //println!("{}", button.get_clickable());
+    let bb2 = BoundingBox{x:40, y:40, width:15, height:15};
+    let button2 = Button::new(bb2);
+    let b2 = Box::new(button2);
+
+    let bb3 = BoundingBox{x:50, y:50, width:15, height:15};
+    let button3 = Button::new(bb3);
+    let b3 = Box::new(button3);
+
+    let mut flow_container = area_container::HorizontalLayout{bounding_box:BoundingBox{x:10, y:10, width:100, height:100}, elements:items};
+    let b = Box::new(button);
+    flow_container.add_form(b);
+    flow_container.add_form(b2);
+    flow_container.add_form(b3);
+    flow_container.draw_area();
 
     //let color: lcd::Color = lcd::Color::from_hex(0xFFFFFF);
     //draw::fill_rectangle(30, 30, 200, 200, draw::convert_color_to_u16(color));

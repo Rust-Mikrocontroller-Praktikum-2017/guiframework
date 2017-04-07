@@ -21,6 +21,7 @@ struct Size {
     height: u32
 }
 
+/*
 struct Rectangular {
     position: Point,
     size: Size,
@@ -41,6 +42,7 @@ impl Rectangular {
 
 impl Form for Rectangular {
     fn get_bounding_box(&self) -> &BoundingBox {
+        
     }
     fn set_bounding_box(&mut self, bounding_box: BoundingBox) -> () {
 
@@ -52,9 +54,9 @@ impl Form for Rectangular {
 
     }
     fn get_child(&self) -> Option<&Form> {
-        
+
     }
     fn draw(&self) -> bool {
         draw_rectangle(self.position.x, self.position.y, self.size.width, self.size.height, self.color);
     }
-}
+}*/

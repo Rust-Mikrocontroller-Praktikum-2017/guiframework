@@ -11,23 +11,28 @@ use forms::form::*;
 use util::*;
 use collections::boxed::Box;
 use collections::Vec;
- 
 
-struct FlowLayout {
-    bounding_box: sizes::BoundingBox,
+pub struct HorizontalLayout {
+    pub bounding_box: sizes::BoundingBox,
     // Boxen direkt annehmen, also Nutzer allokiert ne Box und den Zeiger darauf füge ich hinzu
-    elements: Vec<Box<Form>>,
+    pub elements: Vec<Box<Form>>,
 }
 
-trait AddForm {
+pub struct VerticalLayout {
+    pub bounding_box: sizes::BoundingBox,
+    // Boxen direkt annehmen, also Nutzer allokiert ne Box und den Zeiger darauf füge ich hinzu
+    pub elements: Vec<Box<Form>>,
+}
+
+pub trait AddForm {
     fn add_form(&mut self, f: Box<Form>) -> bool;
 }
 
-trait DrawArea {
+pub trait DrawArea {
     fn draw_area(&self) -> bool;
 }
-  
-impl DrawArea for FlowLayout {
+
+impl DrawArea for HorizontalLayout {
     fn draw_area(&self) -> bool {
         for i in &self.elements {
             i.draw();
@@ -35,15 +40,8 @@ impl DrawArea for FlowLayout {
         true
     }
 }
-/*
-impl AddForm for FlowLayout {
-    fn add_form<T:Form + 'static>(&mut self, f:T) -> bool {
-        self.elements.push(Box::new(f));
-        true
-    }
-}*/
 
-impl AddForm for FlowLayout {
+impl AddForm for HorizontalLayout {
     fn add_form(&mut self, f:Box<Form>) -> bool {
         self.elements.push(f);
         let len = self.elements.len();
@@ -55,6 +53,25 @@ impl AddForm for FlowLayout {
                     , y: self.bounding_box.y
                     , width: el_width
                     , height: self.bounding_box.height };
+            i.set_bounding_box(bb);
+            n += 1;
+        }
+        true
+    }
+}
+
+impl AddForm for VerticalLayoutLayout {
+    fn add_form(&mut self, f:Box<Form>) -> bool {
+        self.elements.push(f);
+        let len = self.elements.len();
+        let el_height = self.bounding_box.height / len as u32;
+        let mut n = 0;
+        for i in &mut self.elements {
+            let bb = sizes::BoundingBox
+                    { x: self.bounding_box.x
+                    , y: self.bounding_box.y + n * el_height
+                    , width: self.bounding_box.weight
+                    , height: el_height };
             i.set_bounding_box(bb);
             n += 1;
         }
