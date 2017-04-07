@@ -12,19 +12,34 @@ use core::ptr;
 //mod init;
 //mod color;
 
-fn draw_pixel(x: u32, y: u32, color: u16) {
+use stm32f7::lcd::Color;
+
+
+fn draw_pixel(x: u32, y: u32, color: Color) {
     assert!(x < 480);
     assert!(y < 272);
 
     // layer 2
     let addr: u32 = 0xC000_0000 + (480 * 272 * 2);
     let pixel = u32::from(y) * 480 + u32::from(x);
-    let pixel_color = (addr + pixel * 2) as *mut u16;
+    let pixel_color = (addr + pixel * 4) as *mut u32;
 
-    unsafe { ptr::write_volatile(pixel_color, color) };
+    unsafe { ptr::write_volatile(pixel_color, color.to_argb8888()) };
 }
 
-pub fn draw_line(x1: u32, y1: u32, x2: u32, y2: u32, color: u16) {
+// fn draw_pixel(x: u32, y: u32, color: u16) {
+//     assert!(x < 480);
+//     assert!(y < 272);
+
+//     // layer 2
+//     let addr: u32 = 0xC000_0000 + (480 * 272 * 2);
+//     let pixel = u32::from(y) * 480 + u32::from(x);
+//     let pixel_color = (addr + pixel * 2) as *mut u16;
+
+//     unsafe { ptr::write_volatile(pixel_color, color) };
+// }
+
+pub fn draw_line(x1: u32, y1: u32, x2: u32, y2: u32, color: Color) {
     let mut x1 = x1 as i32;
     let mut x2 = x2 as i32;
     let mut y1 = y1 as i32;
@@ -95,7 +110,7 @@ fn swap(a: &mut i32, b: &mut i32) {
 //     }
 // }
 
-pub fn draw_rectangle(x: u32, y: u32, width: u32, height: u32, color: u16) -> bool {
+pub fn draw_rectangle(x: u32, y: u32, width: u32, height: u32, color: Color) -> bool {
     //(x, y is upper left, according to coordinate system)
     if x + width >= MAX_X || x >= MAX_X || y + height >= MAX_Y || y >= MAX_Y {
         return false;
@@ -113,7 +128,7 @@ pub fn draw_rectangle(x: u32, y: u32, width: u32, height: u32, color: u16) -> bo
     true
 }
 
-pub fn fill_rectangle(x: u32, y: u32, width: u32, height: u32, color: u16) -> bool {
+pub fn fill_rectangle(x: u32, y: u32, width: u32, height: u32, color: Color) -> bool {
     //(x, y is upper left, according to coordinate system)
     if x + width >= MAX_X || x >= MAX_X || y + height >= MAX_Y || y >= MAX_Y {
         return false;

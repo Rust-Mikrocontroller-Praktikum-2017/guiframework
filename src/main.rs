@@ -19,17 +19,20 @@ use embedded::interfaces::gpio::{self, Gpio};
 mod forms;
 mod draw;
 mod util;
-mod action;
 mod area_container;
 
 use util::sizes::BoundingBox;
 use collections::Vec;
 use forms::button::Button;
 
-use area_container::AddForm;
-use area_container::DrawArea;
+use util::layout_funcs::AddForm;
+use util::layout_funcs::AddFormBorder;
+use util::layout_funcs::DrawArea;
 use collections::boxed::Box;
 use forms::form::Form;
+
+use area_container::BorderLayout;
+
 
 fn main(hw: board::Hardware) -> ! {
     let board::Hardware {
@@ -96,6 +99,21 @@ fn main(hw: board::Hardware) -> ! {
     sdram::init(rcc, fmc, &mut gpio);
     let mut lcd = lcd::init(ltdc, rcc, &mut gpio);
     lcd.clear_screen();
+    {
+        use core::fmt::Write;
+
+        let mut text_writer = lcd.text_writer().unwrap();
+        text_writer.print_str("Hallo:)");
+        write!(&mut text_writer, "{}", 3.1415);
+    }
+
+    /*
+    let button = forms::button::Button::new(util::sizes::BoundingBox {
+                                                x: 2,
+                                                y: 2,
+                                                width: 10,
+                                                height: 10,
+                                            });*/
 
     let mut button = forms::button::Button::new(util::sizes::BoundingBox {
                                                     x: 10,
@@ -126,26 +144,26 @@ fn main(hw: board::Hardware) -> ! {
 
     //let color: lcd::Color = lcd::Color::from_hex(0xFF0000);
     //draw::draw_rectangle(30, 30, 100, 100, draw::convert_color_to_u16(color));
+    /*
+    let items = Vec::new();
+    let bb = BoundingBox{x:15, y:15, width:10, height:10};
+    println!("{}", bb.x);
+    let button = Button::new(bb);
+    //println!("{}", button.get_clickable());
+    let bb2 = BoundingBox{x:40, y:40, width:15, height:15};
+    let button2 = Button::new(bb2);
+    let b2 = Box::new(button2);
 
-    // let items = Vec::new();
-    // let bb = BoundingBox{x:15, y:15, width:10, height:10};
-    // println!("{}", bb.x);
-    // let button = Button::new(bb);
-    // //println!("{}", button.get_clickable());
-    // let bb2 = BoundingBox{x:40, y:40, width:15, height:15};
-    // let button2 = Button::new(bb2);
-    // let b2 = Box::new(button2);
-    //
-    // let bb3 = BoundingBox{x:50, y:50, width:15, height:15};
-    // let button3 = Button::new(bb3);
-    // let b3 = Box::new(button3);
-    //
-    // let mut flow_container = area_container::HorizontalLayout{bounding_box:BoundingBox{x:10, y:10, width:100, height:100}, elements:items};
-    // let b = Box::new(button);
-    // flow_container.add_form(b);
-    // flow_container.add_form(b2);
-    // flow_container.add_form(b3);
-    // flow_container.draw_area();
+    let bb3 = BoundingBox{x:50, y:50, width:15, height:15};
+    let button3 = Button::new(bb3);
+    let b3 = Box::new(button3);
+
+    let mut flow_container = area_container::HorizontalLayout{bounding_box:BoundingBox{x:10, y:10, width:100, height:100}, elements:items};
+    let b = Box::new(button);
+    flow_container.add_form(b);
+    flow_container.add_form(b2);
+    flow_container.add_form(b3);
+    flow_container.draw_area();*/
 
     //let color: lcd::Color = lcd::Color::from_hex(0xFFFFFF);
     //draw::fill_rectangle(30, 30, 200, 200, draw::convert_color_to_u16(color));
@@ -159,12 +177,9 @@ fn main(hw: board::Hardware) -> ! {
             led.set(!led_current);
             last_led_toggle = ticks;
         }
-
-        for touch in &touch::touches(&mut i2c_3).unwrap() {
-            action::walker::walk(&mut button, touch.x, touch.y);
-        }
     }
 }
+
 
 fn clicked(form: &mut Button) {
     let width = form.get_border_width();
@@ -200,6 +215,11 @@ pub unsafe extern "C" fn reset() -> ! {
     r0::zero_bss(bss_start, bss_end);
 
     stm32f7::heap::init();
+
+    // enable floating point unit
+    let scb = stm32f7::cortex_m::peripheral::scb_mut();
+    scb.cpacr.modify(|v| v | 0b1111 << 20);
+    
 
     main(board::hw());
 }

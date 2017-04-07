@@ -7,6 +7,8 @@ use draw::fill_rectangle;
 use forms::form::Clickable;
 use forms::form::Form;
 use util::sizes::BoundingBox;
+use stm32f7::lcd::Color;
+
 
 pub struct Button {
     bounding_box: BoundingBox,
@@ -50,6 +52,7 @@ impl Form for Button {
     fn set_border_width(&mut self, width: u32) -> () {
         self.border_width = width;
     }
+
 
     fn get_children<'a>(&'a mut self) -> Box<Iterator<Item = &'a mut Form> + 'a> {
         match self.child {
