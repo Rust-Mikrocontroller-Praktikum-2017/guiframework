@@ -46,6 +46,18 @@ impl AddForm for FlowLayout {
 impl AddForm for FlowLayout {
     fn add_form(&mut self, f:Box<Form>) -> bool {
         self.elements.push(f);
+        let len = self.elements.len();
+        let el_width = self.bounding_box.width / len as u32;
+        let mut n = 0;
+        for i in &mut self.elements {
+            let bb = sizes::BoundingBox
+                    { x: self.bounding_box.x + n * el_width
+                    , y: self.bounding_box.y
+                    , width: el_width
+                    , height: self.bounding_box.height };
+            i.set_bounding_box(bb);
+            n += 1;
+        }
         true
     }
 }
