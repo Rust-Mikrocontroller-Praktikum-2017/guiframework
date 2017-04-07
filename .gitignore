@@ -2,3 +2,4 @@ target/
 **/*.rs.bk
 rls.sh
 rls.toml
+Cargo.lock
