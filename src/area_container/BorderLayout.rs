@@ -101,8 +101,8 @@ impl Form for BorderLayout {
         self.bounding_box.width = width;
     }
     // leerer iterator in core::iterator, once
-    fn get_children(&mut self) -> Box<Iterator<Item=&mut Form>> {
-        let mut res = vec![&mut *self.top_element, &mut *self.bottom_element, &mut *self.left_element, &mut *self.right_element, &mut *self.center_element];
+    fn get_children<'a>(&'a mut self) -> Box<Iterator<Item=&'a mut Form> + 'a> {
+        let mut res: Vec<&'a mut Form> = vec![&mut *self.top_element, &mut *self.bottom_element, &mut *self.left_element, &mut *self.right_element, &mut *self.center_element];
         let mut b = Box::new(res.into_iter());
         b
     }
