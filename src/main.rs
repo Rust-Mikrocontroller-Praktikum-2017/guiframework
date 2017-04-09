@@ -8,6 +8,8 @@ extern crate collections;
 
 extern crate stm32f7_discovery as stm32f7;
 
+//extern crate arrayvec;
+
 #[macro_use]
 mod semi_hosting;
 
@@ -24,6 +26,7 @@ mod area_container;
 
 use util::sizes::BoundingBox;
 use collections::Vec;
+use collections::VecDeque;
 use forms::button::Button;
 
 use util::layout_funcs::AddForm;
@@ -33,6 +36,12 @@ use collections::boxed::Box;
 use forms::form::Form;
 
 use area_container::BorderLayout;
+use util::layout_funcs::BorderArea;
+
+use stm32f7::touch::Touch;
+//use stm32f7::arrayvec::ArrayVec;
+//use arrayvec::ArrayVec;
+
 
 
 fn main(hw: board::Hardware) -> ! {
@@ -115,7 +124,7 @@ fn main(hw: board::Hardware) -> ! {
                                                 width: 10,
                                                 height: 10,
                                             });*/
-
+                                            /*
     let mut button = forms::button::Button::new(util::sizes::BoundingBox {
                                                     x: 10,
                                                     y: 10,
@@ -136,26 +145,37 @@ fn main(hw: board::Hardware) -> ! {
 
     button.set_child(Box::new(button2));
 
-    button.draw();
+    button.draw();*/
 
     // Initialize touch on display.
     i2c::init_pins_and_clocks(rcc, &mut gpio);
     let mut i2c_3 = i2c::init(i2c_3);
     touch::check_family_id(&mut i2c_3).unwrap();
 
-    //let color: lcd::Color = lcd::Color::from_hex(0xFF0000);
-    //draw::draw_rectangle(30, 30, 100, 100, draw::convert_color_to_u16(color));
-    /*
-    let items = Vec::new();
-    let bb = BoundingBox{x:15, y:15, width:10, height:10};
-    println!("{}", bb.x);
-    let button = Button::new(bb);
-    //println!("{}", button.get_clickable());
-    let bb2 = BoundingBox{x:40, y:40, width:15, height:15};
-    let button2 = Button::new(bb2);
-    let b2 = Box::new(button2);
+    let mut tmp_bb = BoundingBox{x:10, y:10, width:10, height:10};
+    let mut tmp_bb2 = BoundingBox{x:10, y:10, width:10, height:10};
+    let mut tmp_bb3 = BoundingBox{x:10, y:10, width:10, height:10};
+    let mut tmp_bb4 = BoundingBox{x:10, y:10, width:10, height:10};
+    let mut tmp_bb5 = BoundingBox{x:10, y:10, width:10, height:10};
+    let mut tmp_bb6 = BoundingBox{x:10, y:10, width:10, height:10};
 
-    let bb3 = BoundingBox{x:50, y:50, width:15, height:15};
+    let mut bl = BorderLayout::BorderLayout::new(BoundingBox{x:50, y:50, width:100, height:100});
+    let mut button1 = Box::new(Button::new(tmp_bb, 3));
+    let mut button2 = Box::new(Button::new(tmp_bb2, 3));
+    let mut button3 = Box::new(Button::new(tmp_bb3, 3));
+    let mut button4 = Box::new(Button::new(tmp_bb4, 3));
+    let mut button5 = Box::new(Button::new(tmp_bb5, 3));
+    let mut button6 = Box::new(Button::new(tmp_bb6, 3));
+    bl.add_form(button1, BorderArea::Top);
+    bl.add_form(button2, BorderArea::Left);
+    bl.add_form(button3, BorderArea::Center);
+    bl.add_form(button4, BorderArea::Right);
+    bl.add_form(button5, BorderArea::Bottom);
+    bl.add_form(button6, BorderArea::Top);
+
+    bl.draw();
+
+    /*let bb3 = BoundingBox{x:50, y:50, width:15, height:15};
     let button3 = Button::new(bb3);
     let b3 = Box::new(button3);
 
@@ -180,8 +200,21 @@ fn main(hw: board::Hardware) -> ! {
         }
 
         for touch in &touch::touches(&mut i2c_3).unwrap() {
-            action::walker::walk(&mut button, touch.x, touch.y);
+            action::walker::walk(&mut bl, touch.x, touch.y);
         }
+
+        //: &Result<ArrayVec<[Touch; 5]>, i2c::Error>
+        let touches_result = &touch::touches(&mut i2c_3).unwrap();
+
+        let v : VecDeque<u32> = VecDeque::new();
+        // check if there was an error or get ArrayVec otherwise for an update
+        //let mut touches = ArrayVec::<[_; 16]>::new();
+        //let mut touches = ArrayVec::<[_;16]>::new();
+        // match touchArrayVec {
+        //      Ok(T) => {},
+        //      Err() => {},
+        // }
+
     }
 }
 

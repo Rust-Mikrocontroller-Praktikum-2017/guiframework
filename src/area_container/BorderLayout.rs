@@ -15,18 +15,38 @@ use lcd::Color;
 pub struct BorderLayout {
     pub bounding_box: sizes::BoundingBox,
     // Boxen direkt annehmen, also Nutzer allokiert ne Box und den Zeiger darauf füge ich hinzu
-    pub top_element: Box<Form>,
-    pub bottom_element: Box<Form>,
-    pub left_element: Box<Form>,
-    pub right_element: Box<Form>,
-    pub center_element: Box<Form>,
+    pub top_element: Option<Box<Form>>,
+    pub bottom_element: Option<Box<Form>>,
+    pub left_element: Option<Box<Form>>,
+    pub right_element: Option<Box<Form>>,
+    pub center_element: Option<Box<Form>>,
+}
+
+impl BorderLayout {
+    pub fn new(bb: sizes::BoundingBox) -> BorderLayout {
+        BorderLayout {
+            bounding_box: bb,
+            top_element: None,
+            bottom_element: None,
+            left_element: None,
+            right_element: None,
+            center_element: None,
+        }
+    }
 }
 
 impl DrawArea for BorderLayout {
     fn draw_area(&self) -> bool {
         let all_el = [&self.top_element, &self.bottom_element, &self.left_element, &self.right_element, &self.center_element];
-        for i in all_el.iter() {
-            i.draw();
+        //for i in all_el.into_iter() {
+        for i in all_el.into_iter() {
+            match i {
+                // why two references??? thought into_iter would not create another?? very strange??
+                // dereferencing is prohibited due to moving... this is also weird??
+                &&Some(ref el) => el.draw(),
+                &&None => {},
+            }
+            //i.draw();
         }
         true
     }
@@ -40,35 +60,35 @@ impl AddFormBorder for BorderLayout {
                 let height = self.bounding_box.height / 3;
                 let bb = sizes::BoundingBox{x:self.bounding_box.x, y:self.bounding_box.y, width:width, height:height};
                 f.set_bounding_box(bb);
-                self.top_element = f;
+                self.top_element = Some(f);
             }
             BorderArea::Bottom => {
                 let width = self.bounding_box.width;
                 let height = self.bounding_box.height / 3;
                 let bb = sizes::BoundingBox{x:self.bounding_box.x, y:self.bounding_box.y + height * 2, width:width, height:height};
                 f.set_bounding_box(bb);
-                self.bottom_element = f;
+                self.bottom_element = Some(f);
             }, 
             BorderArea::Left => {
                 let width = self.bounding_box.width / 3;
                 let height = self.bounding_box.height / 3; // ?
                 let bb = sizes::BoundingBox{x:self.bounding_box.x, y:self.bounding_box.y + height, width:width, height:height};
                 f.set_bounding_box(bb);
-                self.left_element = f;
+                self.left_element = Some(f);
             },
             BorderArea::Right => {
                 let width = self.bounding_box.width / 3;
                 let height = self.bounding_box.height / 3; // ?
-                let bb = sizes::BoundingBox{x:self.bounding_box.x, y:self.bounding_box.y + height, width:width, height:height};
+                let bb = sizes::BoundingBox{x:self.bounding_box.x + 2 * width + 1, y:self.bounding_box.y + height, width:width, height:height};
                 f.set_bounding_box(bb);
-                self.right_element = f;
+                self.right_element = Some(f);
             },
             BorderArea::Center => {
                 let width = self.bounding_box.width / 3;
                 let height = self.bounding_box.height / 3; // ?
-                let bb = sizes::BoundingBox{x:self.bounding_box.x + width, y:self.bounding_box.y + height, width:width, height:height};
+                let bb = sizes::BoundingBox{x:self.bounding_box.x + width + 1, y:self.bounding_box.y + height, width:width, height:height};
                 f.set_bounding_box(bb);
-                self.center_element = f;
+                self.center_element = Some(f);
             },
         }
         return true;
@@ -105,8 +125,19 @@ impl Form for BorderLayout {
     }
     // leerer iterator in core::iterator, once
     fn get_children<'a>(&'a mut self) -> Box<Iterator<Item=&'a mut Form> + 'a> {
-        let mut res: Vec<&'a mut Form> = vec![&mut *self.top_element, &mut *self.bottom_element, &mut *self.left_element, &mut *self.right_element, &mut *self.center_element];
-        let mut b = Box::new(res.into_iter());
+        // change interface, actually if these are None, they can be ignored, I guess?
+        let opts = vec![&mut self.top_element, &mut self.bottom_element, &mut self.left_element, &mut self.right_element, &mut self.center_element];
+        let mut res: Vec<&'a mut Form> = Vec::new();
+        for i in opts {
+            match *i {
+                Some(ref mut el) => res.push(&mut **el),
+                None => {},
+            }
+        }
+
+
+        //let mut res: Vec<&'a mut Form> = vec![&mut *self.top_element, &mut *self.bottom_element, &mut *self.left_element, &mut *self.right_element, &mut *self.center_element];
+        let b = Box::new(res.into_iter());
         b
     }
     fn is_clickable(&mut self) -> Option<&mut Clickable> {
