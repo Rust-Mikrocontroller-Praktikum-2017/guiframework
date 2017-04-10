@@ -1,5 +1,4 @@
 use collections::boxed::Box;
-use collections::Vec;
 use core::iter;
 
 use draw::draw_rectangle;
@@ -7,7 +6,7 @@ use draw::fill_rectangle;
 use forms::form::Clickable;
 use forms::form::Movable;
 use forms::form::Form;
-use util::sizes::BoundingBox;
+use util::bounding_box::BoundingBox;
 use stm32f7::lcd::Color;
 
 
@@ -15,15 +14,17 @@ pub struct Button {
     bounding_box: BoundingBox,
     child: Option<Box<Form>>,
     on_click: Option<fn(form: &mut Button) -> ()>,
-    border_width: u32,
+    movable: bool,
+    border_width: i32,
 }
 
 impl Button {
-    pub fn new(bounding_box: BoundingBox, border_width: u32) -> Button {
+    pub fn new(bounding_box: BoundingBox, border_width: i32) -> Button {
         Button {
             bounding_box: bounding_box,
             child: None,
             on_click: None,
+            movable: false,
             border_width: border_width,
         }
     }
@@ -46,11 +47,15 @@ impl Form for Button {
         self.bounding_box = bounding_box;
     }
 
-    fn get_border_width(&self) -> u32 {
+    fn get_border_width(&self) -> i32 {
         self.border_width
     }
 
-    fn set_border_width(&mut self, width: u32) -> () {
+    fn set_border_width(&mut self, width: i32) -> () {
+        if width < 0 {
+            return;
+        }
+
         self.border_width = width;
     }
 
@@ -70,9 +75,9 @@ impl Form for Button {
     }
 
     fn is_movable(&mut self) -> Option<&mut Movable> {
-        match self.on_click {
-            None => None,
-            _ => Some(self),
+        match self.movable {
+            true => None,
+            false => Some(self),
         }
     }
 
@@ -85,7 +90,7 @@ impl Form for Button {
     }
 
     fn draw(&self) -> () {
-        for i in 0..self.border_width {
+        for i in 0i32..self.border_width {
             draw_rectangle(self.bounding_box.x + i,
                            self.bounding_box.y + i,
                            self.bounding_box.width - (2 * i),
@@ -100,11 +105,17 @@ impl Form for Button {
     }
 }
 
-impl Clickable for Button where {
+impl Clickable for Button {
     fn click(&mut self) {
         match self.on_click {
             Some(func) => func(self),
             None => (),
         }
+    }
+}
+
+impl Movable for Button {
+    fn move_form(&mut self, dir_x: i32, dir_y: i32) {
+        self.bounding_box.move_in_direction(dir_x, dir_y);
     }
 }

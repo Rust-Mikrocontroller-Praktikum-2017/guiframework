@@ -1,5 +1,5 @@
 pub mod move_bounding_box;
 
-use util::sizes::BoundingBox;
+use util::bounding_box::BoundingBox;
 
 //pub use collections::VecDeque;
