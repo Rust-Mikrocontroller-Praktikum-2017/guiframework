@@ -121,19 +121,19 @@ fn main(hw: board::Hardware) -> ! {
                                                 width: 10,
                                                 height: 10,
                                             });*/
-    /*
-    let mut button = forms::button::Button::new(util::bounding_box::BoundingBox; {
+
+    let mut button = forms::button::Button::new(util::bounding_box::BoundingBox {
                                                     x: 10,
                                                     y: 10,
                                                     width: 100,
                                                     height: 100,
                                                 },
                                                 3);
-    let mut button2 = forms::button::Button::new(util::bounding_box::BoundingBox; {
+    let mut button2 = forms::button::Button::new(util::bounding_box::BoundingBox {
                                                      x: 110,
                                                      y: 110,
-                                                     width: 100,
-                                                     height: 100,
+                                                     width: 50,
+                                                     height: 50,
                                                  },
                                                  3);
 
@@ -142,13 +142,13 @@ fn main(hw: board::Hardware) -> ! {
 
     button.set_child(Box::new(button2));
 
-    button.draw();*/
+    button.draw();
 
     // Initialize touch on display.
     i2c::init_pins_and_clocks(rcc, &mut gpio);
     let mut i2c_3 = i2c::init(i2c_3);
     touch::check_family_id(&mut i2c_3).unwrap();
-
+    /*
     let mut tmp_bb = BoundingBox {
         x: 10,
         y: 10,
@@ -206,6 +206,7 @@ fn main(hw: board::Hardware) -> ! {
     bl.add_form(button6, BorderArea::Top);
 
     bl.draw();
+    */
 
     /*let bb3 = BoundingBox{x:50, y:50, width:15, height:15};
     let button3 = Button::new(bb3);
@@ -233,13 +234,13 @@ fn main(hw: board::Hardware) -> ! {
         }
 
         for touch in &touch::touches(&mut i2c_3).unwrap() {
-            action::walker::walk(&mut bl, touch.x as i32, touch.y as i32);
+            action::walker::walk(&mut button, touch.x as i32, touch.y as i32);
         }
 
         //: &Result<ArrayVec<[Touch; 5]>, i2c::Error>
-        let touches_result = &touch::touches(&mut i2c_3).unwrap();
+        //let touches_result = &touch::touches(&mut i2c_3).unwrap();
 
-        let v: VecDeque<u32> = VecDeque::new();
+        //let v: VecDeque<u32> = VecDeque::new();
         // check if there was an error or get ArrayVec otherwise for an update
         //let mut touches = ArrayVec::<[_; 16]>::new();
         //let mut touches = ArrayVec::<[_;16]>::new();
@@ -255,7 +256,6 @@ fn main(hw: board::Hardware) -> ! {
 fn clicked(form: &mut Button) {
     let width = form.get_border_width();
     match width {
-        5 => form.set_border_width(2),
         2 => form.set_border_width(5),
         _ => form.set_border_width(2),
     }
