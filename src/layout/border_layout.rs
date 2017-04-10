@@ -128,8 +128,8 @@ impl AddFormBorder for BorderLayout {
 }
 
 impl Form for BorderLayout {
-    fn get_bounding_box(&self) -> &bounding_box::BoundingBox {
-        &self.bounding_box
+    fn get_bounding_box(&mut self) -> &mut bounding_box::BoundingBox {
+        &mut self.bounding_box
     }
 
     fn set_bounding_box(&mut self, bounding_box: bounding_box::BoundingBox) -> () {

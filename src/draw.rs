@@ -1,18 +1,12 @@
 #![allow(dead_code)]
 
-use lcd;
-
 use board::ltdc::Ltdc;
-use embedded::interfaces::gpio::OutputPin;
 use core::ptr;
-
-use util::sizes;
-
-//mod init;
-//mod color;
-
+use embedded::interfaces::gpio::OutputPin;
+use lcd;
 use stm32f7::lcd::Color;
 
+use util::sizes;
 
 fn draw_pixel(x: i32, y: i32, color: Color) {
     if x < 0 || y < 0 || x > sizes::MAX_X || y > sizes::MAX_Y {

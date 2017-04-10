@@ -12,6 +12,43 @@ impl BoundingBox {
         x >= self.x && x < self.x + self.width && y >= self.y && y < self.y + self.height
     }
 
+    pub fn is_enclosed(&self, outer: &BoundingBox) -> bool {
+        let smaller_width_and_enclosed = self.width <= outer.width && self.x >= outer.width &&
+                                         self.x + self.width <= outer.x + outer.width;
+        let smaller_height_and_enclosed = self.height <= outer.height && self.y >= outer.y &&
+                                          self.y + self.height <= outer.y + outer.height;
+
+        smaller_width_and_enclosed && smaller_height_and_enclosed
+    }
+
+    pub fn rebase_to_outer_box(&mut self, outer: &BoundingBox) -> () {
+        if self.width > outer.width {
+            self.width = outer.width;
+        }
+
+        if self.height > outer.height {
+            self.height = outer.height;
+        }
+
+        if !self.is_enclosed(outer) {
+            if self.x < outer.x {
+                self.x = outer.x;
+            }
+
+            if self.x + self.width > outer.x + outer.width {
+                self.x = outer.x + outer.width - self.width;
+            }
+
+            if self.y < outer.y {
+                self.y = outer.y;
+            }
+
+            if self.y + self.height > outer.y + outer.height {
+                self.y = outer.y + outer.height - self.height;
+            }
+        }
+    }
+
     pub fn move_in_direction(&mut self, dir_x: i32, dir_y: i32) -> (i32, i32) {
         let pos_x_new = self.x + dir_x;
         let pos_y_new = self.y + dir_y;

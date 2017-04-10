@@ -33,14 +33,18 @@ impl Button {
         self.on_click = Some(callback);
     }
 
-    pub fn set_child(&mut self, child: Box<Form>) -> () {
+    pub fn set_child(&mut self, mut child: Box<Form>) -> () {
+        child
+            .get_bounding_box()
+            .rebase_to_outer_box(self.get_bounding_box());
+
         self.child = Some(child);
     }
 }
 
 impl Form for Button {
-    fn get_bounding_box(&self) -> &BoundingBox {
-        &self.bounding_box
+    fn get_bounding_box(&mut self) -> &mut BoundingBox {
+        &mut self.bounding_box
     }
 
     fn set_bounding_box(&mut self, bounding_box: BoundingBox) -> () {
