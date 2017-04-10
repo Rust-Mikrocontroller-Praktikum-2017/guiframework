@@ -1,4 +1,5 @@
 use core::num;
+use core::iter;
 use collections::VecDeque;
 use forms::form::Form;
 use collections::Vec;
@@ -50,7 +51,7 @@ impl TouchHistory {
         }
     }
 
-    pub fn check_for_object_moves(&self, mut movable_objects: Box<Iterator<Item = & mut Form>>) {
+    pub fn check_for_object_moves(&self, root: &mut Form) {
         //let mut moves = Vec::new();
         let mut movements: Vec<Vec<(i32, i32, usize)>> = Vec::new();
 
@@ -74,9 +75,15 @@ impl TouchHistory {
 
         //let mut results: Vec<(&Form, i32, i32)> = Vec::new();
         for i in movements {
-            let mut res_check = check_for_hit(&mut movable_objects, i[0].0, i[0].1);
+            let mut res_check = check_for_hit(root.get_children(), i[0].0, i[0].1);
             match res_check {
                 Some(form) => {
+                    // draw recursively from current note.
+                    /*
+                     * 1) clear() at parent
+                     * 2) draw() parent, // move!
+                     */
+
                     let move_trait = form.is_movable();
                     match move_trait {
                         Some(T) => {
@@ -92,20 +99,58 @@ impl TouchHistory {
             }
         }
     }
-
-    pub fn check_for_directions(&self) {}
 }
 
-fn check_for_hit<'a>(movable_objects: &mut Iterator<Item = &'a mut Form>, x: i32, y: i32) -> Option<&'a mut Form> {
-    for i in movable_objects {
+fn check_for_hit<'a>(objects: Box<Iterator<Item = &'a mut Form> + 'a>, x: i32, y: i32) -> Option<&'a mut Form> {
+    // recursively search for the movable object matched most precisely, move subtree from this object.
+    let mut last_mov_form: Option<&'a mut Form> = None;
+    for i in objects {
         let in_bb = i.get_bounding_box().is_in_bound(x,y);
-        if in_bb {
-            let ret: &'a mut Form = i;
-            return Some(ret);
+        let movable = i.is_movable().is_some();
+        if in_bb && movable {
+            //let ret: &'a mut Form = i;
+            
+            //iter::once::<&'a mut Form>(&mut **child)
+            //fn get_children<'a>(&'a mut self) -> Box<Iterator<Item = &'a mut Form> + 'a>;
+            if check_for_hit(i.get_children(), x, y).is_none() {
+                last_mov_form = Some(i);
+            } else {
+                last_mov_form = check_for_hit(i.get_children(), x, y);
+            }
+            /*
+            {
+                let ret: Option<&'a mut Form> = check_for_hit(i.get_children(), x, y);
+
+                match ret {
+                    r @ Some(_) => {
+                        last_mov_form = r;
+                        continue;
+                    },
+                    None => {
+                    }
+                }
+            }
+
+            last_mov_form = Some(i);
+            */
+            //return Some(ret);
         }
     }
-    None
+    last_mov_form
 }
+
+/*
+fn draw_recursively(note: &mut Form) {
+    let move_trait = note.is_movable();
+    match move_trait {
+        Some(T) => {
+            T.move_form(i[i.len() - 1].0, i[i.len() - 1].1);
+        }
+        None => {
+            note.get_bounding_box()
+        }
+    }
+}*/
 
 fn get_square_distance(x1: i32, y1: i32, x2: i32, y2: i32) -> i32 {
     // let x1 = x1 as i32;
