@@ -2,12 +2,11 @@
 
 use lcd;
 
-pub static MAX_X: u32 = 480;
-pub static MAX_Y: u32 = 272;
-
 use board::ltdc::Ltdc;
 use embedded::interfaces::gpio::OutputPin;
 use core::ptr;
+
+use util::sizes;
 
 //mod init;
 //mod color;
@@ -15,37 +14,24 @@ use core::ptr;
 use stm32f7::lcd::Color;
 
 
-fn draw_pixel(x: u32, y: u32, color: Color) {
-    assert!(x < 480);
-    assert!(y < 272);
+fn draw_pixel(x: i32, y: i32, color: Color) {
+    if x < 0 || y < 0 || x > sizes::MAX_X || y > sizes::MAX_Y {
+        return;
+    }
 
     // layer 2
     let addr: u32 = 0xC000_0000 + (480 * 272 * 2);
-    let pixel = u32::from(y) * 480 + u32::from(x);
+    let pixel = y as u32 * 480 + x as u32;
     let pixel_color = (addr + pixel * 4) as *mut u32;
 
     unsafe { ptr::write_volatile(pixel_color, color.to_argb8888()) };
 }
 
-// fn draw_pixel(x: u32, y: u32, color: u16) {
-//     assert!(x < 480);
-//     assert!(y < 272);
-
-//     // layer 2
-//     let addr: u32 = 0xC000_0000 + (480 * 272 * 2);
-//     let pixel = u32::from(y) * 480 + u32::from(x);
-//     let pixel_color = (addr + pixel * 2) as *mut u16;
-
-//     unsafe { ptr::write_volatile(pixel_color, color) };
-// }
-
-pub fn draw_line(x1: u32, y1: u32, x2: u32, y2: u32, color: Color) {
-    let mut x1 = x1 as i32;
-    let mut x2 = x2 as i32;
-    let mut y1 = y1 as i32;
-    let mut y2 = y2 as i32;
-
-    let draw_p = |x: i32, y: i32| { draw_pixel(x as u32, y as u32, color); };
+pub fn draw_line(x1: i32, y1: i32, x2: i32, y2: i32, color: Color) {
+    let mut x1: i32 = x1;
+        let mut x2: i32 = x2;
+            let mut y1: i32 = y1;
+                let mut y2: i32 = y2;
 
     const ACURR: i32 = 100000;
     let width = x2 - x1;
@@ -61,7 +47,7 @@ pub fn draw_line(x1: u32, y1: u32, x2: u32, y2: u32, color: Color) {
         for x in x1..x2 + 1 {
             let off_x = x - x1;
             let off_y = ACURR * off_x / ratio;
-            draw_p(x1 + off_x, y1 + off_y);
+            draw_pixel(x1 + off_x, y1 + off_y, color);
         }
     } else {
         // one point per y step
@@ -72,7 +58,7 @@ pub fn draw_line(x1: u32, y1: u32, x2: u32, y2: u32, color: Color) {
         for y in y1..y2 + 1 {
             let off_y = y - y1;
             let off_x = off_y * ratio / ACURR;
-            draw_p(x1 + off_x, y1 + off_y);
+            draw_pixel(x1 + off_x, y1 + off_y, color);
         }
     }
 }
@@ -83,36 +69,10 @@ fn swap(a: &mut i32, b: &mut i32) {
     *b = c;
 }
 
-// fn draw_rectangle_not_so_pretty(x1:u32, y1:u32, x2:u32, y2:u32, color:u16) {
-
-//     if x1 < x2 {
-//         let x_small = x1;
-//         let x_big = x2;
-//     } else {
-//         let x_small = x2;
-//         let x_big = x1;
-//     }
-//     if y1 < y2 {
-//         let y_small = y1;
-//         let y_big = y2;
-//     } else {
-//         let y_small = y2;
-//         let y_big = y1;
-//     }
-
-//     for i in x_small..x_big {
-//         draw_pixel(i, y_small, color);
-//         draw_pixel(i, y_big, color);
-//     }
-//     for i in y_small..y_big {
-//         draw_pixel(x_small, i, color);
-//         draw_pixel(x_big, i, color);
-//     }
-// }
-
-pub fn draw_rectangle(x: u32, y: u32, width: u32, height: u32, color: Color) -> bool {
+pub fn draw_rectangle(x: i32, y: i32, width: i32, height: i32, color: Color) -> bool {
     //(x, y is upper left, according to coordinate system)
-    if x + width >= MAX_X || x >= MAX_X || y + height >= MAX_Y || y >= MAX_Y {
+    if x < 0 || x + width > sizes::MAX_X || x > sizes::MAX_X || y < 0 ||
+       y + height > sizes::MAX_Y || y > sizes::MAX_Y {
         return false;
     }
 
@@ -128,9 +88,10 @@ pub fn draw_rectangle(x: u32, y: u32, width: u32, height: u32, color: Color) -> 
     true
 }
 
-pub fn fill_rectangle(x: u32, y: u32, width: u32, height: u32, color: Color) -> bool {
+pub fn fill_rectangle(x: i32, y: i32, width: i32, height: i32, color: Color) -> bool {
     //(x, y is upper left, according to coordinate system)
-    if x + width >= MAX_X || x >= MAX_X || y + height >= MAX_Y || y >= MAX_Y {
+    if x < 0 || x + width >= sizes::MAX_X || x >= sizes::MAX_X || y < 0 || y + height >= sizes::MAX_Y ||
+       y >= sizes::MAX_Y {
         return false;
     }
 
@@ -141,13 +102,4 @@ pub fn fill_rectangle(x: u32, y: u32, width: u32, height: u32, color: Color) -> 
     }
 
     true
-}
-
-pub fn convert_color_to_u16(color: lcd::Color) -> u16 {
-    let alpha: u16 = (color.alpha as u16 / 255) << 15;
-    let red: u16 = (color.red as u16 / 8) << 10;
-    let green: u16 = (color.green as u16 / 8) << 5;
-    let blue: u16 = color.blue as u16 / 8;
-
-    alpha | red | green | blue
 }

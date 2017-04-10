@@ -1,7 +1,7 @@
 use draw;
 
 use forms::form::Form;
-use util::sizes::BoundingBox;
+use util::bounding_box::BoundingBox;
 
 /*trait Shape {
     fn position() -> (u32, u32);

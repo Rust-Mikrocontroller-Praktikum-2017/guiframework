@@ -22,10 +22,9 @@ mod forms;
 mod draw;
 mod util;
 mod action;
-mod area_container;
-mod move_things;
+mod layout;
 
-use util::sizes::BoundingBox;
+use util::bounding_box::BoundingBox;
 use collections::Vec;
 use collections::VecDeque;
 use forms::button::Button;
@@ -36,14 +35,11 @@ use util::layout_funcs::DrawArea;
 use collections::boxed::Box;
 use forms::form::Form;
 
-use area_container::BorderLayout;
 use util::layout_funcs::BorderArea;
 
 use stm32f7::touch::Touch;
 //use stm32f7::arrayvec::ArrayVec;
 //use arrayvec::ArrayVec;
-
-use move_things::move_bounding_box;
 
 fn main(hw: board::Hardware) -> ! {
     let board::Hardware {
@@ -119,21 +115,21 @@ fn main(hw: board::Hardware) -> ! {
     }
 
     /*
-    let button = forms::button::Button::new(util::sizes::BoundingBox {
+    let button = forms::button::Button::new(util::bounding_box::BoundingBox; {
                                                 x: 2,
                                                 y: 2,
                                                 width: 10,
                                                 height: 10,
                                             });*/
-                                            /*
-    let mut button = forms::button::Button::new(util::sizes::BoundingBox {
+    /*
+    let mut button = forms::button::Button::new(util::bounding_box::BoundingBox; {
                                                     x: 10,
                                                     y: 10,
                                                     width: 100,
                                                     height: 100,
                                                 },
                                                 3);
-    let mut button2 = forms::button::Button::new(util::sizes::BoundingBox {
+    let mut button2 = forms::button::Button::new(util::bounding_box::BoundingBox; {
                                                      x: 110,
                                                      y: 110,
                                                      width: 100,
@@ -153,14 +149,49 @@ fn main(hw: board::Hardware) -> ! {
     let mut i2c_3 = i2c::init(i2c_3);
     touch::check_family_id(&mut i2c_3).unwrap();
 
-    let mut tmp_bb = BoundingBox{x:10, y:10, width:10, height:10};
-    let mut tmp_bb2 = BoundingBox{x:10, y:10, width:10, height:10};
-    let mut tmp_bb3 = BoundingBox{x:10, y:10, width:10, height:10};
-    let mut tmp_bb4 = BoundingBox{x:10, y:10, width:10, height:10};
-    let mut tmp_bb5 = BoundingBox{x:10, y:10, width:10, height:10};
-    let mut tmp_bb6 = BoundingBox{x:10, y:10, width:10, height:10};
+    let mut tmp_bb = BoundingBox {
+        x: 10,
+        y: 10,
+        width: 10,
+        height: 10,
+    };
+    let mut tmp_bb2 = BoundingBox {
+        x: 10,
+        y: 10,
+        width: 10,
+        height: 10,
+    };
+    let mut tmp_bb3 = BoundingBox {
+        x: 10,
+        y: 10,
+        width: 10,
+        height: 10,
+    };
+    let mut tmp_bb4 = BoundingBox {
+        x: 10,
+        y: 10,
+        width: 10,
+        height: 10,
+    };
+    let mut tmp_bb5 = BoundingBox {
+        x: 10,
+        y: 10,
+        width: 10,
+        height: 10,
+    };
+    let mut tmp_bb6 = BoundingBox {
+        x: 10,
+        y: 10,
+        width: 10,
+        height: 10,
+    };
 
-    let mut bl = BorderLayout::BorderLayout::new(BoundingBox{x:50, y:50, width:100, height:100});
+    let mut bl = layout::BorderLayout::new(BoundingBox {
+                                               x: 50,
+                                               y: 50,
+                                               width: 100,
+                                               height: 100,
+                                           });
     let mut button1 = Box::new(Button::new(tmp_bb, 3));
     let mut button2 = Box::new(Button::new(tmp_bb2, 3));
     let mut button3 = Box::new(Button::new(tmp_bb3, 3));
@@ -180,7 +211,8 @@ fn main(hw: board::Hardware) -> ! {
     let button3 = Button::new(bb3);
     let b3 = Box::new(button3);
 
-    let mut flow_container = area_container::HorizontalLayout{bounding_box:BoundingBox{x:10, y:10, width:100, height:100}, elements:items};
+    let mut flow_container = layout::HorizontalLayout{
+    bounding_box:BoundingBox{x:10, y:10, width:100, height:100}, elements:items};
     let b = Box::new(button);
     flow_container.add_form(b);
     flow_container.add_form(b2);
@@ -201,13 +233,13 @@ fn main(hw: board::Hardware) -> ! {
         }
 
         for touch in &touch::touches(&mut i2c_3).unwrap() {
-            action::walker::walk(&mut bl, touch.x, touch.y);
+            action::walker::walk(&mut bl, touch.x as i32, touch.y as i32);
         }
 
         //: &Result<ArrayVec<[Touch; 5]>, i2c::Error>
         let touches_result = &touch::touches(&mut i2c_3).unwrap();
 
-        let v : VecDeque<u32> = VecDeque::new();
+        let v: VecDeque<u32> = VecDeque::new();
         // check if there was an error or get ArrayVec otherwise for an update
         //let mut touches = ArrayVec::<[_; 16]>::new();
         //let mut touches = ArrayVec::<[_;16]>::new();
