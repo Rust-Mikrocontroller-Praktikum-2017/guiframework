@@ -5,6 +5,8 @@ use collections::Vec;
 use util::sizes::BoundingBox;
 use util::sizes;
 
+use font_rs::float_impls::FloatImpls;
+
 pub struct TouchHistory {
     // x_pos, y_pos, #ticks (round, in which touch occurred)
     cur_touches : VecDeque<(i32, i32, usize)>,

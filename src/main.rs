@@ -8,7 +8,7 @@ extern crate collections;
 
 extern crate stm32f7_discovery as stm32f7;
 
-//extern crate arrayvec;
+extern crate arrayvec;
 
 #[macro_use]
 mod semi_hosting;
@@ -41,7 +41,7 @@ use util::layout_funcs::BorderArea;
 
 use stm32f7::touch::Touch;
 //use stm32f7::arrayvec::ArrayVec;
-//use arrayvec::ArrayVec;
+use arrayvec::ArrayVec;
 
 use move_things::move_bounding_box;
 
@@ -206,8 +206,11 @@ fn main(hw: board::Hardware) -> ! {
 
         //: &Result<ArrayVec<[Touch; 5]>, i2c::Error>
         let touches_result = &touch::touches(&mut i2c_3).unwrap();
+        let touch_history = move_bounding_box::TouchHistory::new();
+        touch_history.update(ticks, touches_result);
+        //touch_history.check_for_object_moves();
 
-        let v : VecDeque<u32> = VecDeque::new();
+        //let v : VecDeque<u32> = VecDeque::new();
         // check if there was an error or get ArrayVec otherwise for an update
         //let mut touches = ArrayVec::<[_; 16]>::new();
         //let mut touches = ArrayVec::<[_;16]>::new();
