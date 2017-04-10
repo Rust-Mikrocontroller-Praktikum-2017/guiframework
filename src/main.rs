@@ -29,6 +29,7 @@ use util::bounding_box::BoundingBox;
 use collections::Vec;
 use collections::VecDeque;
 use forms::button::Button;
+use forms::label::Label;
 
 use util::layout_funcs::AddForm;
 use util::layout_funcs::AddFormBorder;
@@ -114,13 +115,7 @@ fn main(hw: board::Hardware) -> ! {
     layer_1.clear();
     layer_2.clear();
 
-    stm32f7::init_stdout(layer_2);
-
-    stm32f7::with_stdout(|stdout| {
-        stdout.set_offset(20, 30);
-    });
-
-    println!("Hallo Phillip");
+    stm32f7::init_stdout(lcd.layer_2().unwrap());
 
     //None::<()>.unwrap();
 
@@ -139,18 +134,26 @@ fn main(hw: board::Hardware) -> ! {
                                                     height: 100,
                                                 },
                                                 3);
-    let mut button2 = forms::button::Button::new(util::bounding_box::BoundingBox {
-                                                     x: 110,
-                                                     y: 110,
-                                                     width: 50,
-                                                     height: 50,
-                                                 },
-                                                 3);
+    // let mut button2 = forms::button::Button::new(util::bounding_box::BoundingBox {
+    //                                                  x: 110,
+    //                                                  y: 110,
+    //                                                  width: 50,
+    //                                                  height: 50,
+    //                                              },
+    //                                              3);
+    let label = forms::label::Label::new(util::bounding_box::BoundingBox {
+                                             x: 10,
+                                             y: 10,
+                                             width: 100,
+                                             height: 100,
+                                         },
+                                         "Button (click)");
 
     button.set_action_on_click(clicked);
-    button2.set_action_on_click(clicked);
+    //button2.set_action_on_click(clicked);
 
-    button.set_child(Box::new(button2));
+    //button.set_child(Box::new(button2));
+    button.set_child(Box::new(label));
 
     button.draw();
 

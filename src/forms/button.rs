@@ -16,6 +16,7 @@ pub struct Button {
     on_click: Option<fn(form: &mut Button) -> ()>,
     movable: bool,
     border_width: i32,
+    border_color: Color,
 }
 
 impl Button {
@@ -26,6 +27,7 @@ impl Button {
             on_click: None,
             movable: false,
             border_width: border_width,
+            border_color: Color::from_hex(0xFFFFFF),
         }
     }
 
@@ -98,7 +100,7 @@ impl Form for Button {
                            self.bounding_box.y + i,
                            self.bounding_box.width - (2 * i),
                            self.bounding_box.height - (2 * i),
-                           Color::rgb(0b00110, 0b00110, 0b11010));
+                           self.border_color);
         }
 
         match self.child {

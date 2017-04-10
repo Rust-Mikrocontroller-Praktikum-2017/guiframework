@@ -12,6 +12,10 @@ impl BoundingBox {
         x >= self.x && x < self.x + self.width && y >= self.y && y < self.y + self.height
     }
 
+    pub fn get_center(&self) -> (i32, i32) {
+        (self.x + self.width / 2, self.y + self.height / 2)
+    }
+
     pub fn is_enclosed(&self, outer: &BoundingBox) -> bool {
         let smaller_width_and_enclosed = self.width <= outer.width && self.x >= outer.width &&
                                          self.x + self.width <= outer.x + outer.width;

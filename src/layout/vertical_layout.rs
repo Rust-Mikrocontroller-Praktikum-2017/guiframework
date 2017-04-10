@@ -40,3 +40,46 @@ impl AddForm for VerticalLayout {
         true
     }
 }
+
+impl Form for VerticalLayout {
+    fn get_bounding_box(&self) -> &BoundingBox {
+        &self.bounding_box
+    }
+    fn set_bounding_box(&mut self, bounding_box: BoundingBox) -> () {
+        self.bounding_box = bounding_box;
+    }
+    fn get_border_width(&self) -> u32 {
+        self.bounding_box.width
+    }
+    fn set_border_width(&mut self, width: u32) -> () {
+        self.bounding_box.width = width;
+    }
+    fn get_children<'a>(&'a mut self) -> Box<Iterator<Item = &'a mut Form> + 'a> {
+        let mut res: Vec<&'a mut Form> = Vec::new();
+
+        for i in &self.elements {
+            res.push(&mut **i);
+        }
+
+        Box::new(res.into_iter())
+
+        //self.elements.map(|x| *x).iter()
+    }
+    fn is_clickable(&mut self) -> Option<&mut Clickable> {
+        None
+    }
+    fn is_movable(&mut self) -> Option<&mut Movable> {
+        None
+    }
+    fn clear(&self) -> () {
+        let color = Color::rgba(0, 0, 0, 0);
+        draw::fill_rectangle(self.bounding_box.x,
+                             self.bounding_box.y,
+                             self.bounding_box.width,
+                             self.bounding_box.height,
+                             color);
+    }
+    fn draw(&self) -> () {
+        self.draw_area();
+    }
+}

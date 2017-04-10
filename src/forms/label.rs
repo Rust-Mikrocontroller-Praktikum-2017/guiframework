@@ -1,30 +1,34 @@
-use core::iter;
 use collections::boxed::Box;
+use core::iter;
+use stm32f7;
 use stm32f7::lcd::Color;
 
+use draw;
 use draw::fill_rectangle;
 use forms::form::Clickable;
-use forms::form::Movable;
 use forms::form::Form;
+use forms::form::Movable;
 use util::bounding_box::BoundingBox;
 
-pub struct Textfield {
+pub struct Label {
     bounding_box: BoundingBox,
     child: Option<Box<Form>>,
     movable: bool,
+    text: &'static str,
 }
 
-impl Textfield {
-    pub fn new(bounding_box: BoundingBox) -> Textfield {
-        Textfield {
+impl Label {
+    pub fn new(bounding_box: BoundingBox, text: &'static str) -> Label {
+        Label {
             bounding_box: bounding_box,
             child: None,
             movable: false,
+            text: text,
         }
     }
 }
 
-impl Form for Textfield {
+impl Form for Label {
     fn get_bounding_box(&mut self) -> &mut BoundingBox {
         &mut self.bounding_box
     }
@@ -53,5 +57,17 @@ impl Form for Textfield {
                        Color::rgba(0, 0, 0, 0));
     }
 
-    fn draw(&self) -> () {}
+    fn draw(&self) -> () {
+        stm32f7::with_stdout(|stdout| {
+            let (width, height) = stdout.width_height(self.text);
+            let (x_center, y_center) = self.bounding_box.get_center();
+
+            let x_offset = x_center - width as i32 / 2;
+            let y_offset = y_center - height as i32 / 2;
+
+            stdout.set_offset(x_offset as usize, y_offset as usize);
+        });
+
+        print!("{:?}", self.text);
+    }
 }

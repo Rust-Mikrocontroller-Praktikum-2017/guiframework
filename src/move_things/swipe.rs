@@ -50,7 +50,7 @@ impl TouchHistory {
         }
     }
 
-    pub fn check_for_object_moves(&self, mut movable_objects: Box<Iterator<Item = & mut Form>>) {
+    pub fn check_for_object_moves(&self, mut movable_objects: Box<Iterator<Item = &mut Form>>) {
         //let mut moves = Vec::new();
         let mut movements: Vec<Vec<(i32, i32, usize)>> = Vec::new();
 
@@ -96,9 +96,12 @@ impl TouchHistory {
     pub fn check_for_directions(&self) {}
 }
 
-fn check_for_hit<'a>(movable_objects: &mut Iterator<Item = &'a mut Form>, x: i32, y: i32) -> Option<&'a mut Form> {
+fn check_for_hit<'a>(movable_objects: &mut Iterator<Item = &'a mut Form>,
+                     x: i32,
+                     y: i32)
+                     -> Option<&'a mut Form> {
     for i in movable_objects {
-        let in_bb = i.get_bounding_box().is_in_bound(x,y);
+        let in_bb = i.get_bounding_box().is_in_bound(x, y);
         if in_bb {
             let ret: &'a mut Form = i;
             return Some(ret);
