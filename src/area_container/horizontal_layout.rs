@@ -3,8 +3,13 @@ use util::*;
 use collections::boxed::Box;
 use collections::Vec;
 
+use util::sizes::BoundingBox;
+
 use util::layout_funcs::DrawArea;
 use util::layout_funcs::AddForm;
+
+use draw;
+use lcd::Color;
 
 pub struct HorizontalLayout {
     pub bounding_box: sizes::BoundingBox,
@@ -37,5 +42,44 @@ impl AddForm for HorizontalLayout {
             n += 1;
         }
         true
+    }
+}
+
+impl Form for HorizontalLayout {
+    fn get_bounding_box(&self) -> &BoundingBox {
+        &self.bounding_box
+    }
+    fn set_bounding_box(&mut self, bounding_box: BoundingBox) -> () {
+        self.bounding_box = bounding_box;
+    }
+    fn get_border_width(&self) -> u32 {
+        self.bounding_box.width
+    }
+    fn set_border_width(&mut self, width: u32) -> () {
+        self.bounding_box.width = width;
+    }
+    fn get_children<'a>(&'a mut self) -> Box<Iterator<Item = &'a mut Form> + 'a> {
+        let mut res: Vec<&'a mut Form> = Vec::new();
+
+        for i in &self.elements {
+            res.push(&mut **i);
+        }
+
+        Box::new(res.into_iter())
+
+        //Box::new(self.elements.iter_mut().map(|x| &mut **x))
+    }
+    fn is_clickable(&mut self) -> Option<&mut Clickable> {
+        None
+    }
+    fn is_movable(&mut self) -> Option<&mut Movable> {
+        None
+    }
+    fn clear(&self) -> () {
+        let color = Color::rgba(0, 0, 0, 0);
+        draw::fill_rectangle(self.bounding_box.x, self.bounding_box.y, self.bounding_box.width, self.bounding_box.height, color);
+    }
+    fn draw(&self) -> () {
+        self.draw_area();
     }
 }

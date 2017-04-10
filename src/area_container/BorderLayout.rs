@@ -150,4 +150,9 @@ impl Form for BorderLayout {
         let color = Color::rgba(0, 0, 0, 0);
         draw::fill_rectangle(self.bounding_box.x, self.bounding_box.y, self.bounding_box.width, self.bounding_box.height, color);   
     }
+
+    fn is_movable(&mut self) -> Option<&mut Movable> {
+        None
+    }
 }
+
