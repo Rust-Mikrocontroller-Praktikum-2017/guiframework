@@ -23,6 +23,7 @@ mod draw;
 mod util;
 mod action;
 mod area_container;
+mod move_things;
 
 use util::sizes::BoundingBox;
 use collections::Vec;
@@ -42,7 +43,7 @@ use stm32f7::touch::Touch;
 //use stm32f7::arrayvec::ArrayVec;
 //use arrayvec::ArrayVec;
 
-
+use move_things::move_bounding_box;
 
 fn main(hw: board::Hardware) -> ! {
     let board::Hardware {

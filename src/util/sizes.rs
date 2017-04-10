@@ -1,3 +1,6 @@
+pub static MAX_X: u32 = 480;
+pub static MAX_Y: u32 = 272;
+
 pub struct BoundingBox {
     pub x: u32,
     pub y: u32,

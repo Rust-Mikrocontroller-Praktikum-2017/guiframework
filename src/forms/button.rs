@@ -5,6 +5,7 @@ use core::iter;
 use draw::draw_rectangle;
 use draw::fill_rectangle;
 use forms::form::Clickable;
+use forms::form::Movable;
 use forms::form::Form;
 use util::sizes::BoundingBox;
 use stm32f7::lcd::Color;
@@ -62,6 +63,13 @@ impl Form for Button {
     }
 
     fn is_clickable(&mut self) -> Option<&mut Clickable> {
+        match self.on_click {
+            None => None,
+            _ => Some(self),
+        }
+    }
+
+    fn is_movable(&mut self) -> Option<&mut Movable> {
         match self.on_click {
             None => None,
             _ => Some(self),
