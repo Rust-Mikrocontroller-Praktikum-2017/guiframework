@@ -2,9 +2,13 @@ use forms::form::*;
 use util::*;
 use collections::boxed::Box;
 use collections::Vec;
+use util::bounding_box::BoundingBox;
 
 use util::layout_funcs::DrawArea;
 use util::layout_funcs::AddForm;
+
+use draw;
+use lcd::Color;
 
 pub struct HorizontalLayout {
     pub bounding_box: bounding_box::BoundingBox,
@@ -42,17 +46,11 @@ impl AddForm for HorizontalLayout {
 }
 
 impl Form for HorizontalLayout {
-    fn get_bounding_box(&self) -> &BoundingBox {
-        &self.bounding_box
+    fn get_bounding_box(&mut self) -> &mut BoundingBox {
+        &mut self.bounding_box
     }
     fn set_bounding_box(&mut self, bounding_box: BoundingBox) -> () {
         self.bounding_box = bounding_box;
-    }
-    fn get_border_width(&self) -> u32 {
-        self.bounding_box.width
-    }
-    fn set_border_width(&mut self, width: u32) -> () {
-        self.bounding_box.width = width;
     }
     fn get_children<'a>(&'a mut self) -> Box<Iterator<Item = &'a mut Form> + 'a> {
         let mut res: Vec<&'a mut Form> = Vec::new();
@@ -81,5 +79,17 @@ impl Form for HorizontalLayout {
     }
     fn draw(&self) -> () {
         self.draw_area();
+    }
+}
+
+impl Movable for HorizontalLayout {
+    fn move_form(&mut self, dir_x: i32, dir_y: i32) {
+        // make recursive!!
+        let (moved_x, moved_y) = self.bounding_box.move_in_direction(dir_x, dir_y);
+        
+        for i in &self.elements {
+            i.move_form(moved_x, moved_y);
+        }
+        
     }
 }

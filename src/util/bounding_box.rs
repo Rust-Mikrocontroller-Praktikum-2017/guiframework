@@ -53,6 +53,7 @@ impl BoundingBox {
         }
     }
 
+    // Returns the actual distance the object was moved.
     pub fn move_in_direction(&mut self, dir_x: i32, dir_y: i32) -> (i32, i32) {
         let pos_x_new = self.x + dir_x;
         let pos_y_new = self.y + dir_y;

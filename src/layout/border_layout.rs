@@ -160,8 +160,8 @@ impl Form for BorderLayout {
 
     fn is_movable(&mut self) -> Option<&mut Movable> {
         match self.movable {
-            true => None,
-            false => Some(self),
+            false => None,
+            true => Some(self),
         }
     }
 
@@ -181,6 +181,18 @@ impl Form for BorderLayout {
 
 impl Movable for BorderLayout {
     fn move_form(&mut self, dir_x: i32, dir_y: i32) {
-        self.bounding_box.move_in_direction(dir_x, dir_y);
+        // make recursive!!
+        let (moved_x, moved_y) = self.bounding_box.move_in_direction(dir_x, dir_y);
+
+        let opts = vec![&mut self.top_element,
+                &mut self.bottom_element,
+                &mut self.left_element,
+                &mut self.right_element,
+                &mut self.center_element];
+        
+        for i in opts {
+            i.move_form(moved_x, moved_y);
+        }
+        
     }
 }
