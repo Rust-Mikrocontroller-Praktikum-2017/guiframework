@@ -81,8 +81,8 @@ impl Form for Button {
 
     fn is_movable(&mut self) -> Option<&mut Movable> {
         match self.movable {
-            true => None,
-            false => Some(self),
+            false => None,
+            true => Some(self),
         }
     }
 
