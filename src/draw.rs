@@ -3,8 +3,9 @@
 use board::ltdc::Ltdc;
 use core::ptr;
 use embedded::interfaces::gpio::OutputPin;
-use lcd;
+use stm32f7::lcd;
 use stm32f7::lcd::Color;
+use stm32f7::lcd::TextWriter;
 
 use util::sizes;
 
