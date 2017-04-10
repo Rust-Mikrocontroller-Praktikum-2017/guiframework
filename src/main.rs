@@ -5,12 +5,12 @@
 
 #[macro_use]
 extern crate collections;
-
+#[macro_use]
 extern crate stm32f7_discovery as stm32f7;
 
 extern crate arrayvec;
 
-#[macro_use]
+
 mod semi_hosting;
 
 // Initialization routines for .data and .bss.
@@ -23,6 +23,7 @@ mod draw;
 mod util;
 mod action;
 mod layout;
+mod move_things;
 
 use util::bounding_box::BoundingBox;
 use collections::Vec;
@@ -36,6 +37,8 @@ use collections::boxed::Box;
 use forms::form::Form;
 
 use util::layout_funcs::BorderArea;
+
+use move_things::swipe;
 
 use stm32f7::touch::Touch;
 //use stm32f7::arrayvec::ArrayVec;
@@ -105,14 +108,21 @@ fn main(hw: board::Hardware) -> ! {
     // Initialize display.
     sdram::init(rcc, fmc, &mut gpio);
     let mut lcd = lcd::init(ltdc, rcc, &mut gpio);
-    lcd.clear_screen();
-    {
-        use core::fmt::Write;
+    let mut layer_1 = lcd.layer_1().unwrap();
+    let mut layer_2 = lcd.layer_2().unwrap();
 
-        let mut text_writer = lcd.text_writer().unwrap();
-        text_writer.print_str("Hallo:)");
-        write!(&mut text_writer, "{}", 3.1415);
-    }
+    layer_1.clear();
+    layer_2.clear();
+
+    stm32f7::init_stdout(layer_2);
+
+    stm32f7::with_stdout(|stdout| {
+        stdout.set_offset(20, 30);
+    });
+
+    println!("Hallo Phillip");
+
+    //None::<()>.unwrap();
 
     /*
     let button = forms::button::Button::new(util::bounding_box::BoundingBox; {
@@ -207,6 +217,8 @@ fn main(hw: board::Hardware) -> ! {
 
     bl.draw();
 
+    let mut TH = move_things::swipe::TouchHistory::new();
+
     /*let bb3 = BoundingBox{x:50, y:50, width:15, height:15};
     let button3 = Button::new(bb3);
     let b3 = Box::new(button3);
@@ -237,9 +249,9 @@ fn main(hw: board::Hardware) -> ! {
         }
 
         //: &Result<ArrayVec<[Touch; 5]>, i2c::Error>
-        let touches_result = &touch::touches(&mut i2c_3).unwrap();
-        let touch_history = move_bounding_box::TouchHistory::new();
-        touch_history.update(ticks, touches_result);
+        let touches_result = touch::touches(&mut i2c_3).unwrap();
+        let touch_history = swipe::TouchHistory::new();
+        //touch_history.update(ticks, touches_result);
         //touch_history.check_for_object_moves();
 
 

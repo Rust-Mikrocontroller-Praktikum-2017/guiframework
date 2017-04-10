@@ -1,4 +1,4 @@
-pub mod move_bounding_box;
+pub mod swipe;
 
 use util::bounding_box::BoundingBox;
 

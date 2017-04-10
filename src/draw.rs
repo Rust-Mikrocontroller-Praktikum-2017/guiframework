@@ -20,7 +20,7 @@ fn draw_pixel(x: i32, y: i32, color: Color) {
     }
 
     // layer 2
-    let addr: u32 = 0xC000_0000 + (480 * 272 * 2);
+    let addr: u32 = 0xC000_0000;
     let pixel = y as u32 * 480 + x as u32;
     let pixel_color = (addr + pixel * 4) as *mut u32;
 
@@ -29,9 +29,9 @@ fn draw_pixel(x: i32, y: i32, color: Color) {
 
 pub fn draw_line(x1: i32, y1: i32, x2: i32, y2: i32, color: Color) {
     let mut x1: i32 = x1;
-        let mut x2: i32 = x2;
-            let mut y1: i32 = y1;
-                let mut y2: i32 = y2;
+    let mut x2: i32 = x2;
+    let mut y1: i32 = y1;
+    let mut y2: i32 = y2;
 
     const ACURR: i32 = 100000;
     let width = x2 - x1;
@@ -90,8 +90,8 @@ pub fn draw_rectangle(x: i32, y: i32, width: i32, height: i32, color: Color) -> 
 
 pub fn fill_rectangle(x: i32, y: i32, width: i32, height: i32, color: Color) -> bool {
     //(x, y is upper left, according to coordinate system)
-    if x < 0 || x + width >= sizes::MAX_X || x >= sizes::MAX_X || y < 0 || y + height >= sizes::MAX_Y ||
-       y >= sizes::MAX_Y {
+    if x < 0 || x + width >= sizes::MAX_X || x >= sizes::MAX_X || y < 0 ||
+       y + height >= sizes::MAX_Y || y >= sizes::MAX_Y {
         return false;
     }
 
