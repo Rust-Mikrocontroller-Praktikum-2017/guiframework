@@ -1,5 +1,6 @@
 use collections::boxed::Box;
 use core::iter;
+use stm32f7::lcd::Color;
 
 use draw::draw_rectangle;
 use draw::fill_rectangle;
@@ -7,7 +8,6 @@ use forms::form::Clickable;
 use forms::form::Movable;
 use forms::form::Form;
 use util::bounding_box::BoundingBox;
-use stm32f7::lcd::Color;
 
 
 pub struct Button {
@@ -40,6 +40,18 @@ impl Button {
 
         self.child = Some(child);
     }
+
+    pub fn get_border_width(&self) -> i32 {
+        self.border_width
+    }
+
+    pub fn set_border_width(&mut self, width: i32) -> () {
+        if width < 0 {
+            return;
+        }
+
+        self.border_width = width;
+    }
 }
 
 impl Form for Button {
@@ -50,19 +62,6 @@ impl Form for Button {
     fn set_bounding_box(&mut self, bounding_box: BoundingBox) -> () {
         self.bounding_box = bounding_box;
     }
-
-    fn get_border_width(&self) -> i32 {
-        self.border_width
-    }
-
-    fn set_border_width(&mut self, width: i32) -> () {
-        if width < 0 {
-            return;
-        }
-
-        self.border_width = width;
-    }
-
 
     fn get_children<'a>(&'a mut self) -> Box<Iterator<Item = &'a mut Form> + 'a> {
         match self.child {

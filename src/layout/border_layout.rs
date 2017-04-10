@@ -136,14 +136,6 @@ impl Form for BorderLayout {
         self.bounding_box = bounding_box;
     }
 
-    fn get_border_width(&self) -> i32 {
-        self.bounding_box.width
-    }
-
-    fn set_border_width(&mut self, width: i32) -> () {
-        self.bounding_box.width = width;
-    }
-
     fn get_children<'a>(&'a mut self) -> Box<Iterator<Item = &'a mut Form> + 'a> {
         // change interface, actually if these are None, they can be ignored, I guess?
         let opts = vec![&mut self.top_element,
