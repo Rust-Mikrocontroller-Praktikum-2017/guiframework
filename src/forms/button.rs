@@ -47,6 +47,8 @@ impl Button {
             .get_bounding_box()
             .rebase_to_outer_box(self.get_bounding_box());
 
+        child.set_outer_bounding_box(self.bounding_box.clone());
+
         self.child = Some(child);
     }
 
@@ -131,6 +133,8 @@ impl Form for Button {
     fn move_form(&mut self, dir_x: i32, dir_y: i32) {
         self.clear();
         self.bounding_box.move_in_direction(dir_x, dir_y);
+        self.bounding_box
+            .rebase_to_outer_box(&self.outer_bounding_box);
         self.draw();
     }
 }
@@ -143,9 +147,3 @@ impl Clickable for Button {
         }
     }
 }
-
-// impl Movable for Button {
-//     fn move_form(&mut self, dir_x: i32, dir_y: i32) {
-//         self.bounding_box.move_in_direction(dir_x, dir_y);
-//     }
-// }

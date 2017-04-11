@@ -48,6 +48,7 @@ impl MoveBox {
     pub fn add_form(&mut self, f: Box<Form>) -> bool {
         self.elements.push(f);
         let index = self.elements.len() - 1;
+        self.elements[index].set_outer_bounding_box(self.bounding_box.clone());
         self.elements[index]
             .get_bounding_box()
             .rebase_to_outer_box(&self.bounding_box);
