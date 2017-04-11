@@ -9,9 +9,9 @@ use lcd::Color;
 
 pub struct HorizontalLayout {
     pub bounding_box: bounding_box::BoundingBox,
-    outer_bounding_box: bounding_box::BoundingBox,
+    pub outer_bounding_box: bounding_box::BoundingBox,
     pub elements: Vec<Box<Form>>,
-    movable: bool,
+    pub movable: bool,
 }
 
 impl HorizontalLayout {
@@ -39,6 +39,30 @@ impl HorizontalLayout {
             n += 1;
         }
 
+        true
+    }
+    
+    
+    pub fn set_proportions(&mut self, proportions: Vec<i32>) -> bool {
+        if proportions.len() != self.elements.len() {
+            return false;
+        }
+        let mut sum = 0;
+        for i in &proportions {
+            sum = sum + i;
+        }
+        let sum_sin_last = sum - proportions[self.elements.len() - 1];
+        let width = self.get_bounding_box().width;
+        for i in 0..&self.elements.len() - 1 {
+            self.elements[i].get_bounding_box().width = proportions[i] / sum * width;
+            // x anpassen!!
+        }
+        self.elements[proportions.len() - 1].get_bounding_box().width = sum_sin_last / width;
+        println!("------------------------------{} - {}", width, self.elements[proportions.len() - 1].get_bounding_box().width);
+        let pos_1 = self.elements[0].get_bounding_box().x;
+        let pos_2 = self.elements[1].get_bounding_box().x;
+        let pos_3 = self.elements[2].get_bounding_box().x;
+        println!("------------------------------{}, {}, {}", pos_1, pos_2, pos_3);
         true
     }
 }

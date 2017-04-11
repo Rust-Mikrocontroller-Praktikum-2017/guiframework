@@ -89,6 +89,7 @@ impl TouchHistory {
 
         //let mut results: Vec<(&Form, i32, i32)> = Vec::new();
         for i in movements {
+            //let res_check = check_for_hit(Box::new(iter::once(root)), i[0].0, i[0].1);
             let res_check = check_for_hit(root.get_children(), i[0].0, i[0].1);
             match res_check {
                 Some(form) => {
@@ -132,36 +133,24 @@ fn check_for_hit<'a>(objects: Box<Iterator<Item = &'a mut Form> + 'a>,
     // recursively search for the movable object matched most precisely, move subtree from this
     // object.
     let mut last_mov_form: Option<&'a mut Form> = None;
+    //let mut found_el = false;
     for i in objects {
         let in_bb = i.get_bounding_box().is_in_bound(x, y);
         let movable = i.is_movable();
-        if in_bb && movable {
+        if in_bb {
             //let ret: &'a mut Form = i;
 
             //iter::once::<&'a mut Form>(&mut **child)
             //fn get_children<'a>(&'a mut self) -> Box<Iterator<Item = &'a mut Form> + 'a>;
             if check_for_hit(i.get_children(), x, y).is_none() {
-                last_mov_form = Some(i);
+                if movable {
+                    last_mov_form = Some(i);
+                    break;
+                }
             } else {
                 last_mov_form = check_for_hit(i.get_children(), x, y);
             }
-            /*
-            {
-                let ret: Option<&'a mut Form> = check_for_hit(i.get_children(), x, y);
-
-                match ret {
-                    r @ Some(_) => {
-                        last_mov_form = r;
-                        continue;
-                    },
-                    None => {
-                    }
-                }
-            }
-
-            last_mov_form = Some(i);
-            */
-            //return Some(ret);
+            //break;
         }
     }
     last_mov_form

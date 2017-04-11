@@ -118,58 +118,6 @@ fn main(hw: board::Hardware) -> ! {
 
     //None::<()>.unwrap();
 
-    /*
-    let button = forms::button::Button::new(util::bounding_box::BoundingBox; {
-                                                x: 2,
-                                                y: 2,
-                                                width: 10,
-                                                height: 10,
-                                            });*/
-
-    let mut button = forms::button::Button::new(util::bounding_box::BoundingBox {
-                                                    x: 10,
-                                                    y: 10,
-                                                    width: 100,
-                                                    height: 100,
-                                                },
-                                                3);
-    // let mut button2 = forms::button::Button::new(util::bounding_box::BoundingBox {
-    //                                                  x: 110,
-    //                                                  y: 110,
-    //                                                  width: 50,
-    //                                                  height: 50,
-    //                                              },
-    //                                              3);
-    /*
-    let label = forms::label::Label::new(util::bounding_box::BoundingBox {
-                                             x: 10,
-                                             y: 10,
-                                             width: 100,
-                                             height: 100,
-                                         },
-                                         "Button");
-
-    button.set_action_on_click(clicked);
-    //button2.set_action_on_click(clicked);
-
-    //button.set_child(Box::new(button2));
-    button.set_child(Box::new(label));
-
-    button.draw();*/
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     // Initialize touch on display.
     i2c::init_pins_and_clocks(rcc, &mut gpio);
@@ -238,9 +186,11 @@ fn main(hw: board::Hardware) -> ! {
     bl.draw();
     */
 
+    
+    // move test
     let mut move_bb_outer = BoundingBox {
-        x: 10,
-        y: 10,
+        x: 300,
+        y: 300,
         width: 200,
         height: 200,
     };
@@ -261,12 +211,21 @@ fn main(hw: board::Hardware) -> ! {
         width: 50,
         height: 50,
     };
-    let mut button2 = Box::new(Button::new(move_bb_inner2, 2));
-    button2.set_movable(true);
+    let mut button_other = Box::new(Button::new(move_bb_inner2, 2));
+    button_other.set_movable(true);
 
     move_box.add_form(button);
-    move_box.add_form(button2);
+    move_box.add_form(button_other);
     move_box.draw();
+    //--------------------------------
+    /*
+    let mut bb1 = BoundingBox {
+        x: 75,
+        y: 15,
+        width: 50,
+        height: 50,
+    };
+    let mut button1 = Box::new(Button::new(bb1, 2));
 
     let mut outer_move_box = layout::MoveBox::new(BoundingBox {
                                                       x: 0,
@@ -276,23 +235,42 @@ fn main(hw: board::Hardware) -> ! {
                                                   },
                                                   false);
     outer_move_box.add_form(Box::new(move_box));
+    let mut bb2 = BoundingBox {
+        x: 75,
+        y: 15,
+        width: 50,
+        height: 50,
+    };
+    let mut button2 = Box::new(Button::new(bb2, 2));
 
-    let mut touch_history = move_things::swipe::TouchHistory::new();
+    let mut bb3 = BoundingBox {
+        x: 75,
+        y: 15,
+        width: 50,
+        height: 50,
+    };
+    let mut button3 = Box::new(Button::new(bb3, 2));
 
     /*let bb3 = BoundingBox{x:50, y:50, width:15, height:15};
     let button3 = Button::new(bb3);
-    let b3 = Box::new(button3);
+    let b3 = Box::new(button3);*/
 
+    let mut el_vec = Vec::new();
+    let bb_dummy = BoundingBox{x:0, y: 0, width:480, height:272};
     let mut flow_container = layout::HorizontalLayout{
-    bounding_box:BoundingBox{x:10, y:10, width:100, height:100}, elements:items};
-    let b = Box::new(button);
-    flow_container.add_form(b);
-    flow_container.add_form(b2);
-    flow_container.add_form(b3);
+    bounding_box:BoundingBox{x:10, y:10, width:100, height:100}, elements:el_vec, movable:true, outer_bounding_box:bb_dummy};
+    flow_container.add_form(button1);
+    flow_container.add_form(button2);
+    flow_container.add_form(button3);
+    let v = vec![2, 2, 6];
+    flow_container.set_proportions(v);
     flow_container.draw_area();*/
 
     //let color: lcd::Color = lcd::Color::from_hex(0xFFFFFF);
     //draw::fill_rectangle(30, 30, 200, 200, draw::convert_color_to_u16(color));
+
+    let mut touch_history = move_things::swipe::TouchHistory::new();
+
 
     let mut last_led_toggle = system_clock::ticks();
     loop {
@@ -321,10 +299,12 @@ fn main(hw: board::Hardware) -> ! {
             println!("{} - {}", i.0, i.1);
         }*/
 
-
+        
         touch_history.update(ticks, input);
-        touch_history.check_for_object_moves(&mut outer_move_box);
+        //touch_history.check_for_object_moves(&mut outer_move_box);
 
+        touch_history.check_for_object_moves(&mut move_box);
+        
 
         //let v: VecDeque<u32> = VecDeque::new();
         // check if there was an error or get ArrayVec otherwise for an update
