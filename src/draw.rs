@@ -9,17 +9,18 @@ use stm32f7::lcd::TextWriter;
 
 use util::sizes;
 
-fn draw_pixel(x: i32, y: i32, color: Color) {
+fn draw_pixel(x: i32, y: i32, color: Color) -> bool {
     if x < 0 || y < 0 || x > sizes::MAX_X || y > sizes::MAX_Y {
-        return;
+        return false;
     }
 
-    // layer 2
     let addr: u32 = 0xC000_0000;
     let pixel = y as u32 * 480 + x as u32;
     let pixel_color = (addr + pixel * 4) as *mut u32;
 
     unsafe { ptr::write_volatile(pixel_color, color.to_argb8888()) };
+
+    true
 }
 
 pub fn draw_line(x1: i32, y1: i32, x2: i32, y2: i32, color: Color) {
@@ -65,12 +66,6 @@ fn swap(a: &mut i32, b: &mut i32) {
 }
 
 pub fn draw_rectangle(x: i32, y: i32, width: i32, height: i32, color: Color) -> bool {
-    //(x, y is upper left, according to coordinate system)
-    if x < 0 || x + width > sizes::MAX_X || x > sizes::MAX_X || y < 0 ||
-       y + height > sizes::MAX_Y || y > sizes::MAX_Y {
-        return false;
-    }
-
     for i in x..x + width + 1 {
         draw_pixel(i, y, color);
         draw_pixel(i, y + height, color);
@@ -84,12 +79,6 @@ pub fn draw_rectangle(x: i32, y: i32, width: i32, height: i32, color: Color) -> 
 }
 
 pub fn fill_rectangle(x: i32, y: i32, width: i32, height: i32, color: Color) -> bool {
-    //(x, y is upper left, according to coordinate system)
-    if x < 0 || x + width >= sizes::MAX_X || x >= sizes::MAX_X || y < 0 ||
-       y + height >= sizes::MAX_Y || y >= sizes::MAX_Y {
-        return false;
-    }
-
     for x in x..x + width + 1 {
         for y in y..y + width + 1 {
             draw_pixel(x, y, color);
