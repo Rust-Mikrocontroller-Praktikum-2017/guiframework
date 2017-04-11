@@ -241,7 +241,17 @@ fn main(hw: board::Hardware) -> ! {
     let mut button = Box::new(Button::new(move_bb_inner, 2));
     button.set_movable(true);
 
+    let mut move_bb_inner2 = BoundingBox {
+        x: 75,
+        y: 15,
+        width: 50,
+        height: 50,
+    };
+    let mut button2 = Box::new(Button::new(move_bb_inner2, 2));
+    button2.set_movable(true);
+
     move_box.add_form(button);
+    move_box.add_form(button2);
     move_box.draw();
 
 

@@ -16,9 +16,9 @@ fn draw_pixel(x: i32, y: i32, color: Color) -> bool {
 
     let addr: u32 = 0xC000_0000;
     let pixel = y as u32 * 480 + x as u32;
-    let pixel_color = (addr + pixel * 4) as *mut u32;
+    let pixel_color = (addr + pixel * 2) as *mut u16;
 
-    unsafe { ptr::write_volatile(pixel_color, color.to_argb8888()) };
+    unsafe { ptr::write_volatile(pixel_color, color.to_argb4444()) };
 
     true
 }

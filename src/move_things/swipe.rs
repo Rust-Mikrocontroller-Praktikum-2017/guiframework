@@ -41,7 +41,7 @@ impl TouchHistory {
         // pop old touches
         while old && !self.cur_touches.is_empty() {
             //let mut cur_el = self.cur_touches.get(0).unwrap();
-            if cur_ticks - self.cur_touches.get(0).unwrap().2 > 500 {
+            if cur_ticks - self.cur_touches.get(0).unwrap().2 > 300 {
                 // 1000ms could be made adaptable later:)
                 self.cur_touches.pop_front();
             } else {
