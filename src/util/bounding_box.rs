@@ -1,5 +1,6 @@
 use util::sizes;
 
+#[derive(Clone)]
 pub struct BoundingBox {
     pub x: i32,
     pub y: i32,

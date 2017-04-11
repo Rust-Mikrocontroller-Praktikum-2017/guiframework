@@ -52,6 +52,12 @@ impl TouchHistory {
         for i in &new_touches {
             self.cur_touches.push_back((i.0, i.1, cur_ticks));
         }
+
+        /*print!("{}-", &self.cur_touches.len());
+        for i in &self.cur_touches {
+            print!("{}-", i.0);
+        }
+        print!("---");*/
     }
 
     pub fn check_for_object_moves(&self, root: &mut Form) {
@@ -66,7 +72,7 @@ impl TouchHistory {
                 let value = &mut movements[j];
                 let length = value.len();
                 // call update and clear old touches first, but you need to know the last one...
-                if get_square_distance(value[length - 1].0, value[length - 1].1, i.0, i.1) < 8 {
+                if get_square_distance(value[length - 1].0, value[length - 1].1, i.0, i.1) < 40 {
                     value.push(*i);
                     found_match = true;
                 }
@@ -76,9 +82,14 @@ impl TouchHistory {
             }
         }
 
+        /*for i in &movements {
+            let len = i.len();
+            print!("--{},{}-{},{}--", i[0].0, i[0].1, i[len - 1].0, i[len - 1].1);
+        }*/
+
         //let mut results: Vec<(&Form, i32, i32)> = Vec::new();
         for i in movements {
-            let mut res_check = check_for_hit(root.get_children(), i[0].0, i[0].1);
+            let res_check = check_for_hit(root.get_children(), i[0].0, i[0].1);
             match res_check {
                 Some(form) => {
                     // draw recursively from current note.
@@ -86,23 +97,11 @@ impl TouchHistory {
                      * 1) clear() at parent
                      * 2) draw() parent, // move!
                      */
+                    let delta_x = i[i.len() - 1].0 - i[0].0;
+                    let delta_y = i[i.len() - 1].1 - i[0].1;
 
-
-
-
-
-                    form.move_form(i[i.len() - 1].0, i[i.len() - 1].1);
-
-                    // let move_trait = form.is_movable();
-                    // match move_trait {
-                    //     Some(T) => {
-                    //         T.move_form(i[i.len() - 1].0, i[i.len() - 1].1);
-                    //     }
-                    //     None => {}
-
-                    //move_trait.move_form(i[i.len() - 1].0, i[i.len() - 1].1);
-                    // or return this and let the caller do the actual movement...
-                    //results.push((form, i[i.len() - 1][0], i[i.len() - 1][1]));
+                    //form.move_form(i[i.len() - 1].0, i[i.len() - 1].1);
+                    form.move_form(delta_x, delta_y);
                 }
                 None => {}
             }

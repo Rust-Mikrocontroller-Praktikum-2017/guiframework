@@ -34,6 +34,7 @@ use forms::label::Label;
 use collections::boxed::Box;
 use forms::form::Form;
 
+
 use util::layout_funcs::BorderArea;
 
 use move_things::swipe;
@@ -139,6 +140,7 @@ fn main(hw: board::Hardware) -> ! {
     //                                                  height: 50,
     //                                              },
     //                                              3);
+    /*
     let label = forms::label::Label::new(util::bounding_box::BoundingBox {
                                              x: 10,
                                              y: 10,
@@ -153,12 +155,15 @@ fn main(hw: board::Hardware) -> ! {
     //button.set_child(Box::new(button2));
     button.set_child(Box::new(label));
 
-    button.draw();
+    button.draw();*/
 
     // Initialize touch on display.
     i2c::init_pins_and_clocks(rcc, &mut gpio);
     let mut i2c_3 = i2c::init(i2c_3);
     touch::check_family_id(&mut i2c_3).unwrap();
+
+
+
     /*
     let mut tmp_bb = BoundingBox {
         x: 10,
@@ -219,7 +224,28 @@ fn main(hw: board::Hardware) -> ! {
     bl.draw();
     */
 
-    let mut TH = move_things::swipe::TouchHistory::new();
+    let mut move_bb_outer = BoundingBox {
+        x: 10,
+        y: 10,
+        width: 200,
+        height: 200,
+    };
+    let mut move_box = layout::MoveBox::new(move_bb_outer, false);
+
+    let mut move_bb_inner = BoundingBox {
+        x: 15,
+        y: 15,
+        width: 50,
+        height: 50,
+    };
+    let mut button = Box::new(Button::new(move_bb_inner, 2));
+    button.set_movable(true);
+
+    move_box.add_form(button);
+    move_box.draw();
+
+
+    let mut touch_history = move_things::swipe::TouchHistory::new();
 
     /*let bb3 = BoundingBox{x:50, y:50, width:15, height:15};
     let button3 = Button::new(bb3);
@@ -240,23 +266,32 @@ fn main(hw: board::Hardware) -> ! {
     loop {
         let ticks = system_clock::ticks();
 
-        if ticks - last_led_toggle >= 500 {
+        if ticks - last_led_toggle >= 1000 {
             let led_current = led.get();
             led.set(!led_current);
             last_led_toggle = ticks;
         }
 
-        for touch in &touch::touches(&mut i2c_3).unwrap() {
-            action::walker::walk(&mut button, touch.x as i32, touch.y as i32);
-        }
+        /*for touch in &touch::touches(&mut i2c_3).unwrap() {
+            action::walker::walk(&mut move_box, touch.x as i32, touch.y as i32);
+        }*/
 
         //: &Result<ArrayVec<[Touch; 5]>, i2c::Error>
         let touches_result = touch::touches(&mut i2c_3).unwrap();
-        let touch_history = swipe::TouchHistory::new();
+        //let mut touch_history = swipe::TouchHistory::new();
+
+        let mut input: Vec<(i32, i32)> = Vec::new();
+        for i in touches_result {
+            input.push((i.x as i32, i.y as i32));
+        }
+        /*println!("Length of touch result: {}", &input.len());
+        for i in &input {
+            println!("{} - {}", i.0, i.1);
+        }*/
 
 
-        //touch_history.update(ticks, touches_result;
-        //touch_history.check_for_object_moves();
+        touch_history.update(ticks, input);
+        touch_history.check_for_object_moves(&mut move_box);
 
 
         //let v: VecDeque<u32> = VecDeque::new();

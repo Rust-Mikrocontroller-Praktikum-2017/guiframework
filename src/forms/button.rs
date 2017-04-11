@@ -118,7 +118,9 @@ impl Form for Button {
     }
 
     fn move_form(&mut self, dir_x: i32, dir_y: i32) {
+        self.clear();
         self.bounding_box.move_in_direction(dir_x, dir_y);
+        self.draw();
     }
 }
 
