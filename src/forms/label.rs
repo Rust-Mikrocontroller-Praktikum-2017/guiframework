@@ -2,6 +2,7 @@ use collections::boxed::Box;
 use core::iter;
 use stm32f7;
 use stm32f7::lcd::Color;
+use stm32f7::lcd::TextWriter;
 
 use draw;
 use draw::fill_rectangle;
@@ -85,12 +86,26 @@ impl Form for Label {
             let y_offset = y_center - height as i32 / 2;
 
             stdout.set_offset(x_offset as usize, y_offset as usize);
+            stdout.print_str(self.text);
         });
-
-        print!("{:?}", self.text);
     }
 
-    fn move_form(&mut self, dir_x: i32, dir_y: i32) {
-        self.bounding_box.move_in_direction(dir_x, dir_y);
+    fn move_form(&mut self, dir_x: i32, dir_y: i32, top: bool) {
+        if top {
+            self.clear();
+        }
+
+        let outer_if_top = if top {
+            Some(&self.outer_bounding_box)
+        } else {
+            None
+        };
+
+        self.bounding_box
+            .move_in_direction(dir_x, dir_y, outer_if_top);
+
+        if top {
+            self.draw();
+        }
     }
 }

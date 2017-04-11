@@ -184,21 +184,36 @@ impl Form for BorderLayout {
                              color);
     }
 
-    fn move_form(&mut self, dir_x: i32, dir_y: i32) {
-        // make recursive!!
-        let (moved_x, moved_y) = self.bounding_box.move_in_direction(dir_x, dir_y);
+    fn move_form(&mut self, dir_x: i32, dir_y: i32, top: bool) {
+        if top {
+            self.clear();
+        }
 
-        let opts = vec![&mut self.top_element,
-                        &mut self.bottom_element,
-                        &mut self.left_element,
-                        &mut self.right_element,
-                        &mut self.center_element];
+        let outer_if_top = if top {
+            Some(&self.outer_bounding_box)
+        } else {
+            None
+        };
 
-        for i in opts {
-            if let &mut Some(ref mut form) = i {
-                form.move_form(moved_x, moved_y);
+        let (moved_x, moved_y) = self.bounding_box
+            .move_in_direction(dir_x, dir_y, outer_if_top);
+
+        {
+            let opts = vec![&mut self.top_element,
+                            &mut self.bottom_element,
+                            &mut self.left_element,
+                            &mut self.right_element,
+                            &mut self.center_element];
+
+            for i in opts {
+                if let &mut Some(ref mut form) = i {
+                    form.move_form(moved_x, moved_y, false);
+                }
             }
         }
 
+        if top {
+            self.draw();
+        }
     }
 }

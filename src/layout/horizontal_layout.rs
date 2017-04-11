@@ -93,12 +93,26 @@ impl Form for HorizontalLayout {
         self.draw_area();
     }
 
-    fn move_form(&mut self, dir_x: i32, dir_y: i32) {
-        let (moved_x, moved_y) = self.bounding_box.move_in_direction(dir_x, dir_y);
-
-        for i in &mut self.elements {
-            i.move_form(moved_x, moved_y);
+    fn move_form(&mut self, dir_x: i32, dir_y: i32, top: bool) {
+        if top {
+            self.clear();
         }
 
+        let outer_if_top = if top {
+            Some(&self.outer_bounding_box)
+        } else {
+            None
+        };
+
+        let (moved_x, moved_y) = self.bounding_box
+            .move_in_direction(dir_x, dir_y, outer_if_top);
+
+        for i in &mut self.elements {
+            i.move_form(moved_x, moved_y, false);
+        }
+
+        if top {
+            self.draw();
+        }
     }
 }

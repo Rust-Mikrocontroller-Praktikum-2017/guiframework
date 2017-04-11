@@ -11,7 +11,7 @@ pub trait Form {
     fn is_clickable(&mut self) -> Option<&mut Clickable>;
     fn is_movable(&mut self) -> bool;
     fn set_movable(&mut self, value: bool) -> ();
-    fn move_form(&mut self, dir_x: i32, dir_y: i32);
+    fn move_form(&mut self, dir_x: i32, dir_y: i32, top: bool);
     fn clear(&self) -> ();
     fn draw(&self) -> ();
 }

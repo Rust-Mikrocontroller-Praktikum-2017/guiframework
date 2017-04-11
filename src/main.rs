@@ -33,7 +33,7 @@ use forms::label::Label;
 
 use collections::boxed::Box;
 use forms::form::Form;
-
+use util::sizes;
 
 use util::layout_funcs::BorderArea;
 
@@ -160,6 +160,17 @@ fn main(hw: board::Hardware) -> ! {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
     // Initialize touch on display.
     i2c::init_pins_and_clocks(rcc, &mut gpio);
     let mut i2c_3 = i2c::init(i2c_3);
@@ -233,7 +244,7 @@ fn main(hw: board::Hardware) -> ! {
         width: 200,
         height: 200,
     };
-    let mut move_box = layout::MoveBox::new(move_bb_outer, false);
+    let mut move_box = layout::MoveBox::new(move_bb_outer, true);
 
     let mut move_bb_inner = BoundingBox {
         x: 15,
@@ -257,6 +268,14 @@ fn main(hw: board::Hardware) -> ! {
     move_box.add_form(button2);
     move_box.draw();
 
+    let mut outer_move_box = layout::MoveBox::new(BoundingBox {
+                                                      x: 0,
+                                                      y: 0,
+                                                      width: sizes::MAX_X,
+                                                      height: sizes::MAX_Y,
+                                                  },
+                                                  false);
+    outer_move_box.add_form(Box::new(move_box));
 
     let mut touch_history = move_things::swipe::TouchHistory::new();
 
@@ -304,7 +323,7 @@ fn main(hw: board::Hardware) -> ! {
 
 
         touch_history.update(ticks, input);
-        touch_history.check_for_object_moves(&mut move_box);
+        touch_history.check_for_object_moves(&mut outer_move_box);
 
 
         //let v: VecDeque<u32> = VecDeque::new();

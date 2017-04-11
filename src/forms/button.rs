@@ -100,13 +100,6 @@ impl Form for Button {
         self.movable = value;
     }
 
-    // fn is_movable(&mut self) -> Option<&mut Movable> {
-    //     match self.movable {
-    //         false => None,
-    //         true => Some(self),
-    //     }
-    // }
-
     fn clear(&self) -> () {
         fill_rectangle(self.bounding_box.x,
                        self.bounding_box.y,
@@ -130,12 +123,28 @@ impl Form for Button {
         }
     }
 
-    fn move_form(&mut self, dir_x: i32, dir_y: i32) {
-        self.clear();
-        self.bounding_box.move_in_direction(dir_x, dir_y);
-        self.bounding_box
-            .rebase_to_outer_box(&self.outer_bounding_box);
-        self.draw();
+    fn move_form(&mut self, dir_x: i32, dir_y: i32, top: bool) {
+        if top {
+            self.clear();
+        }
+
+        let outer_if_top = if top {
+            Some(&self.outer_bounding_box)
+        } else {
+            None
+        };
+
+        let (delta_x, delta_y) = self.bounding_box
+            .move_in_direction(dir_x, dir_y, outer_if_top);
+
+        if let Some(ref mut child) = self.child {
+            child.set_outer_bounding_box(self.bounding_box.clone());
+            child.move_form(delta_x, delta_y, false);
+        }
+
+        if top {
+            self.draw();
+        }
     }
 }
 
