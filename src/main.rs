@@ -31,9 +31,6 @@ use collections::VecDeque;
 use forms::button::Button;
 use forms::label::Label;
 
-use util::layout_funcs::AddForm;
-use util::layout_funcs::AddFormBorder;
-use util::layout_funcs::DrawArea;
 use collections::boxed::Box;
 use forms::form::Form;
 
@@ -257,7 +254,7 @@ fn main(hw: board::Hardware) -> ! {
         let touches_result = touch::touches(&mut i2c_3).unwrap();
         let touch_history = swipe::TouchHistory::new();
 
-        
+
         //touch_history.update(ticks, touches_result;
         //touch_history.check_for_object_moves();
 

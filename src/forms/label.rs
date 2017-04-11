@@ -45,12 +45,12 @@ impl Form for Label {
         None
     }
 
-    // fn is_movable(&mut self) -> Option<&mut Movable> {
-    //     None
-    // }
-
     fn is_movable(&mut self) -> bool {
         self.movable
+    }
+
+    fn set_movable(&mut self, value: bool) -> () {
+        self.movable = value;
     }
 
     fn clear(&self) -> () {

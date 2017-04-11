@@ -9,6 +9,7 @@ pub trait Form {
     fn get_children<'a>(&'a mut self) -> Box<Iterator<Item = &'a mut Form> + 'a>;
     fn is_clickable(&mut self) -> Option<&mut Clickable>;
     fn is_movable(&mut self) -> bool;
+    fn set_movable(&mut self, value: bool) -> ();
     fn move_form(&mut self, dir_x: i32, dir_y: i32);
     fn clear(&self) -> ();
     fn draw(&self) -> ();

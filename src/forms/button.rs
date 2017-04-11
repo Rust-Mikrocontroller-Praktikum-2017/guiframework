@@ -83,6 +83,10 @@ impl Form for Button {
         self.movable
     }
 
+    fn set_movable(&mut self, value: bool) -> () {
+        self.movable = value;
+    }
+
     // fn is_movable(&mut self) -> Option<&mut Movable> {
     //     match self.movable {
     //         false => None,

@@ -86,7 +86,12 @@ impl TouchHistory {
                      * 1) clear() at parent
                      * 2) draw() parent, // move!
                      */
-                     form.move_form(i[i.len() - 1].0, i[i.len() - 1].1);
+
+
+
+
+
+                    form.move_form(i[i.len() - 1].0, i[i.len() - 1].1);
 
                     // let move_trait = form.is_movable();
                     // match move_trait {
@@ -105,15 +110,19 @@ impl TouchHistory {
     }
 }
 
-fn check_for_hit<'a>(objects: Box<Iterator<Item = &'a mut Form> + 'a>, x: i32, y: i32) -> Option<&'a mut Form> {
-    // recursively search for the movable object matched most precisely, move subtree from this object.
+fn check_for_hit<'a>(objects: Box<Iterator<Item = &'a mut Form> + 'a>,
+                     x: i32,
+                     y: i32)
+                     -> Option<&'a mut Form> {
+    // recursively search for the movable object matched most precisely, move subtree from this
+    // object.
     let mut last_mov_form: Option<&'a mut Form> = None;
     for i in objects {
-        let in_bb = i.get_bounding_box().is_in_bound(x,y);
+        let in_bb = i.get_bounding_box().is_in_bound(x, y);
         let movable = i.is_movable();
         if in_bb && movable {
             //let ret: &'a mut Form = i;
-            
+
             //iter::once::<&'a mut Form>(&mut **child)
             //fn get_children<'a>(&'a mut self) -> Box<Iterator<Item = &'a mut Form> + 'a>;
             if check_for_hit(i.get_children(), x, y).is_none() {

@@ -3,9 +3,6 @@ use util::*;
 use collections::boxed::Box;
 use collections::Vec;
 
-use util::layout_funcs::AddFormBorder;
-use util::layout_funcs::DrawArea;
-
 use util::layout_funcs::BorderArea;
 
 use draw;
@@ -35,10 +32,8 @@ impl BorderLayout {
             movable: false,
         }
     }
-}
 
-impl DrawArea for BorderLayout {
-    fn draw_area(&self) -> bool {
+    pub fn draw_area(&self) -> bool {
         let all_el = [&self.top_element,
                       &self.bottom_element,
                       &self.left_element,
@@ -56,10 +51,8 @@ impl DrawArea for BorderLayout {
         }
         true
     }
-}
 
-impl AddFormBorder for BorderLayout {
-    fn add_form(&mut self, mut f: Box<Form>, pos: BorderArea) -> bool {
+    pub fn add_form(&mut self, mut f: Box<Form>, pos: BorderArea) -> bool {
         match pos {
             BorderArea::Top => {
                 let width = self.bounding_box.width;
@@ -162,12 +155,9 @@ impl Form for BorderLayout {
         self.movable
     }
 
-    // fn is_movable(&mut self) -> Option<&mut Movable> {
-    //     match self.movable {
-    //         false => None,
-    //         true => Some(self),
-    //     }
-    // }
+    fn set_movable(&mut self, value: bool) -> () {
+        self.movable = value;
+    }
 
     fn draw(&self) -> () {
         self.draw_area();
@@ -187,19 +177,18 @@ impl Form for BorderLayout {
         let (moved_x, moved_y) = self.bounding_box.move_in_direction(dir_x, dir_y);
 
         let opts = vec![&mut self.top_element,
-                &mut self.bottom_element,
-                &mut self.left_element,
-                &mut self.right_element,
-                &mut self.center_element];
-        
+                        &mut self.bottom_element,
+                        &mut self.left_element,
+                        &mut self.right_element,
+                        &mut self.center_element];
+
         for i in opts {
             if let &mut Some(ref mut form) = i {
                 form.move_form(moved_x, moved_y);
             }
         }
-        
+
     }
-    
 }
 
 // impl Movable for BorderLayout {
@@ -212,10 +201,10 @@ impl Form for BorderLayout {
 //                 &mut self.left_element,
 //                 &mut self.right_element,
 //                 &mut self.center_element];
-        
+
 //         for i in opts {
 //             i.move_form(moved_x, moved_y);
 //         }
-        
+
 //     }
 // }
