@@ -5,13 +5,14 @@ use stm32f7::lcd::Color;
 use draw::draw_rectangle;
 use draw::fill_rectangle;
 use forms::form::Clickable;
-//use forms::form::Movable;
 use forms::form::Form;
 use util::bounding_box::BoundingBox;
+use util::sizes;
 
 
 pub struct Button {
     bounding_box: BoundingBox,
+    outer_bounding_box: BoundingBox,
     child: Option<Box<Form>>,
     on_click: Option<fn(form: &mut Button) -> ()>,
     movable: bool,
@@ -23,6 +24,12 @@ impl Button {
     pub fn new(bounding_box: BoundingBox, border_width: i32) -> Button {
         Button {
             bounding_box: bounding_box,
+            outer_bounding_box: BoundingBox {
+                x: 0,
+                y: 0,
+                width: sizes::MAX_X,
+                height: sizes::MAX_Y,
+            },
             child: None,
             on_click: None,
             movable: false,
@@ -63,6 +70,10 @@ impl Form for Button {
 
     fn set_bounding_box(&mut self, bounding_box: BoundingBox) -> () {
         self.bounding_box = bounding_box;
+    }
+
+    fn set_outer_bounding_box(&mut self, bounding_box: BoundingBox) {
+        self.outer_bounding_box = bounding_box;
     }
 
     fn get_children<'a>(&'a mut self) -> Box<Iterator<Item = &'a mut Form> + 'a> {

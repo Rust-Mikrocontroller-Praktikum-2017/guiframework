@@ -157,6 +157,7 @@ fn main(hw: board::Hardware) -> ! {
 
     button.draw();*/
 
+
     // Initialize touch on display.
     i2c::init_pins_and_clocks(rcc, &mut gpio);
     let mut i2c_3 = i2c::init(i2c_3);

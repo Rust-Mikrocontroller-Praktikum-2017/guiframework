@@ -7,11 +7,11 @@ use draw;
 use draw::fill_rectangle;
 use forms::form::Clickable;
 use forms::form::Form;
-//use forms::form::Movable;
 use util::bounding_box::BoundingBox;
 
 pub struct Label {
     bounding_box: BoundingBox,
+    outer_bounding_box: BoundingBox,
     child: Option<Box<Form>>,
     movable: bool,
     text: &'static str,
@@ -19,8 +19,19 @@ pub struct Label {
 
 impl Label {
     pub fn new(bounding_box: BoundingBox, text: &'static str) -> Label {
+        let x = bounding_box.x;
+        let y = bounding_box.y;
+        let width = bounding_box.width;
+        let height = bounding_box.height;
+
         Label {
             bounding_box: bounding_box,
+            outer_bounding_box: BoundingBox {
+                x: x,
+                y: y,
+                width: width,
+                height: height,
+            },
             child: None,
             movable: false,
             text: text,
@@ -35,6 +46,10 @@ impl Form for Label {
 
     fn set_bounding_box(&mut self, bounding_box: BoundingBox) -> () {
         self.bounding_box = bounding_box;
+    }
+
+    fn set_outer_bounding_box(&mut self, bounding_box: BoundingBox) {
+        self.outer_bounding_box = bounding_box;
     }
 
     fn get_children<'a>(&'a mut self) -> Box<Iterator<Item = &'a mut Form> + 'a> {
