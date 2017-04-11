@@ -45,6 +45,7 @@ use stm32f7::touch::Touch;
 //use stm32f7::arrayvec::ArrayVec;
 use arrayvec::ArrayVec;
 
+#[inline(never)]
 fn main(hw: board::Hardware) -> ! {
     let board::Hardware {
         rcc,
@@ -147,7 +148,7 @@ fn main(hw: board::Hardware) -> ! {
                                              width: 100,
                                              height: 100,
                                          },
-                                         "Button (click)");
+                                         "Button");
 
     button.set_action_on_click(clicked);
     //button2.set_action_on_click(clicked);
