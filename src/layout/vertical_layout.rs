@@ -9,6 +9,7 @@ use util::bounding_box::BoundingBox;
 
 pub struct VerticalLayout {
     pub bounding_box: bounding_box::BoundingBox,
+    outer_bounding_box: bounding_box::BoundingBox,
     pub elements: Vec<Box<Form>>,
     movable: bool,
 }
@@ -49,6 +50,10 @@ impl Form for VerticalLayout {
 
     fn set_bounding_box(&mut self, bounding_box: BoundingBox) -> () {
         self.bounding_box = bounding_box;
+    }
+
+    fn set_outer_bounding_box(&mut self, bounding_box: BoundingBox) {
+        self.outer_bounding_box = bounding_box;
     }
 
     fn get_children<'a>(&'a mut self) -> Box<Iterator<Item = &'a mut Form> + 'a> {

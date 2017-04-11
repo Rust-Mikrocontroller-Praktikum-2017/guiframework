@@ -1,9 +1,11 @@
 use forms::form::*;
+use util::bounding_box::BoundingBox;
 use util::*;
 use collections::boxed::Box;
 use collections::Vec;
 
 use util::layout_funcs::BorderArea;
+use util::sizes;
 
 use draw;
 use lcd::Color;
@@ -11,7 +13,7 @@ use lcd::Color;
 
 pub struct BorderLayout {
     pub bounding_box: bounding_box::BoundingBox,
-    // Boxen direkt annehmen, also Nutzer allokiert ne Box und den Zeiger darauf füge ich hinzu
+    outer_bounding_box: bounding_box::BoundingBox,
     pub top_element: Option<Box<Form>>,
     pub bottom_element: Option<Box<Form>>,
     pub left_element: Option<Box<Form>>,
@@ -24,6 +26,12 @@ impl BorderLayout {
     pub fn new(bb: bounding_box::BoundingBox) -> BorderLayout {
         BorderLayout {
             bounding_box: bb,
+            outer_bounding_box: BoundingBox {
+                x: 0,
+                y: 0,
+                width: sizes::MAX_X,
+                height: sizes::MAX_Y,
+            },
             top_element: None,
             bottom_element: None,
             left_element: None,
@@ -129,6 +137,10 @@ impl Form for BorderLayout {
         self.bounding_box = bounding_box;
     }
 
+    fn set_outer_bounding_box(&mut self, bounding_box: BoundingBox) {
+        self.outer_bounding_box = bounding_box;
+    }
+
     fn get_children<'a>(&'a mut self) -> Box<Iterator<Item = &'a mut Form> + 'a> {
         // change interface, actually if these are None, they can be ignored, I guess?
         let opts = vec![&mut self.top_element,
@@ -190,21 +202,3 @@ impl Form for BorderLayout {
 
     }
 }
-
-// impl Movable for BorderLayout {
-//     fn move_form(&mut self, dir_x: i32, dir_y: i32) {
-//         // make recursive!!
-//         let (moved_x, moved_y) = self.bounding_box.move_in_direction(dir_x, dir_y);
-
-//         let opts = vec![&mut self.top_element,
-//                 &mut self.bottom_element,
-//                 &mut self.left_element,
-//                 &mut self.right_element,
-//                 &mut self.center_element];
-
-//         for i in opts {
-//             i.move_form(moved_x, moved_y);
-//         }
-
-//     }
-// }
