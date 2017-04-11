@@ -5,7 +5,7 @@ use stm32f7::lcd::Color;
 use draw::draw_rectangle;
 use draw::fill_rectangle;
 use forms::form::Clickable;
-use forms::form::Movable;
+//use forms::form::Movable;
 use forms::form::Form;
 use util::bounding_box::BoundingBox;
 
@@ -79,12 +79,16 @@ impl Form for Button {
         }
     }
 
-    fn is_movable(&mut self) -> Option<&mut Movable> {
-        match self.movable {
-            false => None,
-            true => Some(self),
-        }
+    fn is_movable(&mut self) -> bool {
+        self.movable
     }
+
+    // fn is_movable(&mut self) -> Option<&mut Movable> {
+    //     match self.movable {
+    //         false => None,
+    //         true => Some(self),
+    //     }
+    // }
 
     fn clear(&self) -> () {
         fill_rectangle(self.bounding_box.x,
@@ -108,6 +112,10 @@ impl Form for Button {
             Some(ref child) => child.draw(),
         }
     }
+
+    fn move_form(&mut self, dir_x: i32, dir_y: i32) {
+        self.bounding_box.move_in_direction(dir_x, dir_y);
+    }
 }
 
 impl Clickable for Button {
@@ -119,8 +127,8 @@ impl Clickable for Button {
     }
 }
 
-impl Movable for Button {
-    fn move_form(&mut self, dir_x: i32, dir_y: i32) {
-        self.bounding_box.move_in_direction(dir_x, dir_y);
-    }
-}
+// impl Movable for Button {
+//     fn move_form(&mut self, dir_x: i32, dir_y: i32) {
+//         self.bounding_box.move_in_direction(dir_x, dir_y);
+//     }
+// }

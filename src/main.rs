@@ -255,7 +255,9 @@ fn main(hw: board::Hardware) -> ! {
         //: &Result<ArrayVec<[Touch; 5]>, i2c::Error>
         let touches_result = touch::touches(&mut i2c_3).unwrap();
         let touch_history = swipe::TouchHistory::new();
-        //touch_history.update(ticks, touches_result);
+
+        
+        //touch_history.update(ticks, touches_result;
         //touch_history.check_for_object_moves();
 
 

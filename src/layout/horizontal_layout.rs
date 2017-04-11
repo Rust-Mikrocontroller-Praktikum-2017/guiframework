@@ -14,6 +14,7 @@ pub struct HorizontalLayout {
     pub bounding_box: bounding_box::BoundingBox,
     // Boxen direkt annehmen, also Nutzer allokiert ne Box und den Zeiger darauf füge ich hinzu
     pub elements: Vec<Box<Form>>,
+    movable: bool,
 }
 
 impl DrawArea for HorizontalLayout {
@@ -55,7 +56,7 @@ impl Form for HorizontalLayout {
     fn get_children<'a>(&'a mut self) -> Box<Iterator<Item = &'a mut Form> + 'a> {
         let mut res: Vec<&'a mut Form> = Vec::new();
 
-        for i in &self.elements {
+        for i in &mut self.elements {
             res.push(&mut **i);
         }
 
@@ -66,8 +67,8 @@ impl Form for HorizontalLayout {
     fn is_clickable(&mut self) -> Option<&mut Clickable> {
         None
     }
-    fn is_movable(&mut self) -> Option<&mut Movable> {
-        None
+    fn is_movable(&mut self) -> bool {
+        self.movable
     }
     fn clear(&self) -> () {
         let color = Color::rgba(0, 0, 0, 0);
@@ -80,16 +81,26 @@ impl Form for HorizontalLayout {
     fn draw(&self) -> () {
         self.draw_area();
     }
-}
 
-impl Movable for HorizontalLayout {
     fn move_form(&mut self, dir_x: i32, dir_y: i32) {
         // make recursive!!
         let (moved_x, moved_y) = self.bounding_box.move_in_direction(dir_x, dir_y);
         
-        for i in &self.elements {
+        for i in &mut self.elements {
             i.move_form(moved_x, moved_y);
         }
         
     }
 }
+
+// impl Movable for HorizontalLayout {
+//     fn move_form(&mut self, dir_x: i32, dir_y: i32) {
+//         // make recursive!!
+//         let (moved_x, moved_y) = self.bounding_box.move_in_direction(dir_x, dir_y);
+        
+//         for i in &self.elements {
+//             i.move_form(moved_x, moved_y);
+//         }
+        
+//     }
+// }

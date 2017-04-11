@@ -158,12 +158,16 @@ impl Form for BorderLayout {
         None
     }
 
-    fn is_movable(&mut self) -> Option<&mut Movable> {
-        match self.movable {
-            false => None,
-            true => Some(self),
-        }
+    fn is_movable(&mut self) -> bool {
+        self.movable
     }
+
+    // fn is_movable(&mut self) -> Option<&mut Movable> {
+    //     match self.movable {
+    //         false => None,
+    //         true => Some(self),
+    //     }
+    // }
 
     fn draw(&self) -> () {
         self.draw_area();
@@ -177,9 +181,7 @@ impl Form for BorderLayout {
                              self.bounding_box.height,
                              color);
     }
-}
 
-impl Movable for BorderLayout {
     fn move_form(&mut self, dir_x: i32, dir_y: i32) {
         // make recursive!!
         let (moved_x, moved_y) = self.bounding_box.move_in_direction(dir_x, dir_y);
@@ -191,8 +193,29 @@ impl Movable for BorderLayout {
                 &mut self.center_element];
         
         for i in opts {
-            i.move_form(moved_x, moved_y);
+            if let &mut Some(ref mut form) = i {
+                form.move_form(moved_x, moved_y);
+            }
         }
         
     }
+    
 }
+
+// impl Movable for BorderLayout {
+//     fn move_form(&mut self, dir_x: i32, dir_y: i32) {
+//         // make recursive!!
+//         let (moved_x, moved_y) = self.bounding_box.move_in_direction(dir_x, dir_y);
+
+//         let opts = vec![&mut self.top_element,
+//                 &mut self.bottom_element,
+//                 &mut self.left_element,
+//                 &mut self.right_element,
+//                 &mut self.center_element];
+        
+//         for i in opts {
+//             i.move_form(moved_x, moved_y);
+//         }
+        
+//     }
+// }

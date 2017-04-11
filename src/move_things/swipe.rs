@@ -8,6 +8,8 @@ use util::sizes;
 use util::math::isqrt;
 use collections::boxed::Box;
 
+//use arrayvec::ArrayVec;
+
 //use font_rs::float_impls::FloatImpls;
 
 pub struct TouchHistory {
@@ -33,6 +35,7 @@ impl TouchHistory {
         TouchHistory { cur_touches: VecDeque::new() }
     }
 
+    //pub fn update(&mut self, cur_ticks: usize, new_touches: ArrayVec<(i32, i32)>) {
     pub fn update(&mut self, cur_ticks: usize, new_touches: Vec<(i32, i32)>) {
         let mut old = true;
         // pop old touches
@@ -83,14 +86,15 @@ impl TouchHistory {
                      * 1) clear() at parent
                      * 2) draw() parent, // move!
                      */
+                     form.move_form(i[i.len() - 1].0, i[i.len() - 1].1);
 
-                    let move_trait = form.is_movable();
-                    match move_trait {
-                        Some(T) => {
-                            T.move_form(i[i.len() - 1].0, i[i.len() - 1].1);
-                        }
-                        None => {}
-                    }
+                    // let move_trait = form.is_movable();
+                    // match move_trait {
+                    //     Some(T) => {
+                    //         T.move_form(i[i.len() - 1].0, i[i.len() - 1].1);
+                    //     }
+                    //     None => {}
+
                     //move_trait.move_form(i[i.len() - 1].0, i[i.len() - 1].1);
                     // or return this and let the caller do the actual movement...
                     //results.push((form, i[i.len() - 1][0], i[i.len() - 1][1]));
@@ -106,7 +110,7 @@ fn check_for_hit<'a>(objects: Box<Iterator<Item = &'a mut Form> + 'a>, x: i32, y
     let mut last_mov_form: Option<&'a mut Form> = None;
     for i in objects {
         let in_bb = i.get_bounding_box().is_in_bound(x,y);
-        let movable = i.is_movable().is_some();
+        let movable = i.is_movable();
         if in_bb && movable {
             //let ret: &'a mut Form = i;
             

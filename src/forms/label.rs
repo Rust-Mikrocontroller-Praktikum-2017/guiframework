@@ -7,7 +7,7 @@ use draw;
 use draw::fill_rectangle;
 use forms::form::Clickable;
 use forms::form::Form;
-use forms::form::Movable;
+//use forms::form::Movable;
 use util::bounding_box::BoundingBox;
 
 pub struct Label {
@@ -45,8 +45,12 @@ impl Form for Label {
         None
     }
 
-    fn is_movable(&mut self) -> Option<&mut Movable> {
-        None
+    // fn is_movable(&mut self) -> Option<&mut Movable> {
+    //     None
+    // }
+
+    fn is_movable(&mut self) -> bool {
+        self.movable
     }
 
     fn clear(&self) -> () {
@@ -69,5 +73,9 @@ impl Form for Label {
         });
 
         print!("{:?}", self.text);
+    }
+
+    fn move_form(&mut self, dir_x: i32, dir_y: i32) {
+        self.bounding_box.move_in_direction(dir_x, dir_y);
     }
 }
