@@ -57,14 +57,7 @@ pub fn view_languages() -> View {
     f.add_form(button("Italiano"));
     f.add_form(button("Português"));
     f.add_form(button("Rust"));
-    let mut hl = middle(Box::new(f));
-    View::new(Box::new(hl))
-
-    /*let mut hl = middle(button("Espanol"));
-    hl.add_form(button("Italiano"));
-    hl.add_form(button("Deutsch"));
-    hl.set_proportions(vec!(2,2,1,1,1));
-    hl*/
+    middle(Box::new(f))
 }
 
 pub fn view_skins() -> View {
