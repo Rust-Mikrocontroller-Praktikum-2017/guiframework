@@ -46,8 +46,8 @@ impl HorizontalLayout {
         for _ in 0..len {
             self.proportions.push(1);
         }
-        
-/*        let len = self.elements.len() as i32;
+
+        /*        let len = self.elements.len() as i32;
         let el_width = self.bounding_box.width / len;
         let mut n = 0;
         for i in &mut self.elements {
@@ -80,16 +80,36 @@ impl HorizontalLayout {
             let next_width = (proportions[i] * width) / sum;
             added_width += next_width;
             //self.elements[i].get_bounding_box().x = cur_x;
-            let next_x= cur_x;
-            let bb = BoundingBox{x: next_x, y: self.get_bounding_box().y, width: next_width, height: self.get_bounding_box().height};
+            let next_x = cur_x;
+            let bb = BoundingBox {
+                x: next_x,
+                y: self.get_bounding_box().y,
+                width: next_width,
+                height: self.get_bounding_box().height,
+            };
             cur_x += added_width;
-            let bb_clone = BoundingBox{x: next_x, y: self.get_bounding_box().y, width: next_width, height: self.get_bounding_box().height};
+            let bb_clone = BoundingBox {
+                x: next_x,
+                y: self.get_bounding_box().y,
+                width: next_width,
+                height: self.get_bounding_box().height,
+            };
 
             self.elements[i].set_bounding_box(bb);
             self.elements[i].set_outer_bounding_box(bb_clone);
         }
-        let bb = BoundingBox{x: cur_x, y: self.get_bounding_box().y, width: self.get_bounding_box().width - added_width, height: self.get_bounding_box().height};
-        let bb_clone = BoundingBox{x: cur_x, y: self.get_bounding_box().y, width: self.get_bounding_box().width - added_width, height: self.get_bounding_box().height};
+        let bb = BoundingBox {
+            x: cur_x,
+            y: self.get_bounding_box().y,
+            width: self.get_bounding_box().width - added_width,
+            height: self.get_bounding_box().height,
+        };
+        let bb_clone = BoundingBox {
+            x: cur_x,
+            y: self.get_bounding_box().y,
+            width: self.get_bounding_box().width - added_width,
+            height: self.get_bounding_box().height,
+        };
         self.elements[proportions.len() - 1].set_bounding_box(bb);
         self.elements[proportions.len() - 1].set_outer_bounding_box(bb_clone);
         /*self.elements[proportions.len() - 1]
