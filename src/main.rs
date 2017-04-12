@@ -118,15 +118,6 @@ fn main(hw: board::Hardware) -> ! {
 
     stm32f7::init_stdout(lcd.layer_2().unwrap());
 
-    //None::<()>.unwrap();
-
-    /*
-    let button = forms::button::Button::new(util::bounding_box::BoundingBox; {
-                                                x: 2,
-                                                y: 2,
-                                                width: 10,
-                                                height: 10,
-                                            });*/
 
     let mut button = forms::button::Button::new(util::bounding_box::BoundingBox {
                                                     x: 10,
@@ -134,30 +125,6 @@ fn main(hw: board::Hardware) -> ! {
                                                     width: 100,
                                                     height: 100,
                                                 });
-    // let mut button2 = forms::button::Button::new(util::bounding_box::BoundingBox {
-    //                                                  x: 110,
-    //                                                  y: 110,
-    //                                                  width: 50,
-    //                                                  height: 50,
-    //                                              });
-    /*
-    let label = forms::label::Label::new(util::bounding_box::BoundingBox {
-                                             x: 10,
-                                             y: 10,
-                                             width: 100,
-                                             height: 100,
-                                         },
-                                         "Button");
-
-    button.set_action_on_click(clicked);
-    //button2.set_action_on_click(clicked);
-
-    //button.set_child(Box::new(button2));
-    button.set_child(Box::new(label));
-
-    button.draw();*/
-
-
 
     // Initialize touch on display.
     i2c::init_pins_and_clocks(rcc, &mut gpio);
@@ -173,7 +140,6 @@ fn main(hw: board::Hardware) -> ! {
         height: 272,
     };
     let mut move_box_root = layout::MoveBox::new(move_bb_outer_outer, true);*/
-
 
     let mut move_bb_outer = BoundingBox {
         x: 0,
