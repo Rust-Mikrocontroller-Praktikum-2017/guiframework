@@ -5,7 +5,7 @@ use stm32f7::lcd::Color;
 use stm32f7::lcd::TextWriter;
 
 use draw;
-use draw::fill_rectangle;
+use draw::draw_pixel_on_text_layer;
 use forms::form::Clickable;
 use forms::form::Form;
 use util::bounding_box::BoundingBox;
@@ -71,11 +71,11 @@ impl Form for Label {
     }
 
     fn clear(&self) -> () {
-        fill_rectangle(self.bounding_box.x,
-                       self.bounding_box.y,
-                       self.bounding_box.width,
-                       self.bounding_box.height,
-                       Color::rgba(0, 0, 0, 0));
+        for x in self.bounding_box.x .. self.bounding_box.x + self.bounding_box.width {
+            for y in self.bounding_box.y .. self.bounding_box.y + self.bounding_box.height {
+                draw_pixel_on_text_layer(x, y, Color::rgba(0, 0, 0, 0));
+            }
+        }
     }
 
     fn draw(&self) -> () {
