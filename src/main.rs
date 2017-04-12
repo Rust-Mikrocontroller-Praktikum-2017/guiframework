@@ -240,7 +240,7 @@ fn main(hw: board::Hardware) -> ! {
         width: 300,
         height: 260,
     };
-    let mut move_box = layout::MoveBox::new(move_bb_outer, true);
+    let mut move_box = layout::MoveBox::new(move_bb_outer, false);
     //move_box.set_movable(true);
     //move_box_root.add_form(move_box);
 
@@ -320,8 +320,11 @@ fn main(hw: board::Hardware) -> ! {
         }*/
 
 
-        touch_history.update(ticks, input);
-        touch_history.check_for_object_moves(&mut outer_move_box);
+        let new_stuff = touch_history.update(ticks, input);
+        if new_stuff {
+            touch_history.check_for_object_moves(&mut outer_move_box);
+        }
+        
 
 
         //let v: VecDeque<u32> = VecDeque::new();

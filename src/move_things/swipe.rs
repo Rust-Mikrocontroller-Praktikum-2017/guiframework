@@ -36,7 +36,7 @@ impl TouchHistory {
     }
 
     //pub fn update(&mut self, cur_ticks: usize, new_touches: ArrayVec<(i32, i32)>) {
-    pub fn update(&mut self, cur_ticks: usize, new_touches: Vec<(i32, i32)>) {
+    pub fn update(&mut self, cur_ticks: usize, new_touches: Vec<(i32, i32)>) -> bool {
         let mut old = true;
         // pop old touches
         while old && !self.cur_touches.is_empty() {
@@ -53,6 +53,10 @@ impl TouchHistory {
             self.cur_touches.push_back((i.0, i.1, cur_ticks));
         }
 
+        if new_touches.len() > 0 {
+            return true;
+        }
+        false
         /*print!("{}-", &self.cur_touches.len());
         for i in &self.cur_touches {
             print!("{}-", i.0);
@@ -98,8 +102,8 @@ impl TouchHistory {
                      * 1) clear() at parent
                      * 2) draw() parent, // move!
                      */
-
-
+                    let x = form.get_bounding_box().width;
+                    let y = form.get_bounding_box().height;
 
 
                     let delta_x = i[i.len() - 1].0 - i[0].0;
@@ -107,6 +111,7 @@ impl TouchHistory {
 
                     //form.move_form(i[i.len() - 1].0, i[i.len() - 1].1);
                     if delta_x > 0 || delta_y > 0 {
+                        //print!("{},{}--", x, y);
                         form.move_form(delta_x, delta_y, true);
                     }                    
                 }
@@ -132,19 +137,40 @@ fn check_for_hit<'a>(objects: Box<Iterator<Item = &'a mut Form> + 'a>,
 
             //iter::once::<&'a mut Form>(&mut **child)
             //fn get_children<'a>(&'a mut self) -> Box<Iterator<Item = &'a mut Form> + 'a>;
+
+            // FIX ME, unnecessary call to check_for_hit (two times).
             if check_for_hit(i.get_children(), x, y).is_none() {
                 if movable {
                     last_mov_form = Some(i);
                     break;
+                    //return Some(i);
                 }
             } else {
                 last_mov_form = check_for_hit(i.get_children(), x, y);
             }
-            //break;
         }
     }
     last_mov_form
 }
+
+/* 
+enum TreeRes<'a> {
+    FoundMovableChild(&'a mut Form),
+    CurrentMovable(&'a mut Form),
+    Nothing,
+}
+
+fn helper<'a>(i: &'a mut Form, x: i32, y:i32) -> TreeRes<'a> {
+    if let Some(i) = check_for_hit(i.get_children(), x, y) {
+        return TreeRes::FoundMovableChild(i);
+    } 
+    
+    if i.is_movable() {
+        TreeRes::CurrentMovable(i)
+    } else {
+        TreeRes::Nothing
+    }
+}*/
 
 /*
 fn draw_recursively(note: &mut Form) {
