@@ -235,12 +235,12 @@ fn main(hw: board::Hardware) -> ! {
     };
     let mut move_box_root = layout::MoveBox::new(move_bb_outer_outer, true);*/
 
-
+    
     let mut move_bb_outer = BoundingBox {
         x: 10,
         y: 10,
-        width: 300,
-        height: 260,
+        width: 40,
+        height: 40,
     };
     let mut move_box = layout::MoveBox::new(move_bb_outer, true);
     //move_box.set_movable(true);
@@ -279,17 +279,28 @@ fn main(hw: board::Hardware) -> ! {
 
     let mut touch_history = move_things::swipe::TouchHistory::new();
 
-    /*let bb3 = BoundingBox{x:50, y:50, width:15, height:15};
-    let button3 = Button::new(bb3);
+
+    
+    let bb1 = BoundingBox{x:50, y:50, width:15, height:15};
+    let button1 = Button::new(bb1, 2);
+    let b1 = Box::new(button1);
+    let bb2 = BoundingBox{x:50, y:50, width:15, height:15};
+    let button2 = Button::new(bb2, 2);
+    let b2 = Box::new(button2);
+    let bb3 = BoundingBox{x:50, y:50, width:15, height:15};
+    let button3 = Button::new(bb3, 2);
     let b3 = Box::new(button3);
 
+    let hor_bb = BoundingBox{x:0, y:0, width:480, height: 272};
+
     let mut flow_container = layout::HorizontalLayout{
-    bounding_box:BoundingBox{x:10, y:10, width:100, height:100}, elements:items};
-    let b = Box::new(button);
-    flow_container.add_form(b);
+    bounding_box:BoundingBox{x:200, y:100, width:200, height:100}, elements:Vec::new(), movable: true, outer_bounding_box:hor_bb};
+    flow_container.add_form(b1);
     flow_container.add_form(b2);
     flow_container.add_form(b3);
-    flow_container.draw_area();*/
+    let v = vec![2,2,6];
+    flow_container.set_proportions(v);
+    flow_container.draw_area();
 
     //let color: lcd::Color = lcd::Color::from_hex(0xFFFFFF);
     //draw::fill_rectangle(30, 30, 200, 200, draw::convert_color_to_u16(color));

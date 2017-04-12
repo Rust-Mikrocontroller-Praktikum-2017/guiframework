@@ -51,20 +51,25 @@ impl HorizontalLayout {
         for i in &proportions {
             sum = sum + i;
         }
-        let sum_sin_last = sum - proportions[self.elements.len() - 1];
         let width = self.get_bounding_box().width;
+        let mut cur_x = self.bounding_box.x;
+        let mut added_width = 0;
         for i in 0..&self.elements.len() - 1 {
-            self.elements[i].get_bounding_box().width = proportions[i] / sum * width;
+            self.elements[i].get_bounding_box().width = (proportions[i] * width) / sum;
+            added_width += self.elements[i].get_bounding_box().width;
+            self.elements[i].get_bounding_box().x = cur_x;
+            cur_x += self.elements[i].get_bounding_box().width;
             // x anpassen!!
         }
         self.elements[proportions.len() - 1]
             .get_bounding_box()
-            .width = sum_sin_last / width;
-        println!("------------------------------{} - {}",
+            .width = self.get_bounding_box().width - added_width;
+        self.elements[proportions.len() - 1].get_bounding_box().x = cur_x;
+        /*println!("------------------------------{} - {}",
                  width,
                  self.elements[proportions.len() - 1]
                      .get_bounding_box()
-                     .width);
+                     .width);*/
         let pos_1 = self.elements[0].get_bounding_box().x;
         let pos_2 = self.elements[1].get_bounding_box().x;
         let pos_3 = self.elements[2].get_bounding_box().x;
