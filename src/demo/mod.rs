@@ -7,6 +7,7 @@ use forms::form::Form;
 use forms::button::Button;
 use forms::label::Label;
 use util::bounding_box::BoundingBox;
+use application::view::View;
 
 fn bb(x: i32, y:i32, width: i32, height: i32) -> BoundingBox {
     BoundingBox {
@@ -43,7 +44,7 @@ fn middle(middle_form: Box<Form>) -> HorizontalLayout {
     f
 }
 
-pub fn form_languages() -> HorizontalLayout {
+pub fn form_languages() -> View {
     let mut f = VerticalLayout::new(bb_def());
     f.add_form(button("English"));
     f.add_form(button("Français"));
@@ -51,7 +52,9 @@ pub fn form_languages() -> HorizontalLayout {
     f.add_form(button("Italiano"));
     f.add_form(button("Português"));
     f.add_form(button("Rust"));
-    middle(Box::new(f))
+    let mut hl = middle(Box::new(f));
+    View::new(Box::new(hl))
+
     /*let mut hl = middle(button("Espanol"));
     hl.add_form(button("Italiano"));
     hl.add_form(button("Deutsch"));
