@@ -48,6 +48,7 @@ use stm32f7::touch::Touch;
 use arrayvec::ArrayVec;
 
 use application::view::View;
+use application::app::App;
 
 #[inline(never)]
 fn main(hw: board::Hardware) -> ! {
@@ -248,9 +249,9 @@ fn main(hw: board::Hardware) -> ! {
     move_hor_layout.set_proportions(prop);
     move_hor_layout.set_movable(false);
     let mut move_view = View::new(Box::new(move_hor_layout));
-    //move_hor_layout.draw();
+    //move_view.draw();
     
-    let v = demo::view_languages();
+    let mut v = demo::view_skins();
     v.draw();
 
     let mut touch_history = move_things::swipe::TouchHistory::new();
@@ -266,8 +267,10 @@ fn main(hw: board::Hardware) -> ! {
         }
 
         for touch in &touch::touches(&mut i2c_3).unwrap() {
-            action::walker::walk(&mut move_view, touch.x as i32, touch.y as i32);
-            //action::walker::walk(&mut move_hor_layout, touch.x as i32, touch.y as i32);
+            //action::walker::walk(&mut move_view, touch.x as i32, touch.y as i32);
+            action::walker::walk(&mut v, touch.x as i32, touch.y as i32);
+
+            ////action::walker::walk(&mut move_hor_layout, touch.x as i32, touch.y as i32);
         }
 
         //: &Result<ArrayVec<[Touch; 5]>, i2c::Error>
@@ -277,15 +280,11 @@ fn main(hw: board::Hardware) -> ! {
         for i in touches_result {
             input.push((i.x as i32, i.y as i32));
         }
-        /*println!("Length of touch result: {}", &input.len());
-        for i in &input {
-            println!("{} - {}", i.0, i.1);
-        }*/
 
 
         touch_history.update(ticks, input);
-        touch_history.check_for_object_moves(&mut move_view);
-        //touch_history.check_for_object_moves(&mut move_hor_layout);
+        //touch_history.check_for_object_moves(&mut move_view);
+        ////touch_history.check_for_object_moves(&mut move_hor_layout);
 
 
         //let v: VecDeque<u32> = VecDeque::new();
@@ -302,10 +301,19 @@ fn main(hw: board::Hardware) -> ! {
 
 
 fn clicked(form: &mut Button) {
+        let label = Label::new(BoundingBox{
+            x: 0,
+            y: 0,
+            width: 10,
+            height: 10,
+        }, "clicked!");
+
+        form.set_child(Box::new(label));
+    
     let width = form.get_border_width();
     match width {
         2 => form.set_border_width(10),
-        _ => form.set_border_width(2),
+        _ => form.set_border_width(10),
     }
 
     form.clear();

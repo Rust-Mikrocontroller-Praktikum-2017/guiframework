@@ -31,10 +31,30 @@ fn empty() -> Box<HorizontalLayout> {
     Box::new(HorizontalLayout::new(bb_def()))
 }
 
+
+fn clicked(form: &mut Button) {
+        let label = Label::new(BoundingBox{
+            x: 0,
+            y: 0,
+            width: 10,
+            height: 10,
+        }, "clicked!");
+
+    for child in form.get_children() {
+        child.clear();
+        //child.draw();
+    }
+    form.set_child(Box::new(label));
+
+    form.clear();
+    form.draw();
+}
+
 fn button(string: &'static str) -> Box<Button> {
     let label = Label::new(bb_def(), string);
     let mut button = Button::new(bb_def());
     button.set_child(Box::new(label));
+    //button.set_action_on_click(clicked);
     Box::new(button)
 }
 
@@ -62,8 +82,8 @@ pub fn view_languages() -> View {
 
 pub fn view_skins() -> View {
     let mut f = VerticalLayout::new(bb_screen());
-    f.add_form(button("Standard _Dark_ Theme"));
-    f.add_form(button("Standard _Light_ Theme"));
+    f.add_form(button("Standard Dark Theme"));
+    f.add_form(button("Standard Light Theme"));
     f.add_form(button("Rusty Safety Theme"));
     f.add_form(button("Rusty Zero Cost Theme "));
     f.add_form(button("Clippy Theme "));
