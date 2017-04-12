@@ -1,2 +1,7 @@
 target/
 **/*.rs.bk
+rls.sh
+rls.toml
+Cargo.lock
+core
+src/main.rs
