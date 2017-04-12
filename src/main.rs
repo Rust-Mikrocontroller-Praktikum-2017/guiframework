@@ -126,6 +126,7 @@ fn main(hw: board::Hardware) -> ! {
                                                     height: 100,
                                                 });
 
+
     // Initialize touch on display.
     i2c::init_pins_and_clocks(rcc, &mut gpio);
     let mut i2c_3 = i2c::init(i2c_3);
@@ -178,17 +179,42 @@ fn main(hw: board::Hardware) -> ! {
     let mut button3 = Box::new(Button::new(move_bb_inner3));
     button3.set_movable(true);
 
-    let back_bb = BoundingBox{x:50, y:50, width:15, height:15};
+    let back_bb = BoundingBox {
+        x: 50,
+        y: 50,
+        width: 15,
+        height: 15,
+    };
     let mut back_button = Button::new(back_bb);
     back_button.set_border_width(2);
 
-    let back_test_bb = BoundingBox{x:50, y:50, width:15, height:15};
+    let back_test_bb = BoundingBox {
+        x: 50,
+        y: 50,
+        width: 15,
+        height: 15,
+    };
     let back_text = Label::new(back_test_bb, "Zurück");
-    let matthias = BoundingBox{x:50, y:50, width:15, height:15};
+    let matthias = BoundingBox {
+        x: 50,
+        y: 50,
+        width: 15,
+        height: 15,
+    };
     let matthias_text = Label::new(matthias, "Matthias");
-    let joel = BoundingBox{x:50, y:50, width:15, height:15};
+    let joel = BoundingBox {
+        x: 50,
+        y: 50,
+        width: 15,
+        height: 15,
+    };
     let joel_text = Label::new(joel, "Joel");
-    let christian = BoundingBox{x:50, y:50, width:15, height:15};
+    let christian = BoundingBox {
+        x: 50,
+        y: 50,
+        width: 15,
+        height: 15,
+    };
     let christian_text = Label::new(christian, "Christian");
     back_button.set_child(Box::new(back_text));
     button.set_child(Box::new(matthias_text));
@@ -196,7 +222,7 @@ fn main(hw: board::Hardware) -> ! {
     button3.set_child(Box::new(christian_text));
 
     back_button.set_action_on_click(clicked);
-    
+
     let back_button_box = Box::new(back_button);
 
     move_box.add_form(button);
@@ -215,8 +241,13 @@ fn main(hw: board::Hardware) -> ! {
 
     // build horizontal layout
 
-    
-    let mut move_hor_layout = layout::HorizontalLayout::new(BoundingBox{x: 0, y: 0, width: 480, height: 272});
+
+    let mut move_hor_layout = layout::HorizontalLayout::new(BoundingBox {
+                                                                x: 0,
+                                                                y: 0,
+                                                                width: 480,
+                                                                height: 272,
+                                                            });
     move_hor_layout.add_form(Box::new(move_box));
     move_hor_layout.add_form(back_button_box);
     let prop = vec![90, 10];
