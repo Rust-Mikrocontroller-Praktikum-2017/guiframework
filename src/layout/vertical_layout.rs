@@ -12,6 +12,7 @@ pub struct VerticalLayout {
     outer_bounding_box: bounding_box::BoundingBox,
     pub elements: Vec<Box<Form>>,
     movable: bool,
+    pub proportions: Vec<i32>,
 }
 
 impl VerticalLayout {
@@ -26,6 +27,7 @@ impl VerticalLayout {
             },
             elements: Vec::new(),
             movable: false,
+            proportions: Vec::new(),
         }
     }
 
@@ -38,45 +40,54 @@ impl VerticalLayout {
     }
 
     pub fn add_form(&mut self, f: Box<Form>) -> bool {
+        // f.set_outer_bounding_box(self.bounding_box.clone());
         self.elements.push(f);
-        let len = self.elements.len() as i32;
-        let el_height = self.bounding_box.height / len;
-        let mut n = 0;
-        for i in &mut self.elements {
-            let bb = bounding_box::BoundingBox {
-                x: self.bounding_box.x,
-                y: self.bounding_box.y + n * el_height,
-                width: self.bounding_box.width,
-                height: el_height,
-            };
-            i.set_bounding_box(bb);
-            n += 1;
-        }
-
+        self.proportions.push(1);
+        self.update_proportions();
         true
+    }
+    
+    fn update_proportions(&mut self) {
+        let mut sum = 0;
+        for i in &self.proportions {
+            sum = sum + i;
+        }
+        let proportions = &mut self.proportions;
+        let width = self.bounding_box.width;
+        let height = self.bounding_box.height;
+        let mut cur_y = self.bounding_box.x;
+        let mut added_height = 0;
+        for i in 0..&self.elements.len() - 1 {
+            let next_height = (proportions[i] * height) / sum;
+            added_height += next_height;
+            let next_y = cur_y;
+            cur_y += added_height;
+            let bb = BoundingBox {
+                x: self.bounding_box.x,
+                y: next_y,
+                width: self.bounding_box.width,
+                height: next_height,
+            };
+
+            self.elements[i].set_bounding_box(bb.clone());
+            self.elements[i].set_outer_bounding_box(bb);
+        }
+        let bb = BoundingBox {
+            x: self.bounding_box.x,
+            y: cur_y,
+            width: self.bounding_box.width,
+            height: self.bounding_box.height - added_height,
+        };
+        self.elements[proportions.len() - 1].set_bounding_box(bb);
+        self.elements[proportions.len() - 1].set_outer_bounding_box(self.bounding_box.clone());
     }
 
     pub fn set_proportions(&mut self, proportions: Vec<i32>) -> bool {
         if proportions.len() != self.elements.len() {
             return false;
         }
-        let mut sum = 0;
-        for i in &proportions {
-            sum = sum + i;
-        }
-        let height = self.get_bounding_box().height;
-        let mut cur_x = self.bounding_box.x;
-        let mut added_height = 0;
-        for i in 0..&self.elements.len() - 1 {
-            self.elements[i].get_bounding_box().height = (proportions[i] * height) / sum;
-            added_height += self.elements[i].get_bounding_box().height;
-            self.elements[i].get_bounding_box().x = cur_x;
-            cur_x += self.elements[i].get_bounding_box().height;
-        }
-        self.elements[proportions.len() - 1]
-            .get_bounding_box()
-            .height = self.get_bounding_box().height - added_height;
-        self.elements[proportions.len() - 1].get_bounding_box().x = cur_x;
+        self.proportions = proportions;
+        self.update_proportions();
         true
     }
 }
@@ -88,6 +99,10 @@ impl Form for VerticalLayout {
 
     fn set_bounding_box(&mut self, bounding_box: BoundingBox) -> () {
         self.bounding_box = bounding_box;
+        self.update_proportions();
+        // for el in &mut self.elements {
+            // el.set_outer_bounding_box(self.bounding_box.clone());
+        // }
     }
 
     fn set_outer_bounding_box(&mut self, bounding_box: BoundingBox) {
