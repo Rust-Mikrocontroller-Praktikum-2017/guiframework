@@ -21,7 +21,7 @@ pub struct Button {
 }
 
 impl Button {
-    pub fn new(bounding_box: BoundingBox, border_width: i32) -> Button {
+    pub fn new(bounding_box: BoundingBox) -> Button {
         Button {
             bounding_box: bounding_box,
             outer_bounding_box: BoundingBox {
@@ -33,7 +33,7 @@ impl Button {
             child: None,
             on_click: None,
             movable: false,
-            border_width: border_width,
+            border_width: 2,
             border_color: Color::from_hex(0xFFFFFF),
         }
     }

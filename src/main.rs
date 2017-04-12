@@ -131,15 +131,13 @@ fn main(hw: board::Hardware) -> ! {
                                                     y: 10,
                                                     width: 100,
                                                     height: 100,
-                                                },
-                                                3);
+                                                });
     // let mut button2 = forms::button::Button::new(util::bounding_box::BoundingBox {
     //                                                  x: 110,
     //                                                  y: 110,
     //                                                  width: 50,
     //                                                  height: 50,
-    //                                              },
-    //                                              3);
+    //                                              });
     /*
     let label = forms::label::Label::new(util::bounding_box::BoundingBox {
                                              x: 10,
@@ -252,7 +250,7 @@ fn main(hw: board::Hardware) -> ! {
         width: 50,
         height: 50,
     };
-    let mut button = Box::new(Button::new(move_bb_inner, 2));
+    let mut button = Box::new(Button::new(move_bb_inner));
     button.set_movable(true);
 
     let mut move_bb_inner2 = BoundingBox {
@@ -261,7 +259,7 @@ fn main(hw: board::Hardware) -> ! {
         width: 50,
         height: 50,
     };
-    let mut button2 = Box::new(Button::new(move_bb_inner2, 2));
+    let mut button2 = Box::new(Button::new(move_bb_inner2));
     button2.set_movable(true);
 
     move_box.add_form(button);
