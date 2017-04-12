@@ -107,6 +107,7 @@ impl TouchHistory {
 
                     //form.move_form(i[i.len() - 1].0, i[i.len() - 1].1);
                     form.move_form(delta_x, delta_y, true);
+                    //form.move_form(delta_x, delta_y, false);
                 }
                 None => {}
             }

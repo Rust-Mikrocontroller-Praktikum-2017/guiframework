@@ -55,7 +55,7 @@ impl BoundingBox {
             }
 
             if self.y + self.height > outer.y + outer.height {
-                delta_y = (outer.y + outer.height - self.height) - self.x;
+                delta_y = (outer.y + outer.height - self.height) - self.y;
                 self.y = outer.y + outer.height - self.height;
             }
         }
@@ -72,9 +72,15 @@ impl BoundingBox {
         let pos_x_new = self.x + dir_x;
         let pos_y_new = self.y + dir_y;
 
-        let mut moved_x = 0;
-        let mut moved_y = 0;
+        self.x = pos_x_new;
+        self.y = pos_y_new;
 
+        // let mut moved_x = 0;
+        // let mut moved_y = 0;
+        let mut moved_x = dir_x;
+        let mut moved_y = dir_y;
+
+        /*
         if pos_x_new < 0 {
             self.x = 0;
             moved_x = dir_x - (0 - pos_x_new);
@@ -95,7 +101,7 @@ impl BoundingBox {
         } else {
             self.y = pos_y_new;
             moved_y = dir_y;
-        }
+        }*/
 
         if let Some(outer_bounding_box) = outer_bounding_box {
             let (delta_x, delta_y) = self.rebase_to_outer_box(&outer_bounding_box);

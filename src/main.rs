@@ -239,11 +239,11 @@ fn main(hw: board::Hardware) -> ! {
     let mut move_bb_outer = BoundingBox {
         x: 10,
         y: 10,
-        width: 200,
-        height: 200,
+        width: 300,
+        height: 260,
     };
     let mut move_box = layout::MoveBox::new(move_bb_outer, true);
-    move_box.set_movable(true);
+    //move_box.set_movable(true);
     //move_box_root.add_form(move_box);
 
     let mut move_bb_inner = BoundingBox {
