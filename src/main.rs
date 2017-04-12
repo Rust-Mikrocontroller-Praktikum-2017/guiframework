@@ -188,7 +188,7 @@ fn main(hw: board::Hardware) -> ! {
     let mut move_bb_inner = BoundingBox {
         x: 15,
         y: 15,
-        width: 50,
+        width: 60,
         height: 50,
     };
     let mut button = Box::new(Button::new(move_bb_inner));
@@ -197,11 +197,20 @@ fn main(hw: board::Hardware) -> ! {
     let mut move_bb_inner2 = BoundingBox {
         x: 75,
         y: 15,
-        width: 50,
+        width: 60,
         height: 50,
     };
     let mut button2 = Box::new(Button::new(move_bb_inner2));
     button2.set_movable(true);
+
+    let mut move_bb_inner3 = BoundingBox {
+        x: 150,
+        y: 15,
+        width: 60,
+        height: 50,
+    };
+    let mut button3 = Box::new(Button::new(move_bb_inner3));
+    button3.set_movable(true);
 
     let back_bb = BoundingBox{x:50, y:50, width:15, height:15};
     let mut back_button = Button::new(back_bb);
@@ -209,7 +218,16 @@ fn main(hw: board::Hardware) -> ! {
 
     let back_test_bb = BoundingBox{x:50, y:50, width:15, height:15};
     let back_text = Label::new(back_test_bb, "Zurück");
-    button.set_child(Box::new(back_text));
+    let matthias = BoundingBox{x:50, y:50, width:15, height:15};
+    let matthias_text = Label::new(matthias, "Matthias");
+    let joel = BoundingBox{x:50, y:50, width:15, height:15};
+    let joel_text = Label::new(joel, "Joel");
+    let christian = BoundingBox{x:50, y:50, width:15, height:15};
+    let christian_text = Label::new(christian, "Christian");
+    back_button.set_child(Box::new(back_text));
+    button.set_child(Box::new(matthias_text));
+    button2.set_child(Box::new(joel_text));
+    button3.set_child(Box::new(christian_text));
 
     back_button.set_action_on_click(clicked);
     
@@ -217,6 +235,7 @@ fn main(hw: board::Hardware) -> ! {
 
     move_box.add_form(button);
     move_box.add_form(button2);
+    move_box.add_form(button3);
     //move_box.draw();
 
     /*let mut outer_move_box = layout::MoveBox::new(BoundingBox {
@@ -306,7 +325,7 @@ fn clicked(form: &mut Button) {
     let width = form.get_border_width();
     match width {
         2 => form.set_border_width(10),
-        _ => form.set_border_width(10),
+        _ => form.set_border_width(2),
     }
 
     form.clear();
