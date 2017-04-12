@@ -2,6 +2,7 @@
 #![no_main]
 #![feature(collections)]
 #![feature(asm)]
+#![feature(compiler_builtins_lib)]
 
 #[macro_use]
 extern crate collections;
@@ -9,6 +10,7 @@ extern crate collections;
 extern crate stm32f7_discovery as stm32f7;
 
 extern crate arrayvec;
+extern crate compiler_builtins;
 
 
 mod semi_hosting;
