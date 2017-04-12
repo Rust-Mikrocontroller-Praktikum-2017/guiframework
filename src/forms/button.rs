@@ -14,7 +14,7 @@ pub struct Button {
     bounding_box: BoundingBox,
     outer_bounding_box: BoundingBox,
     child: Option<Box<Form>>,
-    on_click: Option<fn(form: &mut Button, app: &mut App) -> ()>,
+    on_click: Option<fn(form: &mut Button) -> ()>,
     movable: bool,
     border_width: i32,
     border_color: Color,
@@ -38,7 +38,7 @@ impl Button {
         }
     }
 
-    pub fn set_action_on_click(&mut self, callback: fn(form: &mut Button, app: &mut App) -> ()) -> () {
+    pub fn set_action_on_click(&mut self, callback: fn(form: &mut Button) -> ()) -> () {
         self.on_click = Some(callback);
     }
 
@@ -150,9 +150,9 @@ impl Form for Button {
 }
 
 impl Clickable for Button {
-    fn click(&mut self, context: &mut App) {
+    fn click(&mut self) {
         match self.on_click {
-            Some(func) => func(self, context),
+            Some(func) => func(self),
             None => (),
         }
     }

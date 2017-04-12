@@ -10,10 +10,13 @@ impl App {
         App { active_view: view }
     }
 
-    pub fn show_view(&mut self, view: View) {
+    pub fn show_view(&mut self) {
+        self.active_view.draw();
+    }
+
+    pub fn set_active_view(&mut self, view: View) {
         self.active_view.clear();
         self.active_view = view;
-        self.active_view.draw();
     }
 
     pub fn get_active_view(&mut self) -> &mut View {

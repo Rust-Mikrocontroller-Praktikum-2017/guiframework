@@ -113,6 +113,12 @@ impl TouchHistory {
 
 
 
+
+
+
+
+
+
                     let delta_x = i[i.len() - 1].0 - i[0].0;
                     let delta_y = i[i.len() - 1].1 - i[0].1;
 

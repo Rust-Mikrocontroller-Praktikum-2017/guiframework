@@ -46,7 +46,7 @@ impl HorizontalLayout {
         self.update_proportions();
         true
     }
-    
+
     fn update_proportions(&mut self) -> bool {
         if self.proportions.len() == 0 {
             return false;
@@ -85,7 +85,8 @@ impl HorizontalLayout {
             width: self.bounding_box.width - added_width,
             height: self.bounding_box.height,
         };
-        //println!("--prop: {}, width: {}, sum: {} --", cur_x, self.get_bounding_box().width - added_width, sum);
+        //println!("--prop: {}, width: {}, sum: {} --", cur_x, self.get_bounding_box().width -
+        //added_width, sum);
         self.elements[proportions.len() - 1].set_bounding_box(bb);
         self.elements[proportions.len() - 1].set_outer_bounding_box(self.bounding_box.clone());
         /*self.elements[proportions.len() - 1]
@@ -113,7 +114,7 @@ impl Form for HorizontalLayout {
         self.bounding_box = bounding_box;
         self.update_proportions();
         // for el in &mut self.elements {
-            // el.set_outer_bounding_box(self.bounding_box.clone());
+        // el.set_outer_bounding_box(self.bounding_box.clone());
         // }
     }
 

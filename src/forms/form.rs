@@ -18,5 +18,5 @@ pub trait Form {
 }
 
 pub trait Clickable {
-    fn click(&mut self, context: &mut App) -> ();
+    fn click(&mut self) -> ();
 }

@@ -29,6 +29,7 @@ mod move_things;
 mod demo;
 mod application;
 
+use application::app::App;
 use util::bounding_box::BoundingBox;
 use collections::Vec;
 use collections::VecDeque;
@@ -145,7 +146,7 @@ fn main(hw: board::Hardware) -> ! {
         height: 272,
     };
     let mut move_box_root = layout::MoveBox::new(move_bb_outer_outer, true);*/
-    
+
     let mut move_bb_outer = BoundingBox {
         x: 0,
         y: 0,
@@ -248,10 +249,14 @@ fn main(hw: board::Hardware) -> ! {
     move_hor_layout.set_proportions(prop);
     move_hor_layout.set_movable(false);
     let mut move_view = View::new(Box::new(move_hor_layout));
+
     //move_hor_layout.draw();
-    
+
     let v = demo::view_languages();
     v.draw();
+
+    let mut app = App::new(move_view);
+    app.show_view();
 
     let mut touch_history = move_things::swipe::TouchHistory::new();
 
@@ -266,7 +271,7 @@ fn main(hw: board::Hardware) -> ! {
         }
 
         for touch in &touch::touches(&mut i2c_3).unwrap() {
-            action::walker::walk(&mut move_view, touch.x as i32, touch.y as i32);
+            action::walker::walk(app.get_active_view(), touch.x as i32, touch.y as i32);
             //action::walker::walk(&mut move_hor_layout, touch.x as i32, touch.y as i32);
         }
 
@@ -284,7 +289,7 @@ fn main(hw: board::Hardware) -> ! {
 
 
         touch_history.update(ticks, input);
-        touch_history.check_for_object_moves(&mut move_view);
+        touch_history.check_for_object_moves(app.get_active_view());
         //touch_history.check_for_object_moves(&mut move_hor_layout);
 
 

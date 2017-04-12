@@ -10,7 +10,7 @@ use util::bounding_box::BoundingBox;
 use util::sizes;
 use application::view::View;
 
-fn bb(x: i32, y:i32, width: i32, height: i32) -> BoundingBox {
+fn bb(x: i32, y: i32, width: i32, height: i32) -> BoundingBox {
     BoundingBox {
         x: x,
         y: y,
@@ -20,7 +20,7 @@ fn bb(x: i32, y:i32, width: i32, height: i32) -> BoundingBox {
 }
 
 fn bb_def() -> BoundingBox {
-    bb(0,0,10,10)
+    bb(0, 0, 10, 10)
 }
 
 fn bb_screen() -> BoundingBox {
@@ -40,12 +40,12 @@ fn button(string: &'static str) -> Box<Button> {
 
 fn middle(middle_form: Box<Form>) -> View {
     let mut f = HorizontalLayout::new(bb_screen());
-    
+
     f.add_form(empty());
     f.add_form(middle_form);
     f.add_form(empty());
-    
-    f.set_proportions(vec!(1,2,1));
+
+    f.set_proportions(vec![1, 2, 1]);
     View::new(Box::new(f))
 }
 
@@ -88,4 +88,3 @@ pub fn view_about() -> View {
     f.add_form(button("------------"));
     middle(Box::new(f))
 }
-

@@ -46,7 +46,7 @@ impl VerticalLayout {
         self.update_proportions();
         true
     }
-    
+
     fn update_proportions(&mut self) -> bool {
         if self.proportions.len() == 0 {
             return false;
@@ -104,7 +104,7 @@ impl Form for VerticalLayout {
         self.bounding_box = bounding_box;
         self.update_proportions();
         // for el in &mut self.elements {
-            // el.set_outer_bounding_box(self.bounding_box.clone());
+        // el.set_outer_bounding_box(self.bounding_box.clone());
         // }
     }
 
