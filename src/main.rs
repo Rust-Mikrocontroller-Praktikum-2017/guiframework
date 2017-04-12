@@ -250,7 +250,7 @@ fn main(hw: board::Hardware) -> ! {
     let mut move_view = View::new(Box::new(move_hor_layout));
     //move_hor_layout.draw();
     
-    let v = demo::form_languages();
+    let v = demo::view_languages();
     v.draw();
 
     let mut touch_history = move_things::swipe::TouchHistory::new();
