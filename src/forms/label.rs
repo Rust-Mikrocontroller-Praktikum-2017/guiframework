@@ -86,6 +86,10 @@ impl Form for Label {
             let x_offset = x_center - width as i32 / 2;
             let y_offset = y_center - height as i32 / 2;
 
+            if x_offset < 0 || y_offset < 0 {
+                return;
+            }
+
             stdout.set_offset(x_offset as usize, y_offset as usize);
             stdout.print_str(self.text);
         });
