@@ -6,9 +6,7 @@ pub struct App {
 
 impl App {
     pub fn new(view: View) -> App {
-        App {
-            active_view: view,
-        }
+        App { active_view: view }
     }
 
     pub fn set_active_view(&mut self, view: View) {

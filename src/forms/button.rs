@@ -9,7 +9,6 @@ use forms::form::Form;
 use util::bounding_box::BoundingBox;
 use util::sizes;
 
-
 pub struct Button {
     bounding_box: BoundingBox,
     outer_bounding_box: BoundingBox,
@@ -105,13 +104,12 @@ impl Form for Button {
     }
 
     fn clear(&self) -> () {
-        for i in 0i32..self.border_width {
-            draw_rectangle(self.bounding_box.x + i,
-                           self.bounding_box.y + i,
-                           self.bounding_box.width - (2 * i),
-                           self.bounding_box.height - (2 * i),
-                           Color::rgba(0, 0, 0, 0));
-        }
+        fill_rectangle(self.bounding_box.x,
+             self.bounding_box.y,
+             self.bounding_box.width,
+             self.bounding_box.height,
+             Color::rgba(0, 0, 0, 0));
+
     }
 
     fn draw(&self) -> () {
