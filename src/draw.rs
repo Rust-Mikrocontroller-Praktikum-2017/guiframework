@@ -28,7 +28,7 @@ pub fn draw_pixel_on_text_layer(x: i32, y: i32, color: Color) -> bool {
         return false;
     }
 
-    let mut addr: u32 = 0xC000_0000 + (480 * 272 * 4);
+    let addr: u32 = 0xC000_0000 + (480 * 272 * 4);
     let pixel = y as u32 * 480 + x as u32;
     let pixel_color = (addr + pixel * 2) as *mut u16;
 

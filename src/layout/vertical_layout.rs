@@ -130,9 +130,7 @@ impl Form for VerticalLayout {
     }
 
     fn move_form(&mut self, dir_x: i32, dir_y: i32, top: bool) {
-        if top {
-            self.clear();
-        }
+        self.clear();
 
         let outer_if_top = if top {
             Some(&self.outer_bounding_box)
@@ -148,8 +146,6 @@ impl Form for VerticalLayout {
             i.move_form(moved_x, moved_y, false);
         }
 
-        if top {
-            self.draw();
-        }
+        self.draw();
     }
 }

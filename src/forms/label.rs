@@ -92,9 +92,7 @@ impl Form for Label {
     }
 
     fn move_form(&mut self, dir_x: i32, dir_y: i32, top: bool) {
-        if top {
-            self.clear();
-        }
+        self.clear();
 
         let outer_if_top = if top {
             Some(&self.outer_bounding_box)
@@ -105,8 +103,6 @@ impl Form for Label {
         self.bounding_box
             .move_in_direction(dir_x, dir_y, outer_if_top);
 
-        if top {
-            self.draw();
-        }
+        self.draw();
     }
 }

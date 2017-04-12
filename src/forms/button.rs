@@ -105,11 +105,13 @@ impl Form for Button {
     }
 
     fn clear(&self) -> () {
-        fill_rectangle(self.bounding_box.x,
-                       self.bounding_box.y,
-                       self.bounding_box.width,
-                       self.bounding_box.height,
-                       Color::rgba(0, 0, 0, 0));
+        for i in 0i32..self.border_width {
+            draw_rectangle(self.bounding_box.x + i,
+                           self.bounding_box.y + i,
+                           self.bounding_box.width - (2 * i),
+                           self.bounding_box.height - (2 * i),
+                           Color::rgba(0, 0, 0, 0));
+        }
     }
 
     fn draw(&self) -> () {
@@ -128,9 +130,7 @@ impl Form for Button {
     }
 
     fn move_form(&mut self, dir_x: i32, dir_y: i32, top: bool) {
-        if top {
-            self.clear();
-        }
+        self.clear();
 
         let outer_if_top = if top {
             Some(&self.outer_bounding_box)
@@ -146,9 +146,7 @@ impl Form for Button {
             child.move_form(delta_x, delta_y, false);
         }
 
-        if top {
-            self.draw();
-        }
+        self.draw();
     }
 }
 
