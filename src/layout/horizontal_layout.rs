@@ -47,7 +47,10 @@ impl HorizontalLayout {
         true
     }
     
-    fn update_proportions(&mut self) {
+    fn update_proportions(&mut self) -> bool {
+        if self.proportions.len() == 0 {
+            return false;
+        }
         let mut sum = 0;
         for i in &self.proportions {
             sum = sum + i;
@@ -56,13 +59,16 @@ impl HorizontalLayout {
         let width = self.bounding_box.width;
         let mut cur_x = self.bounding_box.x;
         let mut added_width = 0;
+        //println!("Next HL");
         for i in 0..&self.elements.len() - 1 {
             //self.elements[i].get_bounding_box().width = (proportions[i] * width) / sum;
             let next_width = (proportions[i] * width) / sum;
+            //print!("--prop: {}, width: {}, sum: {} --", proportions[i], width, sum);
             added_width += next_width;
             //self.elements[i].get_bounding_box().x = cur_x;
             let next_x = cur_x;
             cur_x += next_width;
+            //println!("BB- {}", self.bounding_box.y);
             let bb = BoundingBox {
                 x: next_x,
                 y: self.bounding_box.y,
@@ -79,12 +85,14 @@ impl HorizontalLayout {
             width: self.bounding_box.width - added_width,
             height: self.bounding_box.height,
         };
+        //println!("--prop: {}, width: {}, sum: {} --", cur_x, self.get_bounding_box().width - added_width, sum);
         self.elements[proportions.len() - 1].set_bounding_box(bb);
         self.elements[proportions.len() - 1].set_outer_bounding_box(self.bounding_box.clone());
         /*self.elements[proportions.len() - 1]
             .get_bounding_box()
             .width = self.bounding_box.width - added_width;
         self.elements[proportions.len() - 1].get_bounding_box().x = cur_x;*/
+        true
     }
 
     pub fn set_proportions(&mut self, proportions: Vec<i32>) -> bool {
@@ -92,8 +100,7 @@ impl HorizontalLayout {
             return false;
         }
         self.proportions = proportions;
-        self.update_proportions();
-        true
+        return self.update_proportions();
     }
 }
 

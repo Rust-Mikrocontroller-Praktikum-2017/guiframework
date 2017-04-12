@@ -47,7 +47,10 @@ impl VerticalLayout {
         true
     }
     
-    fn update_proportions(&mut self) {
+    fn update_proportions(&mut self) -> bool {
+        if self.proportions.len() == 0 {
+            return false;
+        }
         let mut sum = 0;
         for i in &self.proportions {
             sum = sum + i;
@@ -55,7 +58,7 @@ impl VerticalLayout {
         let proportions = &mut self.proportions;
         let width = self.bounding_box.width;
         let height = self.bounding_box.height;
-        let mut cur_y = self.bounding_box.x;
+        let mut cur_y = self.bounding_box.y;
         let mut added_height = 0;
         for i in 0..&self.elements.len() - 1 {
             let next_height = (proportions[i] * height) / sum;
@@ -80,6 +83,7 @@ impl VerticalLayout {
         };
         self.elements[proportions.len() - 1].set_bounding_box(bb);
         self.elements[proportions.len() - 1].set_outer_bounding_box(self.bounding_box.clone());
+        true
     }
 
     pub fn set_proportions(&mut self, proportions: Vec<i32>) -> bool {
@@ -87,8 +91,7 @@ impl VerticalLayout {
             return false;
         }
         self.proportions = proportions;
-        self.update_proportions();
-        true
+        self.update_proportions()
     }
 }
 

@@ -18,7 +18,7 @@ fn bb(x: i32, y:i32, width: i32, height: i32) -> BoundingBox {
 }
 
 fn bb_def() -> BoundingBox {
-    bb(0,0,0,0)
+    bb(0,0,10,10)
 }
 
 fn empty() -> Box<HorizontalLayout> {
@@ -52,6 +52,11 @@ pub fn form_languages() -> HorizontalLayout {
     f.add_form(button("Português"));
     f.add_form(button("Rust"));
     middle(Box::new(f))
+    /*let mut hl = middle(button("Espanol"));
+    hl.add_form(button("Italiano"));
+    hl.add_form(button("Deutsch"));
+    hl.set_proportions(vec!(2,2,1,1,1));
+    hl*/
 }
 
 pub fn form_skins() -> HorizontalLayout {

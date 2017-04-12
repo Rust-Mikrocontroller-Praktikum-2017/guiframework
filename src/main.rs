@@ -26,6 +26,7 @@ mod util;
 mod action;
 mod layout;
 mod move_things;
+mod demo;
 
 use util::bounding_box::BoundingBox;
 use collections::Vec;
@@ -141,14 +142,14 @@ fn main(hw: board::Hardware) -> ! {
         height: 272,
     };
     let mut move_box_root = layout::MoveBox::new(move_bb_outer_outer, true);*/
-
+    
     let mut move_bb_outer = BoundingBox {
         x: 0,
         y: 0,
         width: 400,
         height: 272,
     };
-    let mut move_box = layout::MoveBox::new(move_bb_outer, true);
+    let mut move_box = layout::MoveBox::new(move_bb_outer, false);
     //move_box.set_movable(true);
     //move_box_root.add_form(move_box);
 
@@ -228,6 +229,8 @@ fn main(hw: board::Hardware) -> ! {
     move_box.add_form(button);
     move_box.add_form(button2);
     move_box.add_form(button3);
+
+
     //move_box.draw();
 
     /*let mut outer_move_box = layout::MoveBox::new(BoundingBox {
@@ -253,7 +256,10 @@ fn main(hw: board::Hardware) -> ! {
     let prop = vec![90, 10];
     move_hor_layout.set_proportions(prop);
     move_hor_layout.set_movable(false);
-    move_hor_layout.draw();
+    //move_hor_layout.draw();
+    
+    let v = demo::form_languages();
+    v.draw();
 
     let mut touch_history = move_things::swipe::TouchHistory::new();
 
