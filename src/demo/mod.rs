@@ -39,7 +39,7 @@ fn button(string: &'static str) -> Box<Button> {
 }
 
 fn middle(middle_form: Box<Form>) -> View {
-    let mut f = HorizontalLayout::new(bb_def());
+    let mut f = HorizontalLayout::new(bb_screen());
     
     f.add_form(empty());
     f.add_form(middle_form);
