@@ -3,3 +3,4 @@ target/
 rls.sh
 rls.toml
 Cargo.lock
+core
