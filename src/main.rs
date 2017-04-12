@@ -27,6 +27,7 @@ mod action;
 mod layout;
 mod move_things;
 mod demo;
+mod application;
 
 use util::bounding_box::BoundingBox;
 use collections::Vec;
@@ -45,6 +46,8 @@ use move_things::swipe;
 use stm32f7::touch::Touch;
 //use stm32f7::arrayvec::ArrayVec;
 use arrayvec::ArrayVec;
+
+use application::view::View;
 
 #[inline(never)]
 fn main(hw: board::Hardware) -> ! {
@@ -231,18 +234,6 @@ fn main(hw: board::Hardware) -> ! {
     move_box.add_form(button3);
 
 
-    //move_box.draw();
-
-    /*let mut outer_move_box = layout::MoveBox::new(BoundingBox {
-                                                      x: 0,
-                                                      y: 0,
-                                                      width: sizes::MAX_X,
-                                                      height: sizes::MAX_Y,
-                                                  },
-                                                  false);
-    outer_move_box.add_form(Box::new(move_box));*/
-
-    // build horizontal layout
 
 
     let mut move_hor_layout = layout::HorizontalLayout::new(BoundingBox {
@@ -256,27 +247,13 @@ fn main(hw: board::Hardware) -> ! {
     let prop = vec![90, 10];
     move_hor_layout.set_proportions(prop);
     move_hor_layout.set_movable(false);
+    let mut move_view = View::new(Box::new(move_hor_layout));
     //move_hor_layout.draw();
     
-    let v = demo::form_languages();
+    let v = demo::view_languages();
     v.draw();
 
     let mut touch_history = move_things::swipe::TouchHistory::new();
-
-    /*let bb3 = BoundingBox{x:50, y:50, width:15, height:15};
-    let button3 = Button::new(bb3);
-    let b3 = Box::new(button3);
-
-    let mut flow_container = layout::HorizontalLayout{
-    bounding_box:BoundingBox{x:10, y:10, width:100, height:100}, elements:items};
-    let b = Box::new(button);
-    flow_container.add_form(b);
-    flow_container.add_form(b2);
-    flow_container.add_form(b3);
-    flow_container.draw_area();*/
-
-    //let color: lcd::Color = lcd::Color::from_hex(0xFFFFFF);
-    //draw::fill_rectangle(30, 30, 200, 200, draw::convert_color_to_u16(color));
 
     let mut last_led_toggle = system_clock::ticks();
     loop {
@@ -289,12 +266,12 @@ fn main(hw: board::Hardware) -> ! {
         }
 
         for touch in &touch::touches(&mut i2c_3).unwrap() {
-            action::walker::walk(&mut move_hor_layout, touch.x as i32, touch.y as i32);
+            action::walker::walk(&mut move_view, touch.x as i32, touch.y as i32);
+            //action::walker::walk(&mut move_hor_layout, touch.x as i32, touch.y as i32);
         }
 
         //: &Result<ArrayVec<[Touch; 5]>, i2c::Error>
         let touches_result = touch::touches(&mut i2c_3).unwrap();
-        //let mut touch_history = swipe::TouchHistory::new();
 
         let mut input: Vec<(i32, i32)> = Vec::new();
         for i in touches_result {
@@ -307,8 +284,8 @@ fn main(hw: board::Hardware) -> ! {
 
 
         touch_history.update(ticks, input);
-        //touch_history.check_for_object_moves(&mut outer_move_box);
-        touch_history.check_for_object_moves(&mut move_hor_layout);
+        touch_history.check_for_object_moves(&mut move_view);
+        //touch_history.check_for_object_moves(&mut move_hor_layout);
 
 
         //let v: VecDeque<u32> = VecDeque::new();
