@@ -40,9 +40,8 @@ impl HorizontalLayout {
     }
 
     pub fn add_form(&mut self, mut f: Box<Form>) -> bool {
-        f.set_outer_bounding_box(self.bounding_box.clone());
+        // f.set_outer_bounding_box(self.bounding_box.clone());
         self.elements.push(f);
-        let len = self.elements.len();
         self.proportions.push(1);
         self.update_proportions();
         true
@@ -105,11 +104,10 @@ impl Form for HorizontalLayout {
 
     fn set_bounding_box(&mut self, bounding_box: BoundingBox) -> () {
         self.bounding_box = bounding_box;
-        let v = self.proportions.clone();
-        self.set_proportions(v);
-        for el in &mut self.elements {
-            el.set_outer_bounding_box(self.bounding_box.clone());
-        }
+        self.update_proportions();
+        // for el in &mut self.elements {
+            // el.set_outer_bounding_box(self.bounding_box.clone());
+        // }
     }
 
     fn set_outer_bounding_box(&mut self, bounding_box: BoundingBox) {
