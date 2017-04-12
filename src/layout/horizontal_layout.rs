@@ -60,9 +60,9 @@ impl HorizontalLayout {
             //self.elements[i].get_bounding_box().width = (proportions[i] * width) / sum;
             let next_width = (proportions[i] * width) / sum;
             added_width += next_width;
-            cur_x += added_width;
             //self.elements[i].get_bounding_box().x = cur_x;
             let next_x = cur_x;
+            cur_x += added_width;
             let bb = BoundingBox {
                 x: next_x,
                 y: self.bounding_box.y,
