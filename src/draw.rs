@@ -9,7 +9,7 @@ use stm32f7::lcd::TextWriter;
 
 use util::sizes;
 
-fn draw_pixel(x: i32, y: i32, color: Color) -> bool {
+pub fn draw_pixel(x: i32, y: i32, color: Color) -> bool {
     if x < 0 || y < 0 || x > sizes::MAX_X || y > sizes::MAX_Y {
         return false;
     }

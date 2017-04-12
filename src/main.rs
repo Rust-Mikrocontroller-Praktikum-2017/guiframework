@@ -237,7 +237,7 @@ fn main(hw: board::Hardware) -> ! {
     let mut move_bb_outer = BoundingBox {
         x: 10,
         y: 10,
-        width: 300,
+        width: 400,
         height: 260,
     };
     let mut move_box = layout::MoveBox::new(move_bb_outer, true);

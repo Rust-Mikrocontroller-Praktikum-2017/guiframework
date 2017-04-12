@@ -7,6 +7,8 @@ use util::bounding_box::BoundingBox;
 use util::sizes;
 use util::math::isqrt;
 use collections::boxed::Box;
+use draw;
+use stm32f7::lcd::Color;
 
 //use arrayvec::ArrayVec;
 
@@ -41,7 +43,7 @@ impl TouchHistory {
         // pop old touches
         while old && !self.cur_touches.is_empty() {
             //let mut cur_el = self.cur_touches.get(0).unwrap();
-            if cur_ticks - self.cur_touches.get(0).unwrap().2 > 300 {
+            if cur_ticks - self.cur_touches.get(0).unwrap().2 > 500 {
                 // 1000ms could be made adaptable later:)
                 self.cur_touches.pop_front();
             } else {
@@ -51,6 +53,8 @@ impl TouchHistory {
         // push new touches
         for i in &new_touches {
             self.cur_touches.push_back((i.0, i.1, cur_ticks));
+            //print..
+            //draw::draw_pixel(i.0, i.1, Color::from_hex(0xFFFFFF));
         }
 
         /*print!("{}-", &self.cur_touches.len());
@@ -60,10 +64,9 @@ impl TouchHistory {
         print!("---");*/
     }
 
-    pub fn check_for_object_moves(&self, root: &mut Form) {
+    pub fn check_for_object_moves(&mut self, root: &mut Form) {
         //let mut moves = Vec::new();
         let mut movements: Vec<Vec<(i32, i32, usize)>> = Vec::new();
-
         for i in &self.cur_touches {
             let mut found_match = false;
             // currently takes the first that is good enough...
@@ -81,11 +84,18 @@ impl TouchHistory {
                 movements.push(vec![*i]);
             }
         }
+        // Testteil
+        self.cur_touches = VecDeque::new();
 
-        /*for i in &movements {
-            let len = i.len();
-            print!("--{},{}-{},{}--", i[0].0, i[0].1, i[len - 1].0, i[len - 1].1);
-        }*/
+        for i in &movements {
+            let last = i.len()-1;
+            self.cur_touches.push_back(i[last]);
+            /*for j in i {
+                print!("{},{}-", j.0, j.1);
+            }
+            print!("---");*/
+        }
+        // \Testteil
 
         //let mut results: Vec<(&Form, i32, i32)> = Vec::new();
         for i in movements {
@@ -106,7 +116,7 @@ impl TouchHistory {
                     let delta_y = i[i.len() - 1].1 - i[0].1;
 
                     //form.move_form(i[i.len() - 1].0, i[i.len() - 1].1);
-                    if delta_x > 0 || delta_y > 0 {
+                    if delta_x != 0 || delta_y != 0 {
                         form.move_form(delta_x, delta_y, true);
                     }                    
                 }
