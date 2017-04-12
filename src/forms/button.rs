@@ -72,6 +72,10 @@ impl Form for Button {
 
     fn set_bounding_box(&mut self, bounding_box: BoundingBox) -> () {
         self.bounding_box = bounding_box;
+
+        if let Some(ref mut child) = self.child {
+            child.set_outer_bounding_box(self.bounding_box.clone());
+        }
     }
 
     fn set_outer_bounding_box(&mut self, bounding_box: BoundingBox) {

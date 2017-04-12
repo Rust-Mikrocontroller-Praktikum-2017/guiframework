@@ -50,7 +50,8 @@ impl Form for Label {
     }
 
     fn set_outer_bounding_box(&mut self, bounding_box: BoundingBox) {
-        self.outer_bounding_box = bounding_box;
+        self.outer_bounding_box = bounding_box.clone();
+        self.set_bounding_box(bounding_box);
     }
 
     fn get_children<'a>(&'a mut self) -> Box<Iterator<Item = &'a mut Form> + 'a> {
