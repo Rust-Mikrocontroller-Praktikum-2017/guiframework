@@ -144,6 +144,7 @@ impl Form for VerticalLayout {
             .move_in_direction(dir_x, dir_y, outer_if_top);
 
         for i in &mut self.elements {
+            i.set_outer_bounding_box(self.bounding_box.clone());
             i.move_form(moved_x, moved_y, false);
         }
 
