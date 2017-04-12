@@ -62,7 +62,7 @@ impl HorizontalLayout {
             added_width += next_width;
             //self.elements[i].get_bounding_box().x = cur_x;
             let next_x = cur_x;
-            cur_x += added_width;
+            cur_x += next_width;
             let bb = BoundingBox {
                 x: next_x,
                 y: self.bounding_box.y,

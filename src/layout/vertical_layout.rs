@@ -61,7 +61,7 @@ impl VerticalLayout {
             let next_height = (proportions[i] * height) / sum;
             added_height += next_height;
             let next_y = cur_y;
-            cur_y += added_height;
+            cur_y += next_height;
             let bb = BoundingBox {
                 x: self.bounding_box.x,
                 y: next_y,
