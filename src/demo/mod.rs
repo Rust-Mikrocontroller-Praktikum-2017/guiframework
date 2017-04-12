@@ -7,6 +7,7 @@ use forms::form::Form;
 use forms::button::Button;
 use forms::label::Label;
 use util::bounding_box::BoundingBox;
+use util::sizes;
 use application::view::View;
 
 fn bb(x: i32, y:i32, width: i32, height: i32) -> BoundingBox {
@@ -20,6 +21,10 @@ fn bb(x: i32, y:i32, width: i32, height: i32) -> BoundingBox {
 
 fn bb_def() -> BoundingBox {
     bb(0,0,10,10)
+}
+
+fn bb_screen() -> BoundingBox {
+    bb(0, 0, sizes::RES_X, sizes::RES_Y)
 }
 
 fn empty() -> Box<HorizontalLayout> {
@@ -45,7 +50,7 @@ fn middle(middle_form: Box<Form>) -> View {
 }
 
 pub fn view_languages() -> View {
-    let mut f = VerticalLayout::new(bb_def());
+    let mut f = VerticalLayout::new(bb_screen());
     f.add_form(button("English"));
     f.add_form(button("Français"));
     f.add_form(button("Deutsch"));
@@ -56,7 +61,7 @@ pub fn view_languages() -> View {
 }
 
 pub fn view_skins() -> View {
-    let mut f = VerticalLayout::new(bb_def());
+    let mut f = VerticalLayout::new(bb_screen());
     f.add_form(button("Standard _Dark_ Theme"));
     f.add_form(button("Standard _Light_ Theme"));
     f.add_form(button("Rusty Safety Theme"));
@@ -66,7 +71,7 @@ pub fn view_skins() -> View {
 }
 
 pub fn view_settings() -> View {
-    let mut f = VerticalLayout::new(bb_def());
+    let mut f = VerticalLayout::new(bb_screen());
     f.add_form(button("Auto-capitalization"));
     f.add_form(button("Double-space period"));
     f.add_form(button("Sound on keypress"));
@@ -75,7 +80,7 @@ pub fn view_settings() -> View {
 }
 
 pub fn view_about() -> View {
-    let mut f = VerticalLayout::new(bb_def());
+    let mut f = VerticalLayout::new(bb_screen());
     f.add_form(button("------------"));
     f.add_form(button("Didong"));
     f.add_form(button("Drexler"));
