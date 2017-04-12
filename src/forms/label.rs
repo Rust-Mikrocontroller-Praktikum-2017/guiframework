@@ -71,8 +71,9 @@ impl Form for Label {
     }
 
     fn clear(&self) -> () {
-        for x in self.bounding_box.x..self.bounding_box.x + self.bounding_box.width {
-            for y in self.bounding_box.y..self.bounding_box.y + self.bounding_box.height {
+        let extra = 20;
+        for x in self.bounding_box.x - extra..self.bounding_box.x + self.bounding_box.width + extra {
+            for y in self.bounding_box.y - extra..self.bounding_box.y + self.bounding_box.height + extra {
                 draw_pixel_on_text_layer(x, y, Color::rgba(0, 0, 0, 0));
             }
         }
