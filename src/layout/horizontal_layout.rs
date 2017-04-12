@@ -56,7 +56,6 @@ impl HorizontalLayout {
         true
     }
 
-
     pub fn set_proportions(&mut self, proportions: Vec<i32>) -> bool {
         if proportions.len() != self.elements.len() {
             return false;
@@ -73,24 +72,11 @@ impl HorizontalLayout {
             added_width += self.elements[i].get_bounding_box().width;
             self.elements[i].get_bounding_box().x = cur_x;
             cur_x += self.elements[i].get_bounding_box().width;
-            // x anpassen!!
         }
         self.elements[proportions.len() - 1]
             .get_bounding_box()
             .width = self.get_bounding_box().width - added_width;
         self.elements[proportions.len() - 1].get_bounding_box().x = cur_x;
-        /*println!("------------------------------{} - {}",
-                 width,
-                 self.elements[proportions.len() - 1]
-                     .get_bounding_box()
-                     .width);*/
-        let pos_1 = self.elements[0].get_bounding_box().x;
-        let pos_2 = self.elements[1].get_bounding_box().x;
-        let pos_3 = self.elements[2].get_bounding_box().x;
-        println!("------------------------------{}, {}, {}",
-                 pos_1,
-                 pos_2,
-                 pos_3);
         true
     }
 }
