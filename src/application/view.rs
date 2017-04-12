@@ -64,11 +64,7 @@ impl Form for View {
     }
 
     fn clear(&self) -> () {
-        fill_rectangle(self.bounding_box.x,
-                       self.bounding_box.y,
-                       self.bounding_box.width,
-                       self.bounding_box.height,
-                       Color::rgba(0, 0, 0, 0));
+        self.child.clear();
     }
 
     fn draw(&self) -> () {

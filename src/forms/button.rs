@@ -2,6 +2,7 @@ use collections::boxed::Box;
 use core::iter;
 use stm32f7::lcd::Color;
 
+use application::app::App;
 use draw::draw_rectangle;
 use draw::fill_rectangle;
 use forms::form::Clickable;
@@ -13,7 +14,7 @@ pub struct Button {
     bounding_box: BoundingBox,
     outer_bounding_box: BoundingBox,
     child: Option<Box<Form>>,
-    on_click: Option<fn(form: &mut Button) -> ()>,
+    on_click: Option<fn(form: &mut Button, app: &mut App) -> ()>,
     movable: bool,
     border_width: i32,
     border_color: Color,
@@ -37,7 +38,7 @@ impl Button {
         }
     }
 
-    pub fn set_action_on_click(&mut self, callback: fn(form: &mut Button) -> ()) -> () {
+    pub fn set_action_on_click(&mut self, callback: fn(form: &mut Button, app: &mut App) -> ()) -> () {
         self.on_click = Some(callback);
     }
 
@@ -149,9 +150,9 @@ impl Form for Button {
 }
 
 impl Clickable for Button {
-    fn click(&mut self) {
+    fn click(&mut self, context: &mut App) {
         match self.on_click {
-            Some(func) => func(self),
+            Some(func) => func(self, context),
             None => (),
         }
     }

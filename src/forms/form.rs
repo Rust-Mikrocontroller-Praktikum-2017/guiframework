@@ -2,6 +2,7 @@ use collections::boxed::Box;
 use collections::Vec;
 
 use util::bounding_box::BoundingBox;
+use application::app::App;
 
 pub trait Form {
     fn get_bounding_box(&mut self) -> &mut BoundingBox;
@@ -17,5 +18,5 @@ pub trait Form {
 }
 
 pub trait Clickable {
-    fn click(&mut self) -> ();
+    fn click(&mut self, context: &mut App) -> ();
 }
