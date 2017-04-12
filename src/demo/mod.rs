@@ -7,6 +7,7 @@ use forms::form::Form;
 use forms::button::Button;
 use forms::label::Label;
 use util::bounding_box::BoundingBox;
+use application::view::View;
 
 fn bb(x: i32, y:i32, width: i32, height: i32) -> BoundingBox {
     BoundingBox {
@@ -32,18 +33,18 @@ fn button(string: &'static str) -> Box<Button> {
     Box::new(button)
 }
 
-fn middle(middle_form: Box<Form>) -> HorizontalLayout {
-    let mut f = HorizontalLayout::new(bb(0,0,480,200));
+fn middle(middle_form: Box<Form>) -> View {
+    let mut f = HorizontalLayout::new(bb_def());
     
     f.add_form(empty());
     f.add_form(middle_form);
     f.add_form(empty());
     
     f.set_proportions(vec!(1,2,1));
-    f
+    View::new(Box::new(f))
 }
 
-pub fn form_languages() -> HorizontalLayout {
+pub fn view_languages() -> View {
     let mut f = VerticalLayout::new(bb_def());
     f.add_form(button("English"));
     f.add_form(button("Français"));
@@ -52,14 +53,9 @@ pub fn form_languages() -> HorizontalLayout {
     f.add_form(button("Português"));
     f.add_form(button("Rust"));
     middle(Box::new(f))
-    /*let mut hl = middle(button("Espanol"));
-    hl.add_form(button("Italiano"));
-    hl.add_form(button("Deutsch"));
-    hl.set_proportions(vec!(2,2,1,1,1));
-    hl*/
 }
 
-pub fn form_skins() -> HorizontalLayout {
+pub fn view_skins() -> View {
     let mut f = VerticalLayout::new(bb_def());
     f.add_form(button("Standard _Dark_ Theme"));
     f.add_form(button("Standard _Light_ Theme"));
@@ -69,7 +65,7 @@ pub fn form_skins() -> HorizontalLayout {
     middle(Box::new(f))
 }
 
-pub fn form_settings() -> HorizontalLayout {
+pub fn view_settings() -> View {
     let mut f = VerticalLayout::new(bb_def());
     f.add_form(button("Auto-capitalization"));
     f.add_form(button("Double-space period"));
@@ -78,7 +74,7 @@ pub fn form_settings() -> HorizontalLayout {
     middle(Box::new(f))
 }
 
-pub fn form_about() -> HorizontalLayout {
+pub fn view_about() -> View {
     let mut f = VerticalLayout::new(bb_def());
     f.add_form(button("------------"));
     f.add_form(button("Didong"));
