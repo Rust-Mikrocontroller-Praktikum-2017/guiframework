@@ -29,8 +29,8 @@ impl BorderLayout {
             outer_bounding_box: BoundingBox {
                 x: 0,
                 y: 0,
-                width: sizes::MAX_X,
-                height: sizes::MAX_Y,
+                width: sizes::RES_X,
+                height: sizes::RES_Y,
             },
             top_element: None,
             bottom_element: None,
