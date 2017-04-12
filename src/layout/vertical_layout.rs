@@ -55,6 +55,30 @@ impl VerticalLayout {
 
         true
     }
+
+    pub fn set_proportions(&mut self, proportions: Vec<i32>) -> bool {
+        if proportions.len() != self.elements.len() {
+            return false;
+        }
+        let mut sum = 0;
+        for i in &proportions {
+            sum = sum + i;
+        }
+        let height = self.get_bounding_box().height;
+        let mut cur_x = self.bounding_box.x;
+        let mut added_height = 0;
+        for i in 0..&self.elements.len() - 1 {
+            self.elements[i].get_bounding_box().height = (proportions[i] * height) / sum;
+            added_height += self.elements[i].get_bounding_box().height;
+            self.elements[i].get_bounding_box().x = cur_x;
+            cur_x += self.elements[i].get_bounding_box().height;
+        }
+        self.elements[proportions.len() - 1]
+            .get_bounding_box()
+            .height = self.get_bounding_box().height - added_height;
+        self.elements[proportions.len() - 1].get_bounding_box().x = cur_x;
+        true
+    }
 }
 
 impl Form for VerticalLayout {
