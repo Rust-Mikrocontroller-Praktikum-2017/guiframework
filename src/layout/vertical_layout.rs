@@ -15,6 +15,20 @@ pub struct VerticalLayout {
 }
 
 impl VerticalLayout {
+    pub fn new(bounding_box: BoundingBox) -> VerticalLayout {
+        VerticalLayout {
+            bounding_box: bounding_box,
+            outer_bounding_box: BoundingBox {
+                x: 0,
+                y: 0,
+                width: sizes::RES_X,
+                height: sizes::RES_Y,
+            },
+            elements: Vec::new(),
+            movable: false,
+        }
+    }
+
     pub fn draw_area(&self) -> bool {
         for i in &self.elements {
             i.draw();
