@@ -23,6 +23,20 @@ pub fn draw_pixel(x: i32, y: i32, color: Color) -> bool {
     true
 }
 
+pub fn draw_pixel_on_text_layer(x: i32, y: i32, color: Color) -> bool {
+    if x < 0 || y < 0 || x > sizes::MAX_X || y > sizes::MAX_Y {
+        return false;
+    }
+
+    let addr: u32 = 0xC000_0000 + (480 * 272 * 4);
+    let pixel = y as u32 * 480 + x as u32;
+    let pixel_color = (addr + pixel * 2) as *mut u16;
+
+    unsafe { ptr::write_volatile(pixel_color, color.to_argb4444()) };
+
+    true
+}
+
 pub fn draw_line(x1: i32, y1: i32, x2: i32, y2: i32, color: Color) {
     let mut x1: i32 = x1;
     let mut x2: i32 = x2;

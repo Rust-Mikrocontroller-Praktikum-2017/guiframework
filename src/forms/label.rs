@@ -5,7 +5,7 @@ use stm32f7::lcd::Color;
 use stm32f7::lcd::TextWriter;
 
 use draw;
-use draw::fill_rectangle;
+use draw::draw_pixel_on_text_layer;
 use forms::form::Clickable;
 use forms::form::Form;
 use util::bounding_box::BoundingBox;
@@ -50,7 +50,8 @@ impl Form for Label {
     }
 
     fn set_outer_bounding_box(&mut self, bounding_box: BoundingBox) {
-        self.outer_bounding_box = bounding_box;
+        self.outer_bounding_box = bounding_box.clone();
+        self.set_bounding_box(bounding_box);
     }
 
     fn get_children<'a>(&'a mut self) -> Box<Iterator<Item = &'a mut Form> + 'a> {
@@ -70,11 +71,14 @@ impl Form for Label {
     }
 
     fn clear(&self) -> () {
-        fill_rectangle(self.bounding_box.x,
-                       self.bounding_box.y,
-                       self.bounding_box.width,
-                       self.bounding_box.height,
-                       Color::rgba(0, 0, 0, 0));
+        let offset = 40;
+        for x in self.bounding_box.x - offset..
+                 self.bounding_box.x + self.bounding_box.width + offset {
+            for y in self.bounding_box.y - offset..
+                     self.bounding_box.y + self.bounding_box.height + offset {
+                draw_pixel_on_text_layer(x, y, Color::rgba(0, 0, 0, 0));
+            }
+        }
     }
 
     fn draw(&self) -> () {
@@ -85,15 +89,17 @@ impl Form for Label {
             let x_offset = x_center - width as i32 / 2;
             let y_offset = y_center - height as i32 / 2;
 
+            if x_offset < 0 || y_offset < 0 {
+                return;
+            }
+
             stdout.set_offset(x_offset as usize, y_offset as usize);
             stdout.print_str(self.text);
         });
     }
 
     fn move_form(&mut self, dir_x: i32, dir_y: i32, top: bool) {
-        if top {
-            self.clear();
-        }
+        self.clear();
 
         let outer_if_top = if top {
             Some(&self.outer_bounding_box)
@@ -104,8 +110,6 @@ impl Form for Label {
         self.bounding_box
             .move_in_direction(dir_x, dir_y, outer_if_top);
 
-        if top {
-            self.draw();
-        }
+        self.draw();
     }
 }

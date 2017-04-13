@@ -26,6 +26,8 @@ mod util;
 mod action;
 mod layout;
 mod move_things;
+mod demo;
+mod application;
 
 use util::bounding_box::BoundingBox;
 use collections::Vec;
@@ -44,6 +46,9 @@ use move_things::swipe;
 use stm32f7::touch::Touch;
 //use stm32f7::arrayvec::ArrayVec;
 use arrayvec::ArrayVec;
+
+use application::view::View;
+use application::app::App;
 
 #[inline(never)]
 fn main(hw: board::Hardware) -> ! {
@@ -118,15 +123,6 @@ fn main(hw: board::Hardware) -> ! {
 
     stm32f7::init_stdout(lcd.layer_2().unwrap());
 
-    //None::<()>.unwrap();
-
-    /*
-    let button = forms::button::Button::new(util::bounding_box::BoundingBox; {
-                                                x: 2,
-                                                y: 2,
-                                                width: 10,
-                                                height: 10,
-                                            });*/
 
     let mut button = forms::button::Button::new(util::bounding_box::BoundingBox {
                                                     x: 10,
@@ -134,29 +130,6 @@ fn main(hw: board::Hardware) -> ! {
                                                     width: 100,
                                                     height: 100,
                                                 });
-    // let mut button2 = forms::button::Button::new(util::bounding_box::BoundingBox {
-    //                                                  x: 110,
-    //                                                  y: 110,
-    //                                                  width: 50,
-    //                                                  height: 50,
-    //                                              });
-    /*
-    let label = forms::label::Label::new(util::bounding_box::BoundingBox {
-                                             x: 10,
-                                             y: 10,
-                                             width: 100,
-                                             height: 100,
-                                         },
-                                         "Button");
-
-    button.set_action_on_click(clicked);
-    //button2.set_action_on_click(clicked);
-
-    //button.set_child(Box::new(button2));
-    button.set_child(Box::new(label));
-
-    button.draw();*/
-
 
 
     // Initialize touch on display.
@@ -164,67 +137,6 @@ fn main(hw: board::Hardware) -> ! {
     let mut i2c_3 = i2c::init(i2c_3);
     touch::check_family_id(&mut i2c_3).unwrap();
 
-
-
-    /*
-    let mut tmp_bb = BoundingBox {
-        x: 10,
-        y: 10,
-        width: 10,
-        height: 10,
-    };
-    let mut tmp_bb2 = BoundingBox {
-        x: 10,
-        y: 10,
-        width: 10,
-        height: 10,
-    };
-    let mut tmp_bb3 = BoundingBox {
-        x: 10,
-        y: 10,
-        width: 10,
-        height: 10,
-    };
-    let mut tmp_bb4 = BoundingBox {
-        x: 10,
-        y: 10,
-        width: 10,
-        height: 10,
-    };
-    let mut tmp_bb5 = BoundingBox {
-        x: 10,
-        y: 10,
-        width: 10,
-        height: 10,
-    };
-    let mut tmp_bb6 = BoundingBox {
-        x: 10,
-        y: 10,
-        width: 10,
-        height: 10,
-    };
-
-    let mut bl = layout::BorderLayout::new(BoundingBox {
-                                               x: 50,
-                                               y: 50,
-                                               width: 100,
-                                               height: 100,
-                                           });
-    let mut button1 = Box::new(Button::new(tmp_bb, 3));
-    let mut button2 = Box::new(Button::new(tmp_bb2, 3));
-    let mut button3 = Box::new(Button::new(tmp_bb3, 3));
-    let mut button4 = Box::new(Button::new(tmp_bb4, 3));
-    let mut button5 = Box::new(Button::new(tmp_bb5, 3));
-    let mut button6 = Box::new(Button::new(tmp_bb6, 3));
-    bl.add_form(button1, BorderArea::Top);
-    bl.add_form(button2, BorderArea::Left);
-    bl.add_form(button3, BorderArea::Center);
-    bl.add_form(button4, BorderArea::Right);
-    bl.add_form(button5, BorderArea::Bottom);
-    bl.add_form(button6, BorderArea::Top);
-
-    bl.draw();
-    */
 
     /*
     let mut move_bb_outer_outer = BoundingBox {
@@ -234,22 +146,21 @@ fn main(hw: board::Hardware) -> ! {
         height: 272,
     };
     let mut move_box_root = layout::MoveBox::new(move_bb_outer_outer, true);*/
-
-
+    
     let mut move_bb_outer = BoundingBox {
-        x: 10,
-        y: 10,
+        x: 0,
+        y: 0,
         width: 400,
-        height: 260,
+        height: 272,
     };
-    let mut move_box = layout::MoveBox::new(move_bb_outer, true);
+    let mut move_box = layout::MoveBox::new(move_bb_outer, false);
     //move_box.set_movable(true);
     //move_box_root.add_form(move_box);
 
     let mut move_bb_inner = BoundingBox {
         x: 15,
         y: 15,
-        width: 50,
+        width: 60,
         height: 50,
     };
     let mut button = Box::new(Button::new(move_bb_inner));
@@ -258,41 +169,92 @@ fn main(hw: board::Hardware) -> ! {
     let mut move_bb_inner2 = BoundingBox {
         x: 75,
         y: 15,
-        width: 50,
+        width: 60,
         height: 50,
     };
     let mut button2 = Box::new(Button::new(move_bb_inner2));
     button2.set_movable(true);
 
+    let mut move_bb_inner3 = BoundingBox {
+        x: 150,
+        y: 15,
+        width: 60,
+        height: 50,
+    };
+    let mut button3 = Box::new(Button::new(move_bb_inner3));
+    button3.set_movable(true);
+
+    let back_bb = BoundingBox {
+        x: 50,
+        y: 50,
+        width: 15,
+        height: 15,
+    };
+    let mut back_button = Button::new(back_bb);
+    back_button.set_border_width(2);
+
+    let back_test_bb = BoundingBox {
+        x: 50,
+        y: 50,
+        width: 15,
+        height: 15,
+    };
+    let back_text = Label::new(back_test_bb, "Zurück");
+    let matthias = BoundingBox {
+        x: 50,
+        y: 50,
+        width: 15,
+        height: 15,
+    };
+    let matthias_text = Label::new(matthias, "Matthias");
+    let joel = BoundingBox {
+        x: 50,
+        y: 50,
+        width: 15,
+        height: 15,
+    };
+    let joel_text = Label::new(joel, "Joel");
+    let christian = BoundingBox {
+        x: 50,
+        y: 50,
+        width: 15,
+        height: 15,
+    };
+    let christian_text = Label::new(christian, "Christian");
+    back_button.set_child(Box::new(back_text));
+    button.set_child(Box::new(matthias_text));
+    button2.set_child(Box::new(joel_text));
+    button3.set_child(Box::new(christian_text));
+
+    back_button.set_action_on_click(clicked);
+
+    let back_button_box = Box::new(back_button);
+
     move_box.add_form(button);
     move_box.add_form(button2);
-    move_box.draw();
+    move_box.add_form(button3);
 
-    let mut outer_move_box = layout::MoveBox::new(BoundingBox {
-                                                      x: 0,
-                                                      y: 0,
-                                                      width: sizes::MAX_X,
-                                                      height: sizes::MAX_Y,
-                                                  },
-                                                  false);
-    outer_move_box.add_form(Box::new(move_box));
+
+
+
+    let mut move_hor_layout = layout::HorizontalLayout::new(BoundingBox {
+                                                                x: 0,
+                                                                y: 0,
+                                                                width: 480,
+                                                                height: 272,
+                                                            });
+    move_hor_layout.add_form(Box::new(move_box));
+    move_hor_layout.add_form(back_button_box);
+    let prop = vec![90, 10];
+    move_hor_layout.set_proportions(prop);
+    move_hor_layout.set_movable(false);
+    let mut move_view = View::new(Box::new(move_hor_layout));
+    //move_view.draw();
+    
+    let mut v = demo::view_skins();
+    v.draw();
 
     let mut touch_history = move_things::swipe::TouchHistory::new();
-
-    /*let bb3 = BoundingBox{x:50, y:50, width:15, height:15};
-    let button3 = Button::new(bb3);
-    let b3 = Box::new(button3);
-
-    let mut flow_container = layout::HorizontalLayout{
-    bounding_box:BoundingBox{x:10, y:10, width:100, height:100}, elements:items};
-    let b = Box::new(button);
-    flow_container.add_form(b);
-    flow_container.add_form(b2);
-    flow_container.add_form(b3);
-    flow_container.draw_area();*/
-
-    //let color: lcd::Color = lcd::Color::from_hex(0xFFFFFF);
-    //draw::fill_rectangle(30, 30, 200, 200, draw::convert_color_to_u16(color));
 
     let mut last_led_toggle = system_clock::ticks();
     loop {
@@ -304,26 +266,25 @@ fn main(hw: board::Hardware) -> ! {
             last_led_toggle = ticks;
         }
 
-        /*for touch in &touch::touches(&mut i2c_3).unwrap() {
-            action::walker::walk(&mut move_box, touch.x as i32, touch.y as i32);
-        }*/
+        for touch in &touch::touches(&mut i2c_3).unwrap() {
+            //action::walker::walk(&mut move_view, touch.x as i32, touch.y as i32);
+            action::walker::walk(&mut v, touch.x as i32, touch.y as i32);
+
+            ////action::walker::walk(&mut move_hor_layout, touch.x as i32, touch.y as i32);
+        }
 
         //: &Result<ArrayVec<[Touch; 5]>, i2c::Error>
         let touches_result = touch::touches(&mut i2c_3).unwrap();
-        //let mut touch_history = swipe::TouchHistory::new();
 
         let mut input: Vec<(i32, i32)> = Vec::new();
         for i in touches_result {
             input.push((i.x as i32, i.y as i32));
         }
-        /*println!("Length of touch result: {}", &input.len());
-        for i in &input {
-            println!("{} - {}", i.0, i.1);
-        }*/
 
 
         touch_history.update(ticks, input);
-        touch_history.check_for_object_moves(&mut outer_move_box);
+        //touch_history.check_for_object_moves(&mut move_view);
+        ////touch_history.check_for_object_moves(&mut move_hor_layout);
 
 
         //let v: VecDeque<u32> = VecDeque::new();
@@ -340,10 +301,19 @@ fn main(hw: board::Hardware) -> ! {
 
 
 fn clicked(form: &mut Button) {
+        let label = Label::new(BoundingBox{
+            x: 0,
+            y: 0,
+            width: 10,
+            height: 10,
+        }, "clicked!");
+
+        form.set_child(Box::new(label));
+    
     let width = form.get_border_width();
     match width {
-        2 => form.set_border_width(5),
-        _ => form.set_border_width(2),
+        2 => form.set_border_width(10),
+        _ => form.set_border_width(10),
     }
 
     form.clear();

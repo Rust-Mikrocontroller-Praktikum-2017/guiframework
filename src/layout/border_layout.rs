@@ -185,9 +185,7 @@ impl Form for BorderLayout {
     }
 
     fn move_form(&mut self, dir_x: i32, dir_y: i32, top: bool) {
-        if top {
-            self.clear();
-        }
+        self.clear();
 
         let outer_if_top = if top {
             Some(&self.outer_bounding_box)
@@ -212,8 +210,6 @@ impl Form for BorderLayout {
             }
         }
 
-        if top {
-            self.draw();
-        }
+        self.draw();
     }
 }

@@ -88,7 +88,7 @@ impl TouchHistory {
         self.cur_touches = VecDeque::new();
 
         for i in &movements {
-            let last = i.len()-1;
+            let last = i.len() - 1;
             self.cur_touches.push_back(i[last]);
             /*for j in i {
                 print!("{},{}-", j.0, j.1);
@@ -112,13 +112,14 @@ impl TouchHistory {
 
 
 
+
                     let delta_x = i[i.len() - 1].0 - i[0].0;
                     let delta_y = i[i.len() - 1].1 - i[0].1;
 
                     //form.move_form(i[i.len() - 1].0, i[i.len() - 1].1);
                     if delta_x != 0 || delta_y != 0 {
                         form.move_form(delta_x, delta_y, true);
-                    }                    
+                    }
                 }
                 None => {}
             }

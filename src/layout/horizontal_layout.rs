@@ -12,6 +12,7 @@ pub struct HorizontalLayout {
     pub outer_bounding_box: bounding_box::BoundingBox,
     pub elements: Vec<Box<Form>>,
     pub movable: bool,
+    pub proportions: Vec<i32>,
 }
 
 impl HorizontalLayout {
@@ -26,6 +27,7 @@ impl HorizontalLayout {
             },
             elements: Vec::new(),
             movable: false,
+            proportions: Vec::new(),
         }
     }
 
@@ -37,22 +39,59 @@ impl HorizontalLayout {
         true
     }
 
-    pub fn add_form(&mut self, f: Box<Form>) -> bool {
+    pub fn add_form(&mut self, mut f: Box<Form>) -> bool {
+        // f.set_outer_bounding_box(self.bounding_box.clone());
         self.elements.push(f);
-        let len = self.elements.len() as i32;
-        let el_width = self.bounding_box.width / len;
-        let mut n = 0;
-        for i in &mut self.elements {
-            let bb = bounding_box::BoundingBox {
-                x: self.bounding_box.x + n * el_width,
+        self.proportions.push(1);
+        self.update_proportions();
+        true
+    }
+    
+    fn update_proportions(&mut self) -> bool {
+        if self.proportions.len() == 0 {
+            return false;
+        }
+        let mut sum = 0;
+        for i in &self.proportions {
+            sum = sum + i;
+        }
+        let proportions = &mut self.proportions;
+        let width = self.bounding_box.width;
+        let mut cur_x = self.bounding_box.x;
+        let mut added_width = 0;
+        //println!("Next HL");
+        for i in 0..&self.elements.len() - 1 {
+            //self.elements[i].get_bounding_box().width = (proportions[i] * width) / sum;
+            let next_width = (proportions[i] * width) / sum;
+            //print!("--prop: {}, width: {}, sum: {} --", proportions[i], width, sum);
+            added_width += next_width;
+            //self.elements[i].get_bounding_box().x = cur_x;
+            let next_x = cur_x;
+            cur_x += next_width;
+            //println!("BB- {}", self.bounding_box.y);
+            let bb = BoundingBox {
+                x: next_x,
                 y: self.bounding_box.y,
-                width: el_width,
+                width: next_width,
                 height: self.bounding_box.height,
             };
-            i.set_bounding_box(bb);
-            n += 1;
-        }
 
+            self.elements[i].set_bounding_box(bb.clone());
+            self.elements[i].set_outer_bounding_box(bb);
+        }
+        let bb = BoundingBox {
+            x: cur_x,
+            y: self.bounding_box.y,
+            width: self.bounding_box.width - added_width,
+            height: self.bounding_box.height,
+        };
+        //println!("--prop: {}, width: {}, sum: {} --", cur_x, self.get_bounding_box().width - added_width, sum);
+        self.elements[proportions.len() - 1].set_bounding_box(bb);
+        self.elements[proportions.len() - 1].set_outer_bounding_box(self.bounding_box.clone());
+        /*self.elements[proportions.len() - 1]
+            .get_bounding_box()
+            .width = self.bounding_box.width - added_width;
+        self.elements[proportions.len() - 1].get_bounding_box().x = cur_x;*/
         true
     }
 
@@ -60,24 +99,8 @@ impl HorizontalLayout {
         if proportions.len() != self.elements.len() {
             return false;
         }
-        let mut sum = 0;
-        for i in &proportions {
-            sum = sum + i;
-        }
-        let width = self.get_bounding_box().width;
-        let mut cur_x = self.bounding_box.x;
-        let mut added_width = 0;
-        for i in 0..&self.elements.len() - 1 {
-            self.elements[i].get_bounding_box().width = (proportions[i] * width) / sum;
-            added_width += self.elements[i].get_bounding_box().width;
-            self.elements[i].get_bounding_box().x = cur_x;
-            cur_x += self.elements[i].get_bounding_box().width;
-        }
-        self.elements[proportions.len() - 1]
-            .get_bounding_box()
-            .width = self.get_bounding_box().width - added_width;
-        self.elements[proportions.len() - 1].get_bounding_box().x = cur_x;
-        true
+        self.proportions = proportions;
+        return self.update_proportions();
     }
 }
 
@@ -88,6 +111,10 @@ impl Form for HorizontalLayout {
 
     fn set_bounding_box(&mut self, bounding_box: BoundingBox) -> () {
         self.bounding_box = bounding_box;
+        self.update_proportions();
+        // for el in &mut self.elements {
+            // el.set_outer_bounding_box(self.bounding_box.clone());
+        // }
     }
 
     fn set_outer_bounding_box(&mut self, bounding_box: BoundingBox) {
@@ -132,9 +159,7 @@ impl Form for HorizontalLayout {
     }
 
     fn move_form(&mut self, dir_x: i32, dir_y: i32, top: bool) {
-        if top {
-            self.clear();
-        }
+        self.clear();
 
         let outer_if_top = if top {
             Some(&self.outer_bounding_box)
@@ -146,11 +171,10 @@ impl Form for HorizontalLayout {
             .move_in_direction(dir_x, dir_y, outer_if_top);
 
         for i in &mut self.elements {
+            i.set_outer_bounding_box(self.bounding_box.clone());
             i.move_form(moved_x, moved_y, false);
         }
 
-        if top {
-            self.draw();
-        }
+        self.draw();
     }
 }

@@ -9,7 +9,6 @@ use forms::form::Form;
 use util::bounding_box::BoundingBox;
 use util::sizes;
 
-
 pub struct Button {
     bounding_box: BoundingBox,
     outer_bounding_box: BoundingBox,
@@ -72,6 +71,10 @@ impl Form for Button {
 
     fn set_bounding_box(&mut self, bounding_box: BoundingBox) -> () {
         self.bounding_box = bounding_box;
+
+        if let Some(ref mut child) = self.child {
+            child.set_outer_bounding_box(self.bounding_box.clone());
+        }
     }
 
     fn set_outer_bounding_box(&mut self, bounding_box: BoundingBox) {
@@ -106,6 +109,7 @@ impl Form for Button {
                        self.bounding_box.width,
                        self.bounding_box.height,
                        Color::rgba(0, 0, 0, 0));
+
     }
 
     fn draw(&self) -> () {
@@ -124,9 +128,7 @@ impl Form for Button {
     }
 
     fn move_form(&mut self, dir_x: i32, dir_y: i32, top: bool) {
-        if top {
-            self.clear();
-        }
+        self.clear();
 
         let outer_if_top = if top {
             Some(&self.outer_bounding_box)
@@ -142,9 +144,7 @@ impl Form for Button {
             child.move_form(delta_x, delta_y, false);
         }
 
-        if top {
-            self.draw();
-        }
+        self.draw();
     }
 }
 
